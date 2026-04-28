@@ -63,3 +63,24 @@ export async function createUser(data: CreateUserInput): Promise<User> {
 export async function updateUserPassword(id: number, hashedPassword: string): Promise<void> {
   await pool.query('UPDATE users SET password = $1 WHERE id = $2', [hashedPassword, id]);
 }
+
+export async function isEliteMember(userId: number): Promise<boolean> {
+  const { rows } = await pool.query(
+    'SELECT 1 FROM elite_members WHERE user_id = $1 AND is_active = true LIMIT 1',
+    [userId]
+  );
+  return rows.length > 0;
+}
+
+export async function isApprovedPartner(userId: number): Promise<boolean> {
+  const { rows } = await pool.query(
+    "SELECT 1 FROM partner_accounts WHERE user_id = $1 AND status = 'APPROVED' LIMIT 1",
+    [userId]
+  );
+  return rows.length > 0;
+}
+
+export function formatDisplayName(user: Pick<User, 'firstname' | 'lastname' | 'email'>): string {
+  const parts = [user.firstname, user.lastname].filter(Boolean);
+  return parts.length > 0 ? parts.join(' ') : (user.email ?? 'User');
+}
