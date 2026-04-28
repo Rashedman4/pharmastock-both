@@ -1,0 +1,25 @@
+import { NextRequest, NextResponse } from "next/server";
+import { ProgramService } from "@/modules/program/program.service";
+import { getAuthUser } from "@/modules/program/route-helpers";
+
+export const runtime = "nodejs";
+const service = new ProgramService();
+
+export async function GET(request: NextRequest) {
+  const auth = await getAuthUser(request);
+  if ("error" in auth) return auth.error;
+
+  try {
+    const dashboard = await service.getPartnerDashboard(auth.userId);
+    return NextResponse.json(
+      {
+        referralCode: dashboard.referralCode ?? null,
+        invitationLink: dashboard.invitationLink ?? null,
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Failed to load referral link:", error);
+    return NextResponse.json({ message: "Failed to load referral link." }, { status: 500 });
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx expo *)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('Valid JSON'\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); try { JSON.parse\\(fs.readFileSync\\('/c/Users/LENOVO/Desktop/PHARMAsTOCK-bOTH/mobile/locales/en.json','utf8'\\)\\); console.log\\('en.json: Valid'\\); } catch\\(e\\) { console.log\\('en.json ERROR:', e.message\\); }\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); try { JSON.parse\\(fs.readFileSync\\('/c/Users/LENOVO/Desktop/PHARMAsTOCK-bOTH/mobile/locales/ar.json','utf8'\\)\\); console.log\\('ar.json: Valid'\\); } catch\\(e\\) { console.log\\('ar.json ERROR:', e.message\\); }\")"
+    ]
+  }
+}

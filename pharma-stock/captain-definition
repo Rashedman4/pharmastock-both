@@ -1,0 +1,26 @@
+{
+"schemaVersion": 2,
+"dockerfileLines": [
+"FROM node:24-alpine",
+"WORKDIR /usr/src/app",
+
+"# Copy package files",
+"COPY package*.json ./",
+
+"# Install ALL dependencies (including devDependencies like TypeScript)",
+"RUN npm install",
+
+"# Copy the rest of the application code",
+"COPY . .",
+
+"# Build the Next.js project",
+"RUN npm run build",
+
+"# Set environment to production and expose port",
+"ENV NODE_ENV production",
+"ENV PORT 3000",
+"EXPOSE 3000",
+
+"CMD [\"npm\", \"start\"]"
+]
+}
