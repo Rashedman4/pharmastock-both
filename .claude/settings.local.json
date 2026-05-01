@@ -9,7 +9,10 @@
       "Bash(mkdir -p \"C:/Users/LENOVO/Desktop/PHARMAsTOCK-bOTH/pharma-stock/src/app/api/mobile/v1/news/[id]\")",
       "Bash(mkdir -p \"C:/Users/LENOVO/Desktop/PHARMAsTOCK-bOTH/pharma-stock/src/app/api/mobile/v1/breakthroughs/[id]\")",
       "Bash(mkdir -p \"C:/Users/LENOVO/Desktop/PHARMAsTOCK-bOTH/pharma-stock/src/app/api/mobile/v1/market/[symbol]\")",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "WebFetch(domain:docs.expo.dev)"
     ]
   }
 }

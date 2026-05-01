@@ -2,6 +2,7 @@ import pool from "@/lib/db";
 import { NextResponse, NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getToken } from "next-auth/jwt";
+import { createNotificationForAll } from "@/lib/services/notification.service";
 
 // Function to fetch current price (replace with your actual API call)
 async function fetchCurrentPrice(symbol: string) {
@@ -75,7 +76,19 @@ export async function POST(req: NextRequest) {
     // Revalidate the customer-facing signals route
     revalidatePath("/api/signals");
 
-    return NextResponse.json(result.rows[0], { status: 201 });
+    const newSignal = result.rows[0];
+    try {
+      await createNotificationForAll({
+        type: "signal_open",
+        title: `New Signal: ${symbol}`,
+        body: `Buy signal opened for ${symbol}`,
+        data: { signalId: newSignal.id, symbol, action: "Buy", screen: "signals" },
+      });
+    } catch (notifErr) {
+      console.error("[Notification] Failed to send signal_open notification:", notifErr);
+    }
+
+    return NextResponse.json(newSignal, { status: 201 });
   } catch (error) {
     return NextResponse.json(
       { error: "Error adding signal. error: " + error },
@@ -165,13 +178,15 @@ export async function DELETE(req: NextRequest) {
       client.release();
       return NextResponse.json({ error: "Signal not found" }, { status: 404 });
     }
+
+    const signal = signalResult.rows[0];
+
     if (closeSignal === "yes") {
-      const signal = signalResult.rows[0];
-      const success = signal.enter_price < signal.price_now ? true : false;
+      const success = signal.enter_price < signal.price_now;
       const historyQuery = `
-      INSERT INTO signal_history (symbol, entrance_date, closing_date, in_price, out_price, success, reason_en, reason_ar)
-      VALUES ($1, $2, CURRENT_DATE, $3, $4, $5, $6, $7);
-    `;
+        INSERT INTO signal_history (symbol, entrance_date, closing_date, in_price, out_price, success, reason_en, reason_ar)
+        VALUES ($1, $2, CURRENT_DATE, $3, $4, $5, $6, $7)
+      `;
       await client.query(historyQuery, [
         signal.symbol,
         signal.date_opened,
@@ -182,13 +197,42 @@ export async function DELETE(req: NextRequest) {
         signal.reason_ar,
       ]);
     }
+
     await client.query("DELETE FROM signals WHERE id = $1", [id]);
     client.release();
     revalidatePath("/api/signals");
     revalidatePath("/api/signalHistory");
 
+    try {
+      if (closeSignal === "yes") {
+        const success = signal.enter_price < signal.price_now;
+        await createNotificationForAll({
+          type: "signal_close",
+          title: `Signal Closed: ${signal.symbol}`,
+          body: `${signal.symbol} signal closed ${success ? "successfully" : "with a loss"}`,
+          data: {
+            symbol: signal.symbol,
+            success,
+            in_price: signal.enter_price,
+            out_price: signal.price_now,
+            screen: "signals",
+          },
+        });
+      } else {
+        await createNotificationForAll({
+          type: "signal_close",
+          title: `Signal Removed: ${signal.symbol}`,
+          body: `The ${signal.symbol} signal has been removed`,
+          data: { symbol: signal.symbol, screen: "signals" },
+        });
+      }
+    } catch (notifErr) {
+      console.error("[Notification] Failed to send signal_close notification:", notifErr);
+    }
+
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
+    console.error("[DELETE /api/admin/signals] Error:", error);
     return NextResponse.json(
       { error: "Error deleting signal. Error: " + error },
       { status: 500 }
