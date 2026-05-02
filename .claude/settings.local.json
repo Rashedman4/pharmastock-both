@@ -12,7 +12,15 @@
       "Bash(npx tsc *)",
       "Bash(npm install *)",
       "Bash(npm run *)",
-      "WebFetch(domain:docs.expo.dev)"
+      "WebFetch(domain:docs.expo.dev)",
+      "Bash(New-Item -ItemType File -Path \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\lib\\\\mobile\\\\rate-limit.ts\" -Force)",
+      "Bash(Out-Null)",
+      "Bash(Write-Output \"created\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\mobile\\\\v1\\\\chat\\\\conversations\\\\[id]\\\\messages\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\mobile\\\\v1\\\\chat\\\\messages\\\\[id]\\\\read\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\admin\\\\mobile\\\\broadcasts\\\\[id]\\\\send\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\admin\\\\mobile\\\\broadcasts\\\\[id]\\\\schedule\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\admin\\\\mobile\\\\broadcasts\\\\[id]\\\\recipients\")"
     ]
   }
 }
