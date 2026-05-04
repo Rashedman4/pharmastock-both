@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ProgramService } from "@/modules/program/program.service";
 import { requireAdmin } from "@/modules/program/route-helpers";
+import pool from "@/lib/db";
+import { createNotification } from "@/lib/services/notification.service";
 
 export const runtime = "nodejs";
 const service = new ProgramService();
@@ -27,6 +29,26 @@ export async function POST(
       plannedAt: body?.plannedAt ? String(body.plannedAt) : null,
       adminNote: body?.adminNote ? String(body.adminNote) : null,
     });
+
+    // Notify investor
+    try {
+      const memberRes = await pool.query(
+        'SELECT user_id FROM elite_members WHERE id = $1',
+        [Number(memberId)]
+      );
+      if (memberRes.rows[0]?.user_id) {
+        await createNotification({
+          userId: memberRes.rows[0].user_id,
+          type: 'TRADE_PLAN',
+          title: 'New Trade Plan',
+          body: `A new ${body?.symbol ?? 'trade'} plan has been sent to you. Review and respond.`,
+          data: { screen: 'trade-plans' },
+        });
+      }
+    } catch (notifErr) {
+      console.error('[Notification] trade_plan_sent:', notifErr);
+    }
+
     return NextResponse.json(result, { status: 201 });
   } catch (error: any) {
     console.error("Failed to create trade plan:", error);

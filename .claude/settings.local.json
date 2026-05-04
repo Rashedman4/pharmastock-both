@@ -20,7 +20,10 @@
       "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\mobile\\\\v1\\\\chat\\\\messages\\\\[id]\\\\read\")",
       "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\admin\\\\mobile\\\\broadcasts\\\\[id]\\\\send\")",
       "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\admin\\\\mobile\\\\broadcasts\\\\[id]\\\\schedule\")",
-      "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\admin\\\\mobile\\\\broadcasts\\\\[id]\\\\recipients\")"
+      "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\admin\\\\mobile\\\\broadcasts\\\\[id]\\\\recipients\")",
+      "Bash(Get-ChildItem -Path \"pharma-stock\\\\src\\\\pages\" -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object Name)",
+      "Bash(Get-ChildItem *)"
     ]
   }
 }

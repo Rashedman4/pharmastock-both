@@ -5,12 +5,12 @@ import { chatService } from '@/lib/services/chat.service';
 import { resolveAudienceUserIds } from '@/lib/services/audience.service';
 import { sendPushToUser } from '@/lib/services/push.service';
 import { getIO } from '@/lib/socket/socket-server';
-import { createRateLimiter, rateLimitResponse } from '@/lib/mobile/rate-limit';
+import { createRateLimiter, rateLimitResponse, getClientIP } from '@/lib/mobile/rate-limit';
 
 const sendLimiter = createRateLimiter({
   windowMs: 60_000,
   max: 5,
-  keyFn: (req) => req.headers.get('authorization') ?? req.ip ?? 'admin',
+  keyFn: (req) => req.headers.get('authorization') ?? getClientIP(req),
 });
 
 async function assertAdmin(req: NextRequest) {

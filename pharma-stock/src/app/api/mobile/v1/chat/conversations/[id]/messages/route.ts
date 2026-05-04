@@ -2,13 +2,13 @@ import { NextRequest } from 'next/server';
 import { getMobileAuthPayload } from '@/lib/mobile/auth-middleware';
 import { ok, err } from '@/lib/mobile/api-handler';
 import { chatService } from '@/lib/services/chat.service';
-import { createRateLimiter, rateLimitResponse } from '@/lib/mobile/rate-limit';
+import { createRateLimiter, rateLimitResponse, getClientIP } from '@/lib/mobile/rate-limit';
 import { getIO } from '@/lib/socket/socket-server';
 
 const messageLimiter = createRateLimiter({
   windowMs: 60_000,
   max: 60,
-  keyFn: (req) => req.headers.get('authorization') ?? req.ip ?? 'unknown',
+  keyFn: (req) => req.headers.get('authorization') ?? getClientIP(req),
 });
 
 type Ctx = { params: Promise<{ id: string }> };

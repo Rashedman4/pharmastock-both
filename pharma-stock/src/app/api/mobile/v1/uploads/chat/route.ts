@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'node:crypto';
 import { getMobileAuthPayload } from '@/lib/mobile/auth-middleware';
 import { err } from '@/lib/mobile/api-handler';
-import { createRateLimiter, rateLimitResponse } from '@/lib/mobile/rate-limit';
+import { createRateLimiter, rateLimitResponse, getClientIP } from '@/lib/mobile/rate-limit';
 
 export const runtime = 'nodejs';
 
 const uploadLimiter = createRateLimiter({
   windowMs: 60_000,
   max: 20,
-  keyFn: (req) => req.headers.get('authorization') ?? req.ip ?? 'unknown',
+  keyFn: (req) => req.headers.get('authorization') ?? getClientIP(req),
 });
 
 // File size limits per type

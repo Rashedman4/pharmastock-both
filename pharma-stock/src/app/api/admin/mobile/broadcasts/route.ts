@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
-  const { title, messageType, content, attachmentUrl, attachmentMetadata, audienceType, scheduledAt } =
+  const { title, messageType, content, attachmentUrl, attachmentMetadata, audienceType, scheduledAt, customUserIds } =
     body as {
       title?: string;
       messageType?: string;
@@ -58,11 +58,19 @@ export async function POST(req: NextRequest) {
       attachmentMetadata?: Record<string, unknown>;
       audienceType?: string;
       scheduledAt?: string;
+      customUserIds?: number[];
     };
 
   if (!title || !messageType || !audienceType) {
     return NextResponse.json(
       { error: 'title, messageType, and audienceType are required' },
+      { status: 400 }
+    );
+  }
+
+  if (audienceType === 'custom' && (!customUserIds || customUserIds.length === 0)) {
+    return NextResponse.json(
+      { error: 'customUserIds is required when audienceType is custom' },
       { status: 400 }
     );
   }
@@ -79,8 +87,8 @@ export async function POST(req: NextRequest) {
   const result = await pool.query(
     `INSERT INTO broadcast_campaigns
        (admin_id, title, message_type, content, attachment_url, attachment_metadata,
-        audience_type, status, scheduled_at)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+        audience_type, status, scheduled_at, custom_user_ids)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
      RETURNING *`,
     [
       adminId,
@@ -92,6 +100,7 @@ export async function POST(req: NextRequest) {
       audienceType,
       status,
       scheduledAt ?? null,
+      customUserIds && customUserIds.length > 0 ? customUserIds : [],
     ]
   );
 
