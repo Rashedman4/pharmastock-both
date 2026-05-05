@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "626285874163",
+    "project_id": "pharmastock-d0cb4",
+    "storage_bucket": "pharmastock-d0cb4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:626285874163:android:5ce2e405239ab6f8082086",
+        "android_client_info": {
+          "package_name": "com.biopharmastock.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAthF3WpFef-7lmLRv3vTY-WM5njH92RDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

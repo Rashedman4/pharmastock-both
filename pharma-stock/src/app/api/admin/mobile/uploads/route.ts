@@ -49,11 +49,7 @@ function signCloudinary(params: Record<string, string>, secret: string): string 
 
 export async function POST(req: NextRequest) {
   const token = await getToken({ req });
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const authorized = process.env.AUTHORIZED_EMAILS?.split(',').map((e) => e.trim()) ?? [];
-  if (!authorized.includes(token.email as string)) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  if (token?.role !== 'admin') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   let formData: FormData;
   try { formData = await req.formData(); }

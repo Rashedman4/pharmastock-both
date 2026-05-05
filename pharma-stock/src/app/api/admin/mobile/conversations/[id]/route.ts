@@ -4,10 +4,7 @@ import pool from '@/lib/db';
 
 async function assertAdmin(req: NextRequest) {
   const token = await getToken({ req });
-  if (!token) return null;
-  const authorized = process.env.AUTHORIZED_EMAILS?.split(',').map((e) => e.trim()) ?? [];
-  if (!authorized.includes(token.email as string)) return null;
-  return token;
+  return token?.role === 'admin' ? token : null;
 }
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -20,7 +17,8 @@ export async function GET(req: NextRequest, ctx: Ctx) {
 
   // Load conversation + user info
   const convRes = await pool.query(
-    `SELECT cc.*, u.firstname, u.lastname, u.email
+    `SELECT cc.*, u.firstname, u.lastname, u.email,
+            EXISTS(SELECT 1 FROM elite_members em WHERE em.user_id = u.id) AS is_elite
      FROM chat_conversations cc
      JOIN users u ON u.id = cc.user_id
      WHERE cc.id = $1`,
@@ -30,11 +28,12 @@ export async function GET(req: NextRequest, ctx: Ctx) {
     return NextResponse.json({ error: 'Conversation not found' }, { status: 404 });
   }
 
-  // Load all messages, oldest first
+  // Load messages oldest-first, capped at 500 to prevent OOM on very long conversations
   const msgRes = await pool.query(
     `SELECT * FROM chat_messages
      WHERE conversation_id = $1
-     ORDER BY created_at ASC`,
+     ORDER BY created_at ASC
+     LIMIT 500`,
     [conversationId]
   );
 

@@ -7,10 +7,7 @@ import { getIO } from '@/lib/socket/socket-server';
 
 async function assertAdmin(req: NextRequest) {
   const token = await getToken({ req });
-  if (!token) return null;
-  const authorized = process.env.AUTHORIZED_EMAILS?.split(',').map((e) => e.trim()) ?? [];
-  if (!authorized.includes(token.email as string)) return null;
-  return token;
+  return token?.role === 'admin' ? token : null;
 }
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -46,8 +43,14 @@ export async function POST(req: NextRequest, ctx: Ctx) {
   if (messageType === 'text' && !content?.trim()) {
     return NextResponse.json({ error: 'content is required for text messages' }, { status: 400 });
   }
+  if (content && content.length > 4000) {
+    return NextResponse.json({ error: 'Message content must not exceed 4000 characters' }, { status: 400 });
+  }
   if (messageType !== 'text' && !attachmentUrl) {
     return NextResponse.json({ error: 'attachmentUrl is required for media messages' }, { status: 400 });
+  }
+  if (attachmentUrl && !attachmentUrl.startsWith('https://res.cloudinary.com/')) {
+    return NextResponse.json({ error: 'attachmentUrl must be a valid Cloudinary URL' }, { status: 400 });
   }
 
   const adminRes = await pool.query('SELECT id FROM users WHERE email = $1', [token.email]);

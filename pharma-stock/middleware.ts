@@ -88,10 +88,9 @@ export default withAuth(
           // Redirect to the preferred language
           const preferredLangUrl = new URL(
             `${preferredLanguage}${pathname}`,
-            baseUrl, // Use origin instead of request.url
+            baseUrl,
           );
 
-          console.log(preferredLangUrl.href + " " + baseUrl);
           return NextResponse.redirect(preferredLangUrl);
         }
       }

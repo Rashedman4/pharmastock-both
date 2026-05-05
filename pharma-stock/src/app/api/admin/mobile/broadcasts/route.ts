@@ -5,10 +5,7 @@ import { parsePaginationParams, buildPaginationMeta } from '@/lib/mobile/paginat
 
 async function assertAdmin(req: NextRequest) {
   const token = await getToken({ req });
-  if (!token) return null;
-  const authorized = process.env.AUTHORIZED_EMAILS?.split(',').map((e) => e.trim()) ?? [];
-  if (!authorized.includes(token.email as string)) return null;
-  return token;
+  return token?.role === 'admin' ? token : null;
 }
 
 export async function GET(req: NextRequest) {
@@ -60,6 +57,10 @@ export async function POST(req: NextRequest) {
       scheduledAt?: string;
       customUserIds?: number[];
     };
+
+  if (attachmentUrl && !attachmentUrl.startsWith('https://res.cloudinary.com/')) {
+    return NextResponse.json({ error: 'attachmentUrl must be a valid Cloudinary URL' }, { status: 400 });
+  }
 
   if (!title || !messageType || !audienceType) {
     return NextResponse.json(

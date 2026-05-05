@@ -8,10 +8,7 @@ import { getIO } from '@/lib/socket/socket-server';
 
 async function assertAdmin(req: NextRequest) {
   const token = await getToken({ req });
-  if (!token) return null;
-  const authorized = process.env.AUTHORIZED_EMAILS?.split(',').map((e) => e.trim()) ?? [];
-  if (!authorized.includes(token.email as string)) return null;
-  return token;
+  return token?.role === 'admin' ? token : null;
 }
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -64,8 +61,14 @@ export async function POST(req: NextRequest, ctx: Ctx) {
   if (messageType === 'text' && !content?.trim()) {
     return NextResponse.json({ error: 'content is required for text messages' }, { status: 400 });
   }
+  if (content && content.length > 4000) {
+    return NextResponse.json({ error: 'Message content must not exceed 4000 characters' }, { status: 400 });
+  }
   if (messageType !== 'text' && !attachmentUrl) {
     return NextResponse.json({ error: 'attachmentUrl is required for media messages' }, { status: 400 });
+  }
+  if (attachmentUrl && !attachmentUrl.startsWith('https://res.cloudinary.com/')) {
+    return NextResponse.json({ error: 'attachmentUrl must be a valid Cloudinary URL' }, { status: 400 });
   }
 
   const userRes = await pool.query('SELECT id FROM users WHERE email = $1', [token.email]);
@@ -98,9 +101,7 @@ export async function POST(req: NextRequest, ctx: Ctx) {
   );
 
   const io = getIO();
-  let successCount = 0;
 
-  // Build push body depending on message type
   const pushBody =
     messageType === 'text'
       ? (content?.trim() ?? '').slice(0, 80)
@@ -108,44 +109,60 @@ export async function POST(req: NextRequest, ctx: Ctx) {
       ? '🎙️ Voice note'
       : '🖼️ Image';
 
-  for (const userId of userIds) {
-    try {
-      const conv = await chatService.getOrCreateConversation(userId);
+  // Process users in concurrent batches of 25 — each user still gets their own individual message
+  const BATCH_SIZE = 25;
+  const successfulUserIds: number[] = [];
+  const failedUserIds: number[] = [];
 
-      const message = await chatService.createMessage({
-        conversationId: conv.id,
-        senderType: 'admin',
-        senderId: null,
-        messageType: messageType as 'text' | 'image' | 'voice' | 'video' | 'file',
-        content: content?.trim(),
-        attachmentUrl,
-        attachmentMetadata,
-        broadcastCampaignId: campaign.id,
-      });
-
-      if (io) io.to(`user:${userId}`).emit('new_message', message);
-
-      await sendPushToUser(userId, {
-        title: '💬 New message',
-        body: pushBody,
-        data: { type: 'chat_message', conversationId: conv.id, screen: 'chat' },
-      }).catch(() => {});
-
-      await pool.query(
-        `INSERT INTO broadcast_recipients (campaign_id, user_id, delivered_at)
-         VALUES ($1, $2, NOW())
-         ON CONFLICT (campaign_id, user_id) DO UPDATE SET delivered_at = NOW()`,
-        [campaign.id, userId]
-      );
-
-      successCount++;
-    } catch {
-      await pool.query(
-        'INSERT INTO broadcast_recipients (campaign_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
-        [campaign.id, userId]
-      ).catch(() => {});
-    }
+  for (let i = 0; i < userIds.length; i += BATCH_SIZE) {
+    const batch = userIds.slice(i, i + BATCH_SIZE);
+    await Promise.all(
+      batch.map(async (userId) => {
+        try {
+          const conv = await chatService.getOrCreateConversation(userId);
+          const message = await chatService.createMessage({
+            conversationId: conv.id,
+            senderType: 'admin',
+            senderId: null,
+            messageType: messageType as 'text' | 'image' | 'voice' | 'video' | 'file',
+            content: content?.trim(),
+            attachmentUrl,
+            attachmentMetadata,
+            broadcastCampaignId: campaign.id,
+          });
+          if (io) io.to(`user:${userId}`).emit('new_message', message);
+          await sendPushToUser(userId, {
+            title: '💬 New message',
+            body: pushBody,
+            data: { type: 'chat_message', conversationId: conv.id, screen: 'chat' },
+          }).catch(() => {});
+          successfulUserIds.push(userId);
+        } catch {
+          failedUserIds.push(userId);
+        }
+      })
+    );
   }
+
+  // Bulk insert recipients in two queries instead of one per user
+  if (successfulUserIds.length > 0) {
+    await pool.query(
+      `INSERT INTO broadcast_recipients (campaign_id, user_id, delivered_at)
+       SELECT $1, unnest($2::int[]), NOW()
+       ON CONFLICT (campaign_id, user_id) DO UPDATE SET delivered_at = NOW()`,
+      [campaign.id, successfulUserIds]
+    );
+  }
+  if (failedUserIds.length > 0) {
+    await pool.query(
+      `INSERT INTO broadcast_recipients (campaign_id, user_id)
+       SELECT $1, unnest($2::int[])
+       ON CONFLICT (campaign_id, user_id) DO NOTHING`,
+      [campaign.id, failedUserIds]
+    ).catch(() => {});
+  }
+
+  const successCount = successfulUserIds.length;
 
   await pool.query(
     `UPDATE broadcast_campaigns SET status = 'sent', sent_at = NOW(), recipient_count = $1 WHERE id = $2`,

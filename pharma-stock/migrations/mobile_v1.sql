@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS broadcast_campaigns (
   attachment_url TEXT,
   attachment_metadata JSONB DEFAULT '{}',
   audience_type TEXT NOT NULL CHECK (audience_type IN ('all_users', 'elite_users', 'subscription_users', 'custom')),
+  custom_user_ids INTEGER[] DEFAULT '{}',
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'sending', 'sent', 'scheduled', 'failed')),
   scheduled_at TIMESTAMPTZ,
   sent_at TIMESTAMPTZ,

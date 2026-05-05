@@ -19,19 +19,35 @@ export async function sendPushToUser(userId: number, payload: PushPayload): Prom
 }
 
 export async function sendPushToAllUsers(payload: PushPayload): Promise<void> {
-  const result = await pool.query('SELECT expo_token FROM user_push_tokens');
-  console.log(`[Push] sendPushToAllUsers: found ${result.rows.length} token(s) in DB`);
-  const messages: ExpoPushMessage[] = result.rows
-    .filter((r: { expo_token: string }) => Expo.isExpoPushToken(r.expo_token))
-    .map((r: { expo_token: string }) => ({
-      to: r.expo_token,
-      title: payload.title,
-      body: payload.body,
-      data: payload.data ?? {},
-      sound: 'default' as const,
-    }));
-  console.log(`[Push] Sending to ${messages.length} valid token(s)`);
-  await _sendChunked(messages);
+  const BATCH_SIZE = 500;
+  let offset = 0;
+  let totalSent = 0;
+
+  while (true) {
+    const result = await pool.query(
+      'SELECT expo_token FROM user_push_tokens LIMIT $1 OFFSET $2',
+      [BATCH_SIZE, offset]
+    );
+    if (!result.rows.length) break;
+
+    const messages: ExpoPushMessage[] = result.rows
+      .filter((r: { expo_token: string }) => Expo.isExpoPushToken(r.expo_token))
+      .map((r: { expo_token: string }) => ({
+        to: r.expo_token,
+        title: payload.title,
+        body: payload.body,
+        data: payload.data ?? {},
+        sound: 'default' as const,
+      }));
+
+    await _sendChunked(messages);
+    totalSent += messages.length;
+
+    if (result.rows.length < BATCH_SIZE) break;
+    offset += BATCH_SIZE;
+  }
+
+  console.log(`[Push] sendPushToAllUsers: sent to ${totalSent} token(s)`);
 }
 
 async function _sendToTokens(tokens: string[], payload: PushPayload): Promise<void> {

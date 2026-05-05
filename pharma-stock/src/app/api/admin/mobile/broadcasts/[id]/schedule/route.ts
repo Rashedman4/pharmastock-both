@@ -4,10 +4,7 @@ import pool from '@/lib/db';
 
 async function assertAdmin(req: NextRequest) {
   const token = await getToken({ req });
-  if (!token) return null;
-  const authorized = process.env.AUTHORIZED_EMAILS?.split(',').map((e) => e.trim()) ?? [];
-  if (!authorized.includes(token.email as string)) return null;
-  return token;
+  return token?.role === 'admin' ? token : null;
 }
 
 type Ctx = { params: Promise<{ id: string }> };

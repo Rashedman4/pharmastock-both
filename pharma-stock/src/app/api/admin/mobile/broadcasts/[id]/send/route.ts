@@ -15,10 +15,7 @@ const sendLimiter = createRateLimiter({
 
 async function assertAdmin(req: NextRequest) {
   const token = await getToken({ req });
-  if (!token) return null;
-  const authorized = process.env.AUTHORIZED_EMAILS?.split(',').map((e) => e.trim()) ?? [];
-  if (!authorized.includes(token.email as string)) return null;
-  return token;
+  return token?.role === 'admin' ? token : null;
 }
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -58,55 +55,62 @@ export async function POST(req: NextRequest, ctx: Ctx) {
 
     const io = getIO();
 
-    let successCount = 0;
-    for (const userId of userIds) {
-      try {
-        // Get or create conversation for user
-        const conv = await chatService.getOrCreateConversation(userId);
+    // Process users in concurrent batches of 25 — each user gets their own individual message
+    const BATCH_SIZE = 25;
+    const successfulUserIds: number[] = [];
+    const failedUserIds: number[] = [];
 
-        // Create the message in this conversation
-        const message = await chatService.createMessage({
-          conversationId: conv.id,
-          senderType: 'admin',
-          senderId: null,
-          messageType: campaign.message_type,
-          content: campaign.content,
-          attachmentUrl: campaign.attachment_url,
-          attachmentMetadata: campaign.attachment_metadata,
-          broadcastCampaignId: campaignId,
-        });
-
-        // Real-time delivery via Socket.IO
-        if (io) {
-          io.to(`user:${userId}`).emit('new_message', message);
-        }
-
-        // Push notification
-        await sendPushToUser(userId, {
-          title: '📢 New Message',
-          body: campaign.content?.slice(0, 80) ?? `[${campaign.message_type}]`,
-          data: { type: 'chat_message', conversationId: conv.id, screen: 'chat' },
-        }).catch(() => {});
-
-        // Record delivery
-        await pool.query(
-          `INSERT INTO broadcast_recipients (campaign_id, user_id, delivered_at)
-           VALUES ($1, $2, NOW())
-           ON CONFLICT (campaign_id, user_id) DO UPDATE SET delivered_at = NOW()`,
-          [campaignId, userId]
-        );
-
-        successCount++;
-      } catch {
-        // Record without delivered_at
-        await pool.query(
-          `INSERT INTO broadcast_recipients (campaign_id, user_id)
-           VALUES ($1, $2)
-           ON CONFLICT (campaign_id, user_id) DO NOTHING`,
-          [campaignId, userId]
-        ).catch(() => {});
-      }
+    for (let i = 0; i < userIds.length; i += BATCH_SIZE) {
+      const batch = userIds.slice(i, i + BATCH_SIZE);
+      await Promise.all(
+        batch.map(async (userId) => {
+          try {
+            const conv = await chatService.getOrCreateConversation(userId);
+            const message = await chatService.createMessage({
+              conversationId: conv.id,
+              senderType: 'admin',
+              senderId: null,
+              messageType: campaign.message_type,
+              content: campaign.content,
+              attachmentUrl: campaign.attachment_url,
+              attachmentMetadata: campaign.attachment_metadata,
+              broadcastCampaignId: campaignId,
+            });
+            if (io) {
+              io.to(`user:${userId}`).emit('new_message', message);
+            }
+            await sendPushToUser(userId, {
+              title: '📢 New Message',
+              body: campaign.content?.slice(0, 80) ?? `[${campaign.message_type}]`,
+              data: { type: 'chat_message', conversationId: conv.id, screen: 'chat' },
+            }).catch(() => {});
+            successfulUserIds.push(userId);
+          } catch {
+            failedUserIds.push(userId);
+          }
+        })
+      );
     }
+
+    // Bulk insert recipients in two queries instead of one per user
+    if (successfulUserIds.length > 0) {
+      await pool.query(
+        `INSERT INTO broadcast_recipients (campaign_id, user_id, delivered_at)
+         SELECT $1, unnest($2::int[]), NOW()
+         ON CONFLICT (campaign_id, user_id) DO UPDATE SET delivered_at = NOW()`,
+        [campaignId, successfulUserIds]
+      );
+    }
+    if (failedUserIds.length > 0) {
+      await pool.query(
+        `INSERT INTO broadcast_recipients (campaign_id, user_id)
+         SELECT $1, unnest($2::int[])
+         ON CONFLICT (campaign_id, user_id) DO NOTHING`,
+        [campaignId, failedUserIds]
+      ).catch(() => {});
+    }
+
+    const successCount = successfulUserIds.length;
 
     await pool.query(
       `UPDATE broadcast_campaigns

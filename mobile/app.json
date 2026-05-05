@@ -1,0 +1,77 @@
+{
+  "expo": {
+    "name": "PharmaStock",
+    "slug": "pharmastock",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#061a3a"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.biopharmastock.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Used for profile photo and document scanning.",
+        "NSPhotoLibraryUsageDescription": "Used to upload images.",
+        "NSMicrophoneUsageDescription": "Used for voice messages in community chat."
+      }
+    },
+    "android": {
+      "package": "com.biopharmastock.app",
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#061a3a"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-dev-client",
+      "expo-secure-store",
+      "expo-localization",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#0b3b8f",
+          "sounds": [],
+          "mode": "production"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Used to upload profile photos.",
+          "cameraPermission": "Used to take photos."
+        }
+      ],
+      "expo-font"
+    ],
+    "scheme": "pharmastock",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "cf543e1b-ecc0-415e-bc43-56db5e4fc0cb"
+      }
+    },
+    "owner": "rush04"
+  }
+}

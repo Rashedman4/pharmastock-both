@@ -29,10 +29,10 @@ export async function GET(req: NextRequest) {
 
     const total: number = countResult.rows[0].total;
 
-    return NextResponse.json({
-      data: dataResult.rows,
-      pagination: buildPaginationMeta(total, page, limit),
-    });
+    return NextResponse.json(
+      { data: dataResult.rows, pagination: buildPaginationMeta(total, page, limit) },
+      { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } }
+    );
   } catch (err) {
     console.error('[signals] GET error', err);
     return NextResponse.json(

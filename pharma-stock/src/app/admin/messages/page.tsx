@@ -54,6 +54,7 @@ type AdminConversation = {
   firstname: string | null;
   lastname: string | null;
   email: string;
+  is_elite: boolean;
 };
 
 type RawMessage = {
@@ -481,8 +482,10 @@ function MessageInput({
 
 function useScrollBottom(dep: unknown) {
   const ref = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { ref.current?.scrollIntoView({ behavior: "smooth" }); }, [dep]);
+  // Scroll the container itself — not scrollIntoView which propagates to the window
+  useEffect(() => {
+    if (ref.current) ref.current.scrollTop = ref.current.scrollHeight;
+  }, [dep]);
   return ref;
 }
 
@@ -610,7 +613,12 @@ export default function AdminMessagesPage() {
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-300 text-xs font-bold text-slate-700">{initials(c)}</div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-1">
-                      <span className="truncate text-sm font-semibold text-slate-800">{userName(c)}</span>
+                      <div className="flex min-w-0 items-center gap-1.5">
+                        <span className="truncate text-sm font-semibold text-slate-800">{userName(c)}</span>
+                        {c.is_elite && (
+                          <span className="shrink-0 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">Investor</span>
+                        )}
+                      </div>
                       <div className="flex shrink-0 flex-col items-end gap-0.5">
                         {c.last_message_at && <span className="text-xs text-slate-400">{timeAgo(c.last_message_at)}</span>}
                         {c.admin_unread_count > 0 && (
@@ -652,7 +660,7 @@ export default function AdminMessagesPage() {
               </div>
 
               {/* Group messages */}
-              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+              <div ref={groupEndRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
                 {groupMessages.length === 0 ? (
                   <div className="flex h-full items-center justify-center"><p className="text-sm text-slate-400">No messages yet — send text, images, or voice notes below.</p></div>
                 ) : (
@@ -674,7 +682,6 @@ export default function AdminMessagesPage() {
                     </div>
                   ))
                 )}
-                <div ref={groupEndRef} />
               </div>
 
               <MessageInput placeholder={`Message ${selectedGroup.name}…`} onSend={handleGroupSend} />
@@ -696,14 +703,19 @@ export default function AdminMessagesPage() {
                 <div className="flex shrink-0 items-center gap-3 border-b border-slate-200 px-5 py-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-300 text-sm font-bold text-slate-700">{initials(convInfo)}</div>
                   <div>
-                    <p className="text-sm font-bold text-slate-800">{[convInfo.firstname, convInfo.lastname].filter(Boolean).join(" ") || convInfo.email}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-slate-800">{[convInfo.firstname, convInfo.lastname].filter(Boolean).join(" ") || convInfo.email}</p>
+                      {convInfo.is_elite && (
+                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">Investor</span>
+                      )}
+                    </div>
                     <p className="text-xs text-slate-400">{convInfo.email}</p>
                   </div>
                 </div>
               )}
 
               {/* DM messages */}
-              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+              <div ref={convEndRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
                 {convMessages.length === 0 ? (
                   <div className="flex h-full items-center justify-center"><p className="text-sm text-slate-400">No messages yet.</p></div>
                 ) : (
@@ -729,7 +741,6 @@ export default function AdminMessagesPage() {
                     );
                   })
                 )}
-                <div ref={convEndRef} />
               </div>
 
               <MessageInput placeholder="Reply privately…" onSend={handleDmSend} />

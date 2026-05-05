@@ -67,17 +67,21 @@ function rowToConversation(row: any): Conversation {
 
 export const chatService = {
   async getOrCreateConversation(userId: number): Promise<Conversation> {
+    const result = await pool.query(
+      `INSERT INTO chat_conversations (user_id)
+       VALUES ($1)
+       ON CONFLICT (user_id) DO NOTHING
+       RETURNING *`,
+      [userId]
+    );
+    if (result.rows.length > 0) return rowToConversation(result.rows[0]);
+
+    // Row already existed — fetch it
     const existing = await pool.query(
       'SELECT * FROM chat_conversations WHERE user_id = $1',
       [userId]
     );
-    if (existing.rows.length > 0) return rowToConversation(existing.rows[0]);
-
-    const created = await pool.query(
-      'INSERT INTO chat_conversations (user_id) VALUES ($1) RETURNING *',
-      [userId]
-    );
-    return rowToConversation(created.rows[0]);
+    return rowToConversation(existing.rows[0]);
   },
 
   async getUserConversations(userId: number): Promise<Conversation[]> {
@@ -100,28 +104,30 @@ export const chatService = {
 
     if (cursor) {
       const cursorRow = await pool.query(
-        'SELECT created_at FROM chat_messages WHERE id = $1',
+        'SELECT created_at, id FROM chat_messages WHERE id = $1',
         [cursor]
       );
       if (!cursorRow.rows.length) return { messages: [], nextCursor: null };
 
-      const cursorDate = cursorRow.rows[0].created_at;
+      const { created_at: cursorDate, id: cursorId } = cursorRow.rows[0];
       const op = direction === 'before' ? '<' : '>';
       const ord = direction === 'before' ? 'DESC' : 'ASC';
 
+      // Composite (created_at, id) cursor — stable even if two messages share the same timestamp
       const result = await pool.query(
         `SELECT * FROM chat_messages
-         WHERE conversation_id = $1 AND created_at ${op} $2
-         ORDER BY created_at ${ord}
-         LIMIT $3`,
-        [conversationId, cursorDate, limit + 1]
+         WHERE conversation_id = $1
+           AND (created_at ${op} $2 OR (created_at = $2 AND id ${op} $3))
+         ORDER BY created_at ${ord}, id ${ord}
+         LIMIT $4`,
+        [conversationId, cursorDate, cursorId, limit + 1]
       );
       rows = result.rows;
     } else {
       const result = await pool.query(
         `SELECT * FROM chat_messages
          WHERE conversation_id = $1
-         ORDER BY created_at DESC
+         ORDER BY created_at DESC, id DESC
          LIMIT $2`,
         [conversationId, limit + 1]
       );

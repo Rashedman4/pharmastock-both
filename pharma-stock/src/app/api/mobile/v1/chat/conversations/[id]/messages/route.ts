@@ -69,6 +69,12 @@ export async function POST(req: NextRequest, ctx: Ctx) {
   if (type === 'text' && !content?.trim()) {
     return err('BAD_REQUEST', 'content is required for text messages', 400, 'content');
   }
+  if (content && content.length > 4000) {
+    return err('BAD_REQUEST', 'Message content must not exceed 4000 characters', 400, 'content');
+  }
+  if (attachmentUrl && !attachmentUrl.startsWith('https://res.cloudinary.com/')) {
+    return err('BAD_REQUEST', 'attachmentUrl must be a valid Cloudinary URL', 400, 'attachmentUrl');
+  }
 
   const message = await chatService.createMessage({
     conversationId,
