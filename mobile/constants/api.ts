@@ -12,6 +12,7 @@ export const API_ROUTES = {
     resetPassword: '/api/mobile/v1/auth/reset-password',
   },
   me: '/api/mobile/v1/me',
+  meLanguage: '/api/mobile/v1/me/language',
   signals: {
     list: '/api/mobile/v1/signals',
     detail: (id: number) => `/api/mobile/v1/signals/${id}`,

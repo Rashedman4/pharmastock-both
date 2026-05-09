@@ -40,8 +40,10 @@ export async function POST(
         await createNotification({
           userId: memberRes.rows[0].user_id,
           type: 'TRADE_PLAN',
-          title: 'New Trade Plan',
-          body: `A new ${body?.symbol ?? 'trade'} plan has been sent to you. Review and respond.`,
+          title_en: 'New Trade Plan',
+          title_ar: 'خطة تداول جديدة',
+          body_en: `A new ${body?.symbol ?? 'trade'} plan has been sent to you. Review and respond.`,
+          body_ar: `تم إرسال خطة تداول جديدة لـ ${body?.symbol ?? 'الأسهم'} إليك. راجع وأجب.`,
           data: { screen: 'trade-plans' },
         });
       }

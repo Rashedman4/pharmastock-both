@@ -39,8 +39,10 @@ export async function POST(
         await createNotification({
           userId: user_id,
           type: 'CLOSE_REQUEST',
-          title: 'Close Request from Admin',
-          body: `The admin has requested to close your ${symbol} position. Please review and execute.`,
+          title_en: 'Close Request from Admin',
+          title_ar: 'طلب إغلاق من المشرف',
+          body_en: `The admin has requested to close your ${symbol} position. Please review and execute.`,
+          body_ar: `طلب المشرف إغلاق مركزك في ${symbol}. يرجى المراجعة والتنفيذ.`,
           data: { screen: 'portfolio' },
         });
       }

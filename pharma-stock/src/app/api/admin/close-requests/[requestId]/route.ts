@@ -42,10 +42,14 @@ export async function POST(
         await createNotification({
           userId: user_id,
           type: 'CLOSE_REQUEST',
-          title: approved ? 'Close Request Approved' : 'Close Request Rejected',
-          body: approved
+          title_en: approved ? 'Close Request Approved' : 'Close Request Rejected',
+          title_ar: approved ? 'تمت الموافقة على طلب الإغلاق' : 'تم رفض طلب الإغلاق',
+          body_en: approved
             ? `Your close request for ${symbol} has been approved and executed.`
             : `Your close request for ${symbol} was rejected by the admin.`,
+          body_ar: approved
+            ? `تمت الموافقة على طلب إغلاق ${symbol} وتنفيذه.`
+            : `تم رفض طلب إغلاق ${symbol} من قبل المشرف.`,
           data: { screen: 'portfolio' },
         });
       }

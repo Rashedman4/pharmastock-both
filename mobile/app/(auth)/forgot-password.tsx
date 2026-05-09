@@ -35,10 +35,8 @@ export default function ForgotPasswordScreen() {
   if (sent) {
     return (
       <View style={styles.centeredContainer}>
-        <Text style={styles.sentTitle}>Check Your Email</Text>
-        <Text style={styles.sentSubtitle}>
-          If an account exists for that email, you will receive a password reset link shortly.
-        </Text>
+        <Text style={styles.sentTitle}>{t('auth.check_email_title')}</Text>
+        <Text style={styles.sentSubtitle}>{t('auth.check_email_body')}</Text>
         <Button
           title={t('common.back')}
           variant="outline"

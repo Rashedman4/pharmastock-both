@@ -57,7 +57,7 @@ export default function VerifyScreen() {
     onError: (err: unknown) => {
       const apiErr = (err as { response?: { data?: { error?: { message?: string } } } })
         ?.response?.data?.error;
-      Alert.alert('Verification Failed', apiErr?.message ?? t('errors.unknownError'));
+      Alert.alert(t('auth.verification_failed'), apiErr?.message ?? t('errors.unknownError'));
     },
   });
 
@@ -65,7 +65,7 @@ export default function VerifyScreen() {
     mutationFn: () => authService.register({ email: email ?? '', password: '', firstName: '', lastName: '' }),
     onSuccess: () => {
       setCountdown(RESEND_SECONDS);
-      Alert.alert('Code Resent', 'A new verification code has been sent to your email.');
+      Alert.alert(t('auth.code_resent'), t('auth.code_resent_message'));
     },
   });
 

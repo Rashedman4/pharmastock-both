@@ -8,6 +8,7 @@ import { Colors } from '@/constants/colors';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { fetchEliteStatus } from '@/services/elite.service';
+import { directionArrow, rowDirection } from '@/lib/rtl';
 
 function EliteSection({ isElite }: { isElite: boolean }) {
   const { t } = useTranslation();
@@ -37,8 +38,8 @@ function EliteSection({ isElite }: { isElite: boolean }) {
   return (
     <View style={styles.section}>
       <Text style={styles.sectionLabel}>{t('profile.elite_section')}</Text>
-      <TouchableOpacity style={styles.eliteRow} onPress={navigateElite} activeOpacity={0.7}>
-        <View style={styles.eliteRowLeft}>
+      <TouchableOpacity style={[styles.eliteRow, { flexDirection: rowDirection }]} onPress={navigateElite} activeOpacity={0.7}>
+        <View style={[styles.eliteRowLeft, { flexDirection: rowDirection }]}>
           <Text style={styles.eliteIcon}>⭐</Text>
           <View>
             <Text style={styles.eliteRowTitle}>{label}</Text>
@@ -47,7 +48,7 @@ function EliteSection({ isElite }: { isElite: boolean }) {
             )}
           </View>
         </View>
-        <Text style={styles.arrow}>›</Text>
+        <Text style={styles.arrow}>{directionArrow}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -67,9 +68,9 @@ export default function ProfileScreen() {
   });
 
   const confirmLogout = () =>
-    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Sign Out', style: 'destructive', onPress: () => logoutMutation.mutate() },
+    Alert.alert(t('common.sign_out'), t('common.sign_out_confirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('common.sign_out'), style: 'destructive', onPress: () => logoutMutation.mutate() },
     ]);
 
   return (
@@ -87,15 +88,15 @@ export default function ProfileScreen() {
           <Text style={styles.role}>{user.role.toUpperCase()}</Text>
         )}
 
-        <View style={styles.badges}>
+        <View style={[styles.badges, { flexDirection: rowDirection }]}>
           {user?.is_elite && (
             <View style={[styles.badge, styles.eliteBadge]}>
-              <Text style={styles.badgeText}>Elite Member</Text>
+              <Text style={styles.badgeText}>{t('profile.elite_member')}</Text>
             </View>
           )}
           {user?.is_partner && (
             <View style={[styles.badge, styles.partnerBadge]}>
-              <Text style={styles.badgeText}>Partner</Text>
+              <Text style={styles.badgeText}>{t('common.partner')}</Text>
             </View>
           )}
         </View>
@@ -103,8 +104,26 @@ export default function ProfileScreen() {
 
       <EliteSection isElite={!!user?.is_elite} />
 
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>{t('settings.app_preferences')}</Text>
+        <TouchableOpacity
+          style={[styles.eliteRow, { flexDirection: rowDirection }]}
+          onPress={() => router.push('/settings')}
+          activeOpacity={0.7}
+        >
+          <View style={[styles.eliteRowLeft, { flexDirection: rowDirection }]}>
+            <Text style={styles.eliteIcon}>⚙️</Text>
+            <View>
+              <Text style={styles.eliteRowTitle}>{t('profile.settings')}</Text>
+              <Text style={styles.eliteRowSub}>{t('profile.settings_subtitle')}</Text>
+            </View>
+          </View>
+          <Text style={styles.arrow}>{directionArrow}</Text>
+        </TouchableOpacity>
+      </View>
+
       <Button
-        title={t('auth.signIn') === 'Sign In' ? 'Sign Out' : 'تسجيل الخروج'}
+        title={t('common.sign_out')}
         variant="outline"
         onPress={confirmLogout}
         isLoading={logoutMutation.isPending}
@@ -137,7 +156,7 @@ const styles = StyleSheet.create({
   name: { fontSize: 22, fontWeight: '700', color: Colors.primaryDark, marginBottom: 4 },
   email: { fontSize: 14, color: Colors.textSecondary, marginBottom: 8 },
   role: { fontSize: 12, color: Colors.primary, fontWeight: '600', letterSpacing: 1 },
-  badges: { flexDirection: 'row', gap: 8, marginTop: 12 },
+  badges: { gap: 8, marginTop: 12 },
   badge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20 },
   eliteBadge: { backgroundColor: '#fef3c7' },
   partnerBadge: { backgroundColor: '#d1fae5' },
@@ -155,7 +174,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   eliteRow: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: Colors.backgroundTertiary,
@@ -164,7 +182,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderLight,
   },
-  eliteRowLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  eliteRowLeft: { alignItems: 'center', gap: 12 },
   eliteIcon: { fontSize: 24 },
   eliteRowTitle: { fontSize: 15, fontWeight: '700', color: Colors.primary },
   eliteRowSub: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },

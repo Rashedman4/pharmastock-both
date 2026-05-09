@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { KeyboardAvoidingContainer } from '@/components/ui/KeyboardAvoidingContainer';
+import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { Colors } from '@/constants/colors';
 import { authService } from '@/services/auth.service';
 
@@ -42,7 +43,7 @@ export default function RegisterScreen() {
     onError: (err: unknown) => {
       const apiErr = (err as { response?: { data?: { error?: { message?: string } } } })
         ?.response?.data?.error;
-      Alert.alert('Registration Failed', apiErr?.message ?? t('errors.unknownError'));
+      Alert.alert(t('common.error_title'), apiErr?.message ?? t('errors.unknownError'));
     },
   });
 
@@ -51,6 +52,7 @@ export default function RegisterScreen() {
   return (
     <KeyboardAvoidingContainer>
       <View style={styles.header}>
+        <LanguageToggle />
         <Text style={styles.title}>{t('auth.createAccount')}</Text>
         <Text style={styles.subtitle}>{t('auth.createAccountSubtitle')}</Text>
       </View>
@@ -134,7 +136,7 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { marginTop: 60, marginBottom: 32 },
+  header: { marginTop: 48, marginBottom: 32 },
   title: { fontSize: 28, fontWeight: '800', color: Colors.primaryDark, marginBottom: 8 },
   subtitle: { fontSize: 15, color: Colors.textSecondary },
   form: { flex: 1 },

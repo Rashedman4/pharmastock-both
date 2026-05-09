@@ -91,11 +91,11 @@ export default function EliteDashboardScreen() {
 
         {data.linkedPartnerName && (
           <Card style={styles.partnerBanner}>
-            <Text style={styles.partnerText}>Partner: {data.linkedPartnerName}</Text>
+            <Text style={styles.partnerText}>{t('elite.partner_linked', { name: data.linkedPartnerName })}</Text>
           </Card>
         )}
 
-        <Text style={styles.sectionTitle}>Portfolio Overview</Text>
+        <Text style={styles.sectionTitle}>{t('elite.portfolio_overview')}</Text>
 
         <View style={styles.metricsGrid}>
           <MetricCard label={t('elite.total_equity')} value={fmt(data.totalEquity)} accent />
@@ -120,7 +120,7 @@ export default function EliteDashboardScreen() {
           <Text style={styles.feeNotice}>{data.feeNotice}</Text>
         ) : null}
 
-        <Text style={styles.sectionTitle}>Activity</Text>
+        <Text style={styles.sectionTitle}>{t('elite.activity_section')}</Text>
 
         <Card>
           <QuickLink
@@ -130,7 +130,7 @@ export default function EliteDashboardScreen() {
           />
           <View style={styles.divider} />
           <QuickLink
-            label="Portfolio & Positions"
+            label={t('elite.portfolio_positions')}
             count={data.openPositions > 0 ? data.openPositions : undefined}
             onPress={() => router.push('/elite/portfolio')}
           />

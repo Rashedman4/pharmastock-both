@@ -36,8 +36,10 @@ export async function PATCH(
         await createNotification({
           userId: pmt.investor_user_id,
           type: 'payout_update',
-          title: 'Payment Processed',
-          body: `Your firm profit payment of $${Number(pmt.amount_requested).toLocaleString()} has been processed.`,
+          title_en: 'Payment Processed',
+          title_ar: 'تمت معالجة الدفعة',
+          body_en: `Your firm profit payment of $${Number(pmt.amount_requested).toLocaleString()} has been processed.`,
+          body_ar: `تمت معالجة دفعة أرباح الشركة بقيمة $${Number(pmt.amount_requested).toLocaleString()}.`,
           data: { screen: 'elite', paymentId: Number(paymentId) },
         });
       } catch (e) { console.error('[Notification] payment_paid:', e); }

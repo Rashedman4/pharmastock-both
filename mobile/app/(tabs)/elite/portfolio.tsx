@@ -14,6 +14,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Input } from '@/components/ui/Input';
 import { EliteTabBar } from '@/components/elite/EliteTabBar';
 import { Colors } from '@/constants/colors';
+import { rowDirection } from '@/lib/rtl';
 import { fetchElitePortfolio, submitCloseRequest, respondToCloseRequest } from '@/services/elite.service';
 import type { OpenPosition, PortfolioCloseRequest, Closure } from '@/types/elite';
 
@@ -50,7 +51,6 @@ interface FormState {
   image: { uri: string; name: string; type: string } | null;
 }
 
-// 'none' | 'request' | 'force'
 type ExpandMode = 'none' | 'request' | 'force';
 
 function PositionCard({
@@ -76,13 +76,14 @@ function PositionCard({
   onSubmitForce: () => void;
   isSubmitting: boolean;
 }) {
+  const { t } = useTranslation();
   const profitColor = position.unrealizedProfit >= 0 ? Colors.success : Colors.danger;
   const isForce = expandMode === 'force';
 
   const pickImage = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) {
-      Alert.alert('Permission required', 'Please allow access to your photo library.');
+      Alert.alert(t('common.permission_required'), t('common.photo_permission'));
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -105,12 +106,11 @@ function PositionCard({
 
   return (
     <Card style={styles.positionCard}>
-      {/* Header row */}
-      <View style={styles.posRow}>
+      <View style={[styles.posRow, { flexDirection: rowDirection }]}>
         <View>
           <Text style={styles.posSymbol}>{position.symbol}</Text>
           <Text style={styles.posDetail}>
-            Qty: {position.quantityOpen.toLocaleString()} · Entry: {fmt(position.entryPrice)}
+            {t('elite.quantity')}: {position.quantityOpen.toLocaleString()} · {t('elite.entry')}: {fmt(position.entryPrice)}
           </Text>
         </View>
         <View style={styles.posRight}>
@@ -119,85 +119,81 @@ function PositionCard({
         </View>
       </View>
 
-      {/* Metrics */}
-      <View style={styles.posMetrics}>
+      <View style={[styles.posMetrics, { flexDirection: rowDirection }]}>
         <View style={styles.posMetric}>
-          <Text style={styles.metricLabel}>Invested</Text>
+          <Text style={styles.metricLabel}>{t('elite.invested')}</Text>
           <Text style={styles.metricValue}>{fmt(position.investedAmount)}</Text>
         </View>
         <View style={styles.posMetric}>
-          <Text style={styles.metricLabel}>Market Value</Text>
+          <Text style={styles.metricLabel}>{t('elite.market_value')}</Text>
           <Text style={styles.metricValue}>{fmt(position.marketValue)}</Text>
         </View>
         <View style={styles.posMetric}>
-          <Text style={styles.metricLabel}>Current</Text>
+          <Text style={styles.metricLabel}>{t('elite.current_price')}</Text>
           <Text style={styles.metricValue}>{fmt(position.currentPrice)}</Text>
         </View>
       </View>
 
-      {/* Action buttons */}
       {expandMode === 'none' ? (
-        <View style={styles.actionRow}>
+        <View style={[styles.actionRow, { flexDirection: rowDirection }]}>
           <TouchableOpacity
             style={[styles.actionBtn, styles.requestBtn]}
             onPress={onOpenRequest}
             activeOpacity={0.7}
           >
-            <Text style={styles.requestBtnText}>Request Close</Text>
+            <Text style={styles.requestBtnText}>{t('elite.request_close')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.actionBtn, styles.forceBtn]}
+            style={[styles.actionBtn, styles.forceBtn, { flexDirection: rowDirection }]}
             onPress={onOpenForce}
             activeOpacity={0.7}
           >
             <Ionicons name="flash" size={14} color="#fff" style={{ marginRight: 4 }} />
-            <Text style={styles.forceBtnText}>Force Close</Text>
+            <Text style={styles.forceBtnText}>{t('elite.force_close')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <TouchableOpacity style={styles.cancelFormBtn} onPress={onClose} activeOpacity={0.7}>
-          <Text style={styles.cancelFormText}>Cancel</Text>
+          <Text style={styles.cancelFormText}>{t('common.cancel')}</Text>
         </TouchableOpacity>
       )}
 
-      {/* Expanded form */}
       {expandMode !== 'none' && (
         <View style={[styles.closeForm, isForce && styles.forceForm]}>
           {isForce && (
-            <View style={styles.forceWarning}>
+            <View style={[styles.forceWarning, { flexDirection: rowDirection }]}>
               <Ionicons name="flash" size={14} color="#92400E" />
               <Text style={styles.forceWarningText}>
-                Force close confirms you have already closed this position. Evidence is required.
+                {t('elite.force_close_warning_text')}
               </Text>
             </View>
           )}
 
           <Input
-            label={`Close Quantity (max ${position.quantityOpen})`}
+            label={t('elite.close_qty_label', { max: position.quantityOpen })}
             value={formState.qty}
             onChangeText={(v) => setFormState({ ...formState, qty: v })}
             placeholder="0"
             keyboardType="numeric"
           />
           <Input
-            label="Exit Price (optional)"
+            label={t('elite.exit_price_optional')}
             value={formState.exitPrice}
             onChangeText={(v) => setFormState({ ...formState, exitPrice: v })}
             placeholder="0.00"
             keyboardType="decimal-pad"
           />
           <Input
-            label="Note (optional)"
+            label={t('elite.note_optional')}
             value={formState.note}
             onChangeText={(v) => setFormState({ ...formState, note: v })}
-            placeholder={isForce ? 'Reason for force close...' : 'Reason for closing...'}
+            placeholder={isForce ? t('elite.reason_force_close') : t('elite.reason_for_closing')}
             multiline
             numberOfLines={2}
           />
 
-          {/* Evidence picker */}
           <Text style={styles.evidenceLabel}>
-            Evidence {isForce ? '(required)' : '(optional)'}
+            {isForce ? t('elite.evidence_required_label') : t('elite.evidence_optional_label')}
             {isForce && <Text style={{ color: Colors.danger }}> *</Text>}
           </Text>
           <TouchableOpacity style={[styles.evidencePicker, isForce && !formState.image && styles.evidenceRequired]} onPress={pickImage} activeOpacity={0.7}>
@@ -207,14 +203,14 @@ function PositionCard({
               <View style={styles.evidencePlaceholderBox}>
                 <Ionicons name="camera-outline" size={24} color={Colors.textMuted} />
                 <Text style={styles.evidencePlaceholder}>
-                  {isForce ? 'Tap to attach closing proof *' : 'Tap to attach closing screenshot'}
+                  {isForce ? t('elite.tap_attach_proof') : t('elite.tap_attach_screenshot')}
                 </Text>
               </View>
             )}
           </TouchableOpacity>
 
           <Button
-            title={isForce ? 'Submit Force Close' : 'Submit Close Request'}
+            title={isForce ? t('elite.submit_force_close_btn') : t('elite.submit_close_request_btn')}
             variant={isForce ? 'danger' : 'primary'}
             onPress={isForce ? onSubmitForce : onSubmitRequest}
             isLoading={isSubmitting}
@@ -252,12 +248,13 @@ function CloseRequestCard({
   onReject: () => void;
   isSubmitting: boolean;
 }) {
+  const { t } = useTranslation();
   const isAdminPending = item.initiatedByRole === 'ADMIN' && item.status === 'PENDING';
 
   const pickImage = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) {
-      Alert.alert('Permission required', 'Please allow access to your photo library.');
+      Alert.alert(t('common.permission_required'), t('common.photo_permission'));
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -278,86 +275,90 @@ function CloseRequestCard({
     }
   };
 
+  const priceText = item.requestedExitPrice != null
+    ? t('elite.at_price', { price: Number(item.requestedExitPrice).toFixed(4) })
+    : t('elite.at_market_price');
+
   return (
     <Card style={[styles.crCard, isAdminPending && styles.crAdminPending]}>
-      <View style={styles.crHeader}>
+      <View style={[styles.crHeader, { flexDirection: rowDirection }]}>
         <View style={{ flex: 1, marginRight: 8 }}>
           <Text style={[styles.crFrom, isAdminPending && { color: Colors.danger }]}>
-            {item.initiatedByRole === 'ADMIN' ? '⚡ Admin Requests Close' : '✅ Submitted by You'}
+            {item.initiatedByRole === 'ADMIN'
+              ? `⚡ ${t('elite.admin_requests_close')}`
+              : `✅ ${t('elite.submitted_by_you')}`}
           </Text>
           <Text style={styles.crDetail}>
-            Qty: {Number(item.requestedQuantity).toLocaleString()}
+            {t('elite.quantity')}: {Number(item.requestedQuantity).toLocaleString()}
             {item.requestedExitPrice != null
-              ? ` · Exit: $${Number(item.requestedExitPrice).toFixed(4)}`
-              : ' · At market price'}
+              ? ` · ${t('elite.exit_price_label')}: $${Number(item.requestedExitPrice).toFixed(4)}`
+              : ` · ${t('elite.at_market_price_short')}`}
           </Text>
           {item.requestNote ? (
             <Text style={styles.crNote}>{item.requestNote}</Text>
           ) : null}
           <Text style={styles.crDate}>{new Date(item.createdAt).toLocaleDateString()}</Text>
           {item.responseNote ? (
-            <Text style={styles.crResponseNote}>Admin: {item.responseNote}</Text>
+            <Text style={styles.crResponseNote}>{t('elite.admin')}: {item.responseNote}</Text>
           ) : null}
         </View>
         <Badge label={item.status} variant={crStatusVariant(item.status)} />
       </View>
 
-      {/* Execute button for admin-initiated pending requests */}
       {isAdminPending && !expanded && (
-        <TouchableOpacity style={styles.executeBtn} onPress={onExpand} activeOpacity={0.7}>
+        <TouchableOpacity style={[styles.executeBtn, { flexDirection: rowDirection }]} onPress={onExpand} activeOpacity={0.7}>
           <Ionicons name="checkmark-circle-outline" size={15} color="#fff" style={{ marginRight: 4 }} />
-          <Text style={styles.executeBtnText}>Execute Close</Text>
+          <Text style={styles.executeBtnText}>{t('elite.execute_close')}</Text>
         </TouchableOpacity>
       )}
 
-      {/* Inline execute form */}
       {isAdminPending && expanded && (
         <View style={styles.crForm}>
           <TouchableOpacity style={styles.crCollapseBtn} onPress={onCollapse} activeOpacity={0.7}>
-            <Text style={styles.crCollapseText}>Cancel</Text>
+            <Text style={styles.crCollapseText}>{t('common.cancel')}</Text>
           </TouchableOpacity>
 
-          <View style={styles.crFormInfo}>
+          <View style={[styles.crFormInfo, { flexDirection: rowDirection }]}>
             <Ionicons name="information-circle-outline" size={14} color={Colors.textSecondary} />
             <Text style={styles.crFormInfoText}>
-              Confirm you have closed {Number(item.requestedQuantity).toLocaleString()} shares
-              {item.requestedExitPrice != null
-                ? ` at $${Number(item.requestedExitPrice).toFixed(4)}`
-                : ' at market price'}.
+              {t('elite.confirm_close_detail', {
+                qty: Number(item.requestedQuantity).toLocaleString(),
+                priceText,
+              })}
             </Text>
           </View>
 
           <Input
-            label="Response Note (optional)"
+            label={t('elite.response_note_optional_label')}
             value={crForm.note}
             onChangeText={(v) => setCrForm({ ...crForm, note: v })}
-            placeholder="Any notes about the execution..."
+            placeholder={t('elite.execution_notes_placeholder')}
             multiline
             numberOfLines={2}
           />
 
-          <Text style={styles.evidenceLabel}>Evidence (optional)</Text>
+          <Text style={styles.evidenceLabel}>{t('elite.evidence_optional_label')}</Text>
           <TouchableOpacity style={styles.evidencePicker} onPress={pickImage} activeOpacity={0.7}>
             {crForm.image ? (
               <Image source={{ uri: crForm.image.uri }} style={styles.evidencePreview} resizeMode="contain" />
             ) : (
               <View style={styles.evidencePlaceholderBox}>
                 <Ionicons name="camera-outline" size={24} color={Colors.textMuted} />
-                <Text style={styles.evidencePlaceholder}>Tap to attach closing screenshot</Text>
+                <Text style={styles.evidencePlaceholder}>{t('elite.tap_attach_screenshot')}</Text>
               </View>
             )}
           </TouchableOpacity>
 
-          <View style={styles.crActionRow}>
+          <View style={[styles.crActionRow, { flexDirection: rowDirection }]}>
             <Button
-              title="Execute Close"
+              title={t('elite.execute_close')}
               variant="primary"
               onPress={onExecute}
               isLoading={isSubmitting}
               containerStyle={styles.crActionBtn}
             />
             <Button
-              title="Reject"
+              title={t('elite.reject_close')}
               variant="outline"
               onPress={onReject}
               isLoading={isSubmitting}
@@ -372,34 +373,35 @@ function CloseRequestCard({
 }
 
 function ClosureCard({ item }: { item: Closure }) {
+  const { t } = useTranslation();
   const net = item.realizedProfitAmount - item.firmShareAmount - item.partnerShareAmount;
   const netColor = net >= 0 ? Colors.success : Colors.danger;
   return (
     <Card style={styles.closureCard}>
-      <View style={styles.closureRow}>
+      <View style={[styles.closureRow, { flexDirection: rowDirection }]}>
         <Text style={styles.closureSymbol}>{item.symbol}</Text>
         <View style={styles.closureNetBox}>
-          <Text style={styles.closureNetLabel}>Your Net</Text>
+          <Text style={styles.closureNetLabel}>{t('elite.your_net_label')}</Text>
           <Text style={[styles.closureNet, { color: netColor }]}>{fmt(net)}</Text>
         </View>
       </View>
-      <View style={styles.closureMetrics}>
+      <View style={[styles.closureMetrics, { flexDirection: rowDirection }]}>
         <View style={styles.closureMetric}>
-          <Text style={styles.metricLabel}>Qty Closed</Text>
+          <Text style={styles.metricLabel}>{t('elite.qty_closed')}</Text>
           <Text style={styles.metricValue}>{Number(item.closedQuantity).toLocaleString()}</Text>
         </View>
         <View style={styles.closureMetric}>
-          <Text style={styles.metricLabel}>Exit Price</Text>
+          <Text style={styles.metricLabel}>{t('elite.exit_price_label')}</Text>
           <Text style={styles.metricValue}>{fmt(item.exitPrice)}</Text>
         </View>
         <View style={styles.closureMetric}>
-          <Text style={styles.metricLabel}>Realized</Text>
+          <Text style={styles.metricLabel}>{t('elite.realized')}</Text>
           <Text style={[styles.metricValue, { color: item.realizedProfitAmount >= 0 ? Colors.success : Colors.danger }]}>
             {fmt(item.realizedProfitAmount)}
           </Text>
         </View>
         <View style={styles.closureMetric}>
-          <Text style={styles.metricLabel}>Firm Share</Text>
+          <Text style={styles.metricLabel}>{t('elite.firm_share_label')}</Text>
           <Text style={styles.metricValue}>{fmt(item.firmShareAmount)}</Text>
         </View>
       </View>
@@ -417,7 +419,6 @@ export default function PortfolioScreen() {
   const [submittingId, setSubmittingId] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Close-request execute form state
   const [crExpandedId, setCrExpandedId] = useState<number | null>(null);
   const [crForms, setCrForms] = useState<Record<number, CrFormState>>({});
   const [crSubmittingId, setCrSubmittingId] = useState<number | null>(null);
@@ -475,14 +476,14 @@ export default function PortfolioScreen() {
       setCrForms((prev) => { const n = { ...prev }; delete n[item.id]; return n; });
       qc.invalidateQueries({ queryKey: ['elite-portfolio'] });
       Alert.alert(
-        'Success',
+        t('common.success'),
         decision === 'ACCEPTED'
-          ? 'Close executed successfully.'
-          : 'Close request rejected.',
+          ? t('elite.execute_close_success')
+          : t('elite.reject_close_success'),
       );
     } catch (e: any) {
       const msg = e?.response?.data?.error?.message ?? t('common.error');
-      Alert.alert('Error', msg);
+      Alert.alert(t('common.error_title'), msg);
     } finally {
       setCrSubmittingId(null);
     }
@@ -493,15 +494,15 @@ export default function PortfolioScreen() {
     const qty = Number(form.qty);
 
     if (!form.qty || qty <= 0) {
-      Alert.alert('Error', 'Please enter a quantity greater than 0');
+      Alert.alert(t('common.error_title'), t('elite.qty_error'));
       return;
     }
     if (qty > position.quantityOpen) {
-      Alert.alert('Error', `Quantity cannot exceed ${position.quantityOpen}`);
+      Alert.alert(t('common.error_title'), t('elite.qty_exceeds', { max: position.quantityOpen }));
       return;
     }
     if (isForce && !form.image) {
-      Alert.alert('Evidence Required', 'Force close requires an evidence screenshot.');
+      Alert.alert(t('common.error_title'), t('elite.force_evidence_required'));
       return;
     }
 
@@ -523,14 +524,14 @@ export default function PortfolioScreen() {
       closeForm(position.id);
       qc.invalidateQueries({ queryKey: ['elite-portfolio'] });
       Alert.alert(
-        'Success',
+        t('common.success'),
         isForce
-          ? 'Force close submitted. Admin will process your closure.'
-          : 'Close request submitted successfully.'
+          ? t('elite.force_close_submitted')
+          : t('elite.close_request_submitted'),
       );
     } catch (err: any) {
       const msg = err?.response?.data?.error?.message ?? t('common.error');
-      Alert.alert('Error', msg);
+      Alert.alert(t('common.error_title'), msg);
     } finally {
       setSubmittingId(null);
     }
@@ -538,12 +539,11 @@ export default function PortfolioScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Reload header */}
-      <View style={styles.reloadBar}>
-        <Text style={styles.reloadTitle}>Portfolio</Text>
-        <TouchableOpacity onPress={() => refetch()} style={styles.reloadBtn} activeOpacity={0.7}>
+      <View style={[styles.reloadBar, { flexDirection: rowDirection }]}>
+        <Text style={styles.reloadTitle}>{t('elite.portfolio')}</Text>
+        <TouchableOpacity onPress={() => refetch()} style={[styles.reloadBtn, { flexDirection: rowDirection }]} activeOpacity={0.7}>
           <Ionicons name="refresh-outline" size={20} color={Colors.primary} />
-          <Text style={styles.reloadText}>Reload</Text>
+          <Text style={styles.reloadText}>{t('common.reload')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -562,19 +562,18 @@ export default function PortfolioScreen() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[Colors.primary]} />
           }
         >
-          {/* Summary */}
           {data?.summary && (
-            <View style={styles.summaryRow}>
+            <View style={[styles.summaryRow, { flexDirection: rowDirection }]}>
               <Card style={styles.summaryCard}>
-                <Text style={styles.summaryLabel}>Free Capital</Text>
+                <Text style={styles.summaryLabel}>{t('elite.free_capital')}</Text>
                 <Text style={styles.summaryValue}>{fmt(data.summary.freeCapitalAmount)}</Text>
               </Card>
               <Card style={styles.summaryCard}>
-                <Text style={styles.summaryLabel}>In Market</Text>
+                <Text style={styles.summaryLabel}>{t('elite.money_in_market')}</Text>
                 <Text style={styles.summaryValue}>{fmt(data.summary.moneyInMarket)}</Text>
               </Card>
               <Card style={[styles.summaryCard, styles.summaryCardFull]}>
-                <Text style={styles.summaryLabel}>Overall Profit</Text>
+                <Text style={styles.summaryLabel}>{t('elite.overall_profit')}</Text>
                 <Text style={[
                   styles.summaryValue,
                   { color: Number(data.summary.overallProfit) >= 0 ? Colors.success : Colors.danger },
@@ -585,16 +584,15 @@ export default function PortfolioScreen() {
             </View>
           )}
 
-          {/* Open Positions */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Open Positions</Text>
+          <View style={[styles.sectionHeader, { flexDirection: rowDirection }]}>
+            <Text style={styles.sectionTitle}>{t('elite.open_positions')}</Text>
             {data?.openPositions?.length ? (
               <Text style={styles.sectionCount}>{data.openPositions.length}</Text>
             ) : null}
           </View>
 
           {!data?.openPositions?.length ? (
-            <EmptyState title="No open positions yet" />
+            <EmptyState title={t('elite.no_positions')} />
           ) : (
             data.openPositions.map((pos) => {
               const mode = expandMode[pos.id] ?? 'none';
@@ -616,16 +614,15 @@ export default function PortfolioScreen() {
             })
           )}
 
-          {/* Close Requests */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Close Requests</Text>
+          <View style={[styles.sectionHeader, { flexDirection: rowDirection }]}>
+            <Text style={styles.sectionTitle}>{t('elite.close_requests')}</Text>
             {data?.closeRequests?.length ? (
               <Text style={styles.sectionCount}>{data.closeRequests.length}</Text>
             ) : null}
           </View>
 
           {!data?.closeRequests?.length ? (
-            <EmptyState title="No close requests yet" />
+            <EmptyState title={t('elite.no_close_requests')} />
           ) : (
             data.closeRequests.map((cr) => (
               <CloseRequestCard
@@ -643,16 +640,15 @@ export default function PortfolioScreen() {
             ))
           )}
 
-          {/* Closure History */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Closure History</Text>
+          <View style={[styles.sectionHeader, { flexDirection: rowDirection }]}>
+            <Text style={styles.sectionTitle}>{t('elite.closure_history')}</Text>
             {data?.closures?.length ? (
               <Text style={styles.sectionCount}>{data.closures.length}</Text>
             ) : null}
           </View>
 
           {!data?.closures?.length ? (
-            <EmptyState title="No closure history yet" />
+            <EmptyState title={t('elite.no_closures')} />
           ) : (
             data.closures.map((c) => (
               <ClosureCard key={c.id} item={c} />
@@ -670,7 +666,6 @@ export default function PortfolioScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   reloadBar: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -680,15 +675,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   reloadTitle: { fontSize: 16, fontWeight: '700', color: Colors.primary },
-  reloadBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, padding: 4 },
+  reloadBtn: { alignItems: 'center', gap: 4, padding: 4 },
   reloadText: { fontSize: 13, fontWeight: '600', color: Colors.primary },
   content: { padding: 16, paddingBottom: 24 },
-  summaryRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 4 },
+  summaryRow: { flexWrap: 'wrap', gap: 10, marginBottom: 4 },
   summaryCard: { width: '47%', paddingVertical: 12, marginBottom: 0 },
   summaryCardFull: { width: '100%' },
   summaryLabel: { fontSize: 11, color: Colors.textSecondary, fontWeight: '600', marginBottom: 4 },
   summaryValue: { fontSize: 16, fontWeight: '800', color: Colors.primary },
-  sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 20, marginBottom: 10 },
+  sectionHeader: { alignItems: 'center', gap: 8, marginTop: 20, marginBottom: 10 },
   sectionTitle: { fontSize: 15, fontWeight: '700', color: Colors.textSecondary },
   sectionCount: {
     backgroundColor: Colors.primary,
@@ -701,19 +696,18 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   positionCard: { marginBottom: 12 },
-  posRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  posRow: { justifyContent: 'space-between', alignItems: 'flex-start' },
   posSymbol: { fontSize: 17, fontWeight: '800', color: Colors.primary },
   posDetail: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
   posRight: { alignItems: 'flex-end', gap: 4 },
   posProfit: { fontSize: 13, fontWeight: '700' },
-  posMetrics: { flexDirection: 'row', gap: 8, marginTop: 10, marginBottom: 12 },
+  posMetrics: { gap: 8, marginTop: 10, marginBottom: 12 },
   posMetric: { flex: 1 },
   metricLabel: { fontSize: 10, color: Colors.textMuted, fontWeight: '600' },
   metricValue: { fontSize: 12, fontWeight: '700', color: Colors.text },
-  actionRow: { flexDirection: 'row', gap: 8 },
+  actionRow: { gap: 8 },
   actionBtn: {
     flex: 1,
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 8,
@@ -744,7 +738,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF5F5',
   },
   forceWarning: {
-    flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 6,
     backgroundColor: '#FEF3C7',
@@ -777,14 +770,13 @@ const styles = StyleSheet.create({
   submitCloseBtn: { marginTop: 4 },
   crCard: { marginBottom: 10 },
   crAdminPending: { borderColor: Colors.danger, borderWidth: 1 },
-  crHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  crHeader: { justifyContent: 'space-between', alignItems: 'flex-start' },
   crFrom: { fontSize: 13, fontWeight: '700', color: Colors.primary, marginBottom: 2 },
   crDetail: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
   crNote: { fontSize: 12, color: Colors.textMuted, fontStyle: 'italic', marginTop: 4 },
   crDate: { fontSize: 11, color: Colors.textMuted, marginTop: 4 },
   crResponseNote: { fontSize: 12, color: Colors.textSecondary, marginTop: 6, fontStyle: 'italic' },
   executeBtn: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.primary,
@@ -802,7 +794,6 @@ const styles = StyleSheet.create({
   },
   crCollapseText: { fontSize: 12, color: Colors.textMuted, fontWeight: '600' },
   crFormInfo: {
-    flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 6,
     backgroundColor: Colors.backgroundSecondary,
@@ -811,15 +802,15 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   crFormInfoText: { fontSize: 12, color: Colors.textSecondary, flex: 1, lineHeight: 18 },
-  crActionRow: { flexDirection: 'row', gap: 10, marginTop: 4 },
+  crActionRow: { gap: 10, marginTop: 4 },
   crActionBtn: { flex: 1, height: 44 },
   closureCard: { marginBottom: 10 },
-  closureRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 },
+  closureRow: { justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 },
   closureSymbol: { fontSize: 16, fontWeight: '800', color: Colors.primary },
   closureNetBox: { alignItems: 'flex-end' },
   closureNetLabel: { fontSize: 10, color: Colors.textMuted, fontWeight: '600' },
   closureNet: { fontSize: 15, fontWeight: '700' },
-  closureMetrics: { flexDirection: 'row', gap: 8 },
+  closureMetrics: { gap: 8 },
   closureMetric: { flex: 1 },
   closureDate: { fontSize: 11, color: Colors.textMuted, marginTop: 8 },
 });

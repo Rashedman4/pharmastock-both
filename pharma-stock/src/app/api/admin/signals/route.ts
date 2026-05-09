@@ -80,8 +80,10 @@ export async function POST(req: NextRequest) {
     try {
       await createNotificationForAll({
         type: "signal_open",
-        title: `New Signal: ${symbol}`,
-        body: `Buy signal opened for ${symbol}`,
+        title_en: `New Signal: ${symbol}`,
+        title_ar: `إشارة جديدة: ${symbol}`,
+        body_en: `Buy signal opened for ${symbol}`,
+        body_ar: `تم فتح إشارة شراء لـ ${symbol}`,
         data: { signalId: newSignal.id, symbol, action: "Buy", screen: "signals" },
       });
     } catch (notifErr) {
@@ -208,8 +210,10 @@ export async function DELETE(req: NextRequest) {
         const success = signal.enter_price < signal.price_now;
         await createNotificationForAll({
           type: "signal_close",
-          title: `Signal Closed: ${signal.symbol}`,
-          body: `${signal.symbol} signal closed ${success ? "successfully" : "with a loss"}`,
+          title_en: `Signal Closed: ${signal.symbol}`,
+          title_ar: `إشارة مغلقة: ${signal.symbol}`,
+          body_en: `${signal.symbol} signal closed ${success ? "successfully" : "with a loss"}`,
+          body_ar: `تم إغلاق إشارة ${signal.symbol} ${success ? "بنجاح" : "بخسارة"}`,
           data: {
             symbol: signal.symbol,
             success,
@@ -221,8 +225,10 @@ export async function DELETE(req: NextRequest) {
       } else {
         await createNotificationForAll({
           type: "signal_close",
-          title: `Signal Removed: ${signal.symbol}`,
-          body: `The ${signal.symbol} signal has been removed`,
+          title_en: `Signal Removed: ${signal.symbol}`,
+          title_ar: `تم إزالة الإشارة: ${signal.symbol}`,
+          body_en: `The ${signal.symbol} signal has been removed`,
+          body_ar: `تمت إزالة إشارة ${signal.symbol}`,
           data: { symbol: signal.symbol, screen: "signals" },
         });
       }

@@ -13,7 +13,20 @@
     "password": "Password",
     "firstName": "First Name",
     "lastName": "Last Name",
-    "phoneNumber": "Phone Number"
+    "phoneNumber": "Phone Number",
+    "ok": "OK",
+    "error_title": "Error",
+    "success": "Success",
+    "sign_out": "Sign Out",
+    "sign_out_confirm": "Are you sure you want to sign out?",
+    "permission_required": "Permission Required",
+    "photo_permission": "Please allow access to your photo library.",
+    "mic_permission": "Allow microphone access to send voice messages.",
+    "upload_failed": "Upload Failed",
+    "image_upload_error": "Could not upload image. Please try again.",
+    "voice_upload_error": "Could not upload voice message. Please try again.",
+    "reload": "Reload",
+    "partner": "Partner"
   },
   "auth": {
     "welcomeBack": "Welcome Back",
@@ -52,7 +65,14 @@
     "invalidCode": "Invalid or expired code",
     "loginSuccess": "Welcome back!",
     "registerSuccess": "Account created! Please check your email.",
-    "logoutSuccess": "Logged out successfully"
+    "logoutSuccess": "Logged out successfully",
+    "check_email_title": "Check Your Email",
+    "check_email_body": "If an account exists for that email, you will receive a password reset link shortly.",
+    "password_reset_title": "Password Reset",
+    "password_reset_success": "Your password has been reset successfully.",
+    "verification_failed": "Verification Failed",
+    "code_resent": "Code Resent",
+    "code_resent_message": "A new verification code has been sent to your email."
   },
   "errors": {
     "INVALID_CREDENTIALS": "Email or password is incorrect",
@@ -112,7 +132,12 @@
     "published": "Published",
     "symbol": "Symbol",
     "view_all": "View all",
-    "no_content": "No article body available. Visit the web app to read the full article."
+    "no_content": "No article body available. Visit the web app to read the full article.",
+    "today": "Today",
+    "one_day_ago": "1 day ago",
+    "days_ago": "{{count}} days ago",
+    "one_month_ago": "1 month ago",
+    "months_ago": "{{count}} months ago"
   },
   "breakthroughs": {
     "title": "Breakthroughs",
@@ -147,7 +172,8 @@
     "read": "Read",
     "empty": "No messages yet. Send a message to get started.",
     "load_older": "Load older messages",
-    "connecting": "Connecting..."
+    "connecting": "Connecting...",
+    "tap_send": "Tap send to deliver"
   },
   "home": {
     "welcome": "Welcome back",
@@ -276,7 +302,50 @@
     "close_response_note": "Response Note (optional)",
     "close_evidence": "Evidence (optional)",
     "executed_successfully": "Close executed successfully",
-    "rejected_successfully": "Close request rejected"
+    "rejected_successfully": "Close request rejected",
+    "partner_linked": "Partner: {{name}}",
+    "portfolio_overview": "Portfolio Overview",
+    "activity_section": "Activity",
+    "portfolio_positions": "Portfolio & Positions",
+    "phone_required": "Phone number is required",
+    "valid_amount_required": "Please enter a valid investment amount",
+    "invested": "Invested",
+    "market_value": "Market Value",
+    "current_price": "Current",
+    "force_close": "Force Close",
+    "submit_force_close_btn": "Submit Force Close",
+    "submit_close_request_btn": "Submit Close Request",
+    "close_qty_label": "Close Quantity (max {{max}})",
+    "exit_price_optional": "Exit Price (optional)",
+    "note_optional": "Note (optional)",
+    "reason_for_closing": "Reason for closing...",
+    "reason_force_close": "Reason for force close...",
+    "force_close_warning_text": "Force close confirms you have already closed this position. Evidence is required.",
+    "evidence_required_label": "Evidence (required)",
+    "evidence_optional_label": "Evidence (optional)",
+    "tap_attach_proof": "Tap to attach closing proof *",
+    "tap_attach_screenshot": "Tap to attach closing screenshot",
+    "qty_error": "Please enter a quantity greater than 0",
+    "qty_exceeds": "Quantity cannot exceed {{max}}",
+    "force_evidence_required": "Force close requires an evidence screenshot.",
+    "force_close_submitted": "Force close submitted. Admin will process your closure.",
+    "close_request_submitted": "Close request submitted successfully.",
+    "qty_closed": "Qty Closed",
+    "exit_price_label": "Exit Price",
+    "realized": "Realized",
+    "firm_share_label": "Firm Share",
+    "your_net_label": "Your Net",
+    "admin_requests_close": "Admin Requests Close",
+    "submitted_by_you": "Submitted by You",
+    "confirm_close_detail": "Confirm you have closed {{qty}} shares{{priceText}}.",
+    "at_market_price": " at market price",
+    "at_price": " at ${{price}}",
+    "execution_notes_placeholder": "Any notes about the execution...",
+    "response_note_optional_label": "Response Note (optional)",
+    "execute_close_success": "Close executed successfully.",
+    "reject_close_success": "Close request rejected.",
+    "no_close_requests_section": "No close requests yet",
+    "at_market_price_short": "at market"
   },
   "profile": {
     "title": "Profile",
@@ -284,6 +353,20 @@
     "elite_member": "Elite Member",
     "apply_elite": "Apply for Elite",
     "view_application": "View Application Status",
-    "open_elite": "Open Elite Dashboard"
+    "open_elite": "Open Elite Dashboard",
+    "settings": "Settings",
+    "settings_subtitle": "Language, preferences"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "language_title": "Choose Language",
+    "english": "English",
+    "arabic": "Arabic (عربي)",
+    "app_preferences": "App Preferences",
+    "restart_title": "Restart Required",
+    "restart_message": "Please restart the app to fully apply the language change.",
+    "version": "Version",
+    "current": "Current"
   }
 }

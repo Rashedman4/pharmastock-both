@@ -127,6 +127,8 @@ export default function TabsLayout() {
           ),
         }}
       />
+      {/* Elite section — inside tabs so the tab bar stays visible, hidden from the tab bar itself */}
+      <Tabs.Screen name="elite" options={{ href: null }} />
     </Tabs>
   );
 }

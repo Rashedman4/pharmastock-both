@@ -37,15 +37,15 @@ export default function ResetPasswordScreen() {
       authService.resetPassword({ token: token ?? '', password: data.password }),
     onSuccess: () => {
       Alert.alert(
-        'Password Reset',
-        'Your password has been reset successfully.',
-        [{ text: 'Sign In', onPress: () => router.replace('/(auth)/login') }]
+        t('auth.password_reset_title'),
+        t('auth.password_reset_success'),
+        [{ text: t('auth.signIn'), onPress: () => router.replace('/(auth)/login') }]
       );
     },
     onError: (err: unknown) => {
       const apiErr = (err as { response?: { data?: { error?: { message?: string } } } })
         ?.response?.data?.error;
-      Alert.alert('Error', apiErr?.message ?? t('errors.unknownError'));
+      Alert.alert(t('common.error_title'), apiErr?.message ?? t('errors.unknownError'));
     },
   });
 

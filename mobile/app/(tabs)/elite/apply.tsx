@@ -27,9 +27,9 @@ export default function EliteApplyScreen() {
       }),
     onSuccess: () => {
       Alert.alert(
-        t('common.confirm'),
+        t('common.success'),
         t('elite.apply_success'),
-        [{ text: 'OK', onPress: () => router.replace('/elite/status') }]
+        [{ text: t('common.ok'), onPress: () => router.replace('/elite/status') }]
       );
     },
     onError: (err: any) => {
@@ -37,18 +37,18 @@ export default function EliteApplyScreen() {
         err?.response?.data?.error?.message ??
         err?.response?.data?.message ??
         t('common.error');
-      Alert.alert('Error', msg);
+      Alert.alert(t('common.error_title'), msg);
     },
   });
 
   const handleSubmit = () => {
     if (!phoneNumber.trim()) {
-      Alert.alert('Error', 'Phone number is required');
+      Alert.alert(t('common.error_title'), t('elite.phone_required'));
       return;
     }
     const amount = Number(investmentAmount.replace(/,/g, ''));
     if (!amount || amount <= 0) {
-      Alert.alert('Error', 'Please enter a valid investment amount');
+      Alert.alert(t('common.error_title'), t('elite.valid_amount_required'));
       return;
     }
     mutation.mutate();

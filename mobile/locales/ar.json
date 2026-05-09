@@ -13,7 +13,20 @@
     "password": "كلمة المرور",
     "firstName": "الاسم الأول",
     "lastName": "اسم العائلة",
-    "phoneNumber": "رقم الهاتف"
+    "phoneNumber": "رقم الهاتف",
+    "ok": "حسنًا",
+    "error_title": "خطأ",
+    "success": "نجاح",
+    "sign_out": "تسجيل الخروج",
+    "sign_out_confirm": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+    "permission_required": "إذن مطلوب",
+    "photo_permission": "يرجى السماح بالوصول إلى مكتبة الصور.",
+    "mic_permission": "اسمح بالوصول إلى الميكروفون لإرسال الرسائل الصوتية.",
+    "upload_failed": "فشل الرفع",
+    "image_upload_error": "تعذر رفع الصورة. يرجى المحاولة مجددًا.",
+    "voice_upload_error": "تعذر رفع الرسالة الصوتية. يرجى المحاولة مجددًا.",
+    "reload": "تحديث",
+    "partner": "شريك"
   },
   "auth": {
     "welcomeBack": "مرحبًا بعودتك",
@@ -52,7 +65,14 @@
     "invalidCode": "الرمز غير صالح أو منتهي الصلاحية",
     "loginSuccess": "مرحبًا بعودتك!",
     "registerSuccess": "تم إنشاء الحساب! يرجى التحقق من بريدك الإلكتروني.",
-    "logoutSuccess": "تم تسجيل الخروج بنجاح"
+    "logoutSuccess": "تم تسجيل الخروج بنجاح",
+    "check_email_title": "تحقق من بريدك الإلكتروني",
+    "check_email_body": "إذا كان الحساب موجودًا، ستصلك رسالة إعادة تعيين كلمة المرور قريبًا.",
+    "password_reset_title": "إعادة تعيين كلمة المرور",
+    "password_reset_success": "تمت إعادة تعيين كلمة مرورك بنجاح.",
+    "verification_failed": "فشل التحقق",
+    "code_resent": "تم إعادة إرسال الرمز",
+    "code_resent_message": "تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني."
   },
   "errors": {
     "INVALID_CREDENTIALS": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
@@ -112,7 +132,12 @@
     "published": "نُشر",
     "symbol": "الرمز",
     "view_all": "عرض الكل",
-    "no_content": "لا يوجد محتوى للمقالة. قم بزيارة تطبيق الويب لقراءة المقالة كاملة."
+    "no_content": "لا يوجد محتوى للمقالة. قم بزيارة تطبيق الويب لقراءة المقالة كاملة.",
+    "today": "اليوم",
+    "one_day_ago": "منذ يوم",
+    "days_ago": "منذ {{count}} أيام",
+    "one_month_ago": "منذ شهر",
+    "months_ago": "منذ {{count}} أشهر"
   },
   "breakthroughs": {
     "title": "الاختراقات",
@@ -147,7 +172,8 @@
     "read": "مقروءة",
     "empty": "لا توجد رسائل بعد. ابدأ بإرسال رسالة.",
     "load_older": "تحميل رسائل أقدم",
-    "connecting": "جارٍ الاتصال..."
+    "connecting": "جارٍ الاتصال...",
+    "tap_send": "اضغط إرسال للتسليم"
   },
   "home": {
     "welcome": "مرحبًا بعودتك",
@@ -276,7 +302,50 @@
     "close_response_note": "ملاحظة الرد (اختياري)",
     "close_evidence": "الإثبات (اختياري)",
     "executed_successfully": "تم تنفيذ الإغلاق بنجاح",
-    "rejected_successfully": "تم رفض طلب الإغلاق"
+    "rejected_successfully": "تم رفض طلب الإغلاق",
+    "partner_linked": "الشريك: {{name}}",
+    "portfolio_overview": "نظرة عامة على المحفظة",
+    "activity_section": "النشاط",
+    "portfolio_positions": "المحفظة والمراكز",
+    "phone_required": "رقم الهاتف مطلوب",
+    "valid_amount_required": "يرجى إدخال مبلغ استثمار صحيح",
+    "invested": "المستثمر",
+    "market_value": "القيمة السوقية",
+    "current_price": "الحالي",
+    "force_close": "إغلاق قسري",
+    "submit_force_close_btn": "تقديم الإغلاق القسري",
+    "submit_close_request_btn": "تقديم طلب الإغلاق",
+    "close_qty_label": "كمية الإغلاق (بحد أقصى {{max}})",
+    "exit_price_optional": "سعر الخروج (اختياري)",
+    "note_optional": "ملاحظة (اختياري)",
+    "reason_for_closing": "سبب الإغلاق...",
+    "reason_force_close": "سبب الإغلاق القسري...",
+    "force_close_warning_text": "الإغلاق القسري يؤكد أنك أغلقت هذا المركز فعلاً. الإثبات مطلوب.",
+    "evidence_required_label": "الإثبات (مطلوب)",
+    "evidence_optional_label": "الإثبات (اختياري)",
+    "tap_attach_proof": "اضغط لإرفاق إثبات الإغلاق *",
+    "tap_attach_screenshot": "اضغط لإرفاق لقطة شاشة الإغلاق",
+    "qty_error": "يرجى إدخال كمية أكبر من 0",
+    "qty_exceeds": "الكمية لا يمكن أن تتجاوز {{max}}",
+    "force_evidence_required": "الإغلاق القسري يتطلب لقطة إثبات.",
+    "force_close_submitted": "تم تقديم الإغلاق القسري. سيعالج المشرف طلبك.",
+    "close_request_submitted": "تم تقديم طلب الإغلاق بنجاح.",
+    "qty_closed": "الكمية المغلقة",
+    "exit_price_label": "سعر الخروج",
+    "realized": "المحقق",
+    "firm_share_label": "حصة الشركة",
+    "your_net_label": "صافي ربحك",
+    "admin_requests_close": "طلب إغلاق من المشرف",
+    "submitted_by_you": "مقدم منك",
+    "confirm_close_detail": "تأكيد إغلاق {{qty}} سهم{{priceText}}.",
+    "at_market_price": " بسعر السوق",
+    "at_price": " بسعر ${{price}}",
+    "execution_notes_placeholder": "أي ملاحظات حول التنفيذ...",
+    "response_note_optional_label": "ملاحظة الرد (اختياري)",
+    "execute_close_success": "تم تنفيذ الإغلاق بنجاح.",
+    "reject_close_success": "تم رفض طلب الإغلاق.",
+    "no_close_requests_section": "لا توجد طلبات إغلاق بعد",
+    "at_market_price_short": "بسعر السوق"
   },
   "profile": {
     "title": "الملف الشخصي",
@@ -284,6 +353,20 @@
     "elite_member": "عضو النخبة",
     "apply_elite": "التقديم على النخبة",
     "view_application": "عرض حالة الطلب",
-    "open_elite": "فتح لوحة تحكم النخبة"
+    "open_elite": "فتح لوحة تحكم النخبة",
+    "settings": "الإعدادات",
+    "settings_subtitle": "اللغة والتفضيلات"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "language": "اللغة",
+    "language_title": "اختر اللغة",
+    "english": "الإنجليزية",
+    "arabic": "العربية (عربي)",
+    "app_preferences": "تفضيلات التطبيق",
+    "restart_title": "إعادة تشغيل مطلوبة",
+    "restart_message": "يرجى إعادة تشغيل التطبيق لتطبيق تغيير اللغة بالكامل.",
+    "version": "الإصدار",
+    "current": "الحالي"
   }
 }

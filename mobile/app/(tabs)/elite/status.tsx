@@ -57,7 +57,7 @@ export default function EliteStatusScreen() {
 
         {data.application_date && (
           <View style={styles.row}>
-            <Text style={styles.label}>Applied</Text>
+            <Text style={styles.label}>{t('elite.submitted_at')}</Text>
             <Text style={styles.value}>
               {new Date(data.application_date).toLocaleDateString()}
             </Text>

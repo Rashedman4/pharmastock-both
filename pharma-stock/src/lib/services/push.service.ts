@@ -50,6 +50,51 @@ export async function sendPushToAllUsers(payload: PushPayload): Promise<void> {
   console.log(`[Push] sendPushToAllUsers: sent to ${totalSent} token(s)`);
 }
 
+interface BilingualPushPayload {
+  en: { title: string; body: string };
+  ar: { title: string; body: string };
+  data?: Record<string, unknown>;
+}
+
+// Sends push notifications in each user's preferred language
+export async function sendBilingualPushToAllUsers(payload: BilingualPushPayload): Promise<void> {
+  const BATCH_SIZE = 500;
+  let offset = 0;
+  let totalSent = 0;
+
+  while (true) {
+    const result = await pool.query(
+      `SELECT t.expo_token, COALESCE(u.preferred_language, 'en') AS lang
+       FROM user_push_tokens t
+       JOIN users u ON u.id = t.user_id
+       LIMIT $1 OFFSET $2`,
+      [BATCH_SIZE, offset]
+    );
+    if (!result.rows.length) break;
+
+    const messages: ExpoPushMessage[] = result.rows
+      .filter((r: { expo_token: string }) => Expo.isExpoPushToken(r.expo_token))
+      .map((r: { expo_token: string; lang: string }) => {
+        const p = r.lang === 'ar' ? payload.ar : payload.en;
+        return {
+          to: r.expo_token,
+          title: p.title,
+          body: p.body,
+          data: payload.data ?? {},
+          sound: 'default' as const,
+        };
+      });
+
+    await _sendChunked(messages);
+    totalSent += messages.length;
+
+    if (result.rows.length < BATCH_SIZE) break;
+    offset += BATCH_SIZE;
+  }
+
+  console.log(`[Push] sendBilingualPushToAllUsers: sent to ${totalSent} token(s)`);
+}
+
 async function _sendToTokens(tokens: string[], payload: PushPayload): Promise<void> {
   const valid = tokens.filter((t) => Expo.isExpoPushToken(t));
   if (!valid.length) return;

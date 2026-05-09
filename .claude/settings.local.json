@@ -23,7 +23,10 @@
       "Bash(mkdir -p \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\PHARMAsTOCK-bOTH\\\\pharma-stock\\\\src\\\\app\\\\api\\\\admin\\\\mobile\\\\broadcasts\\\\[id]\\\\recipients\")",
       "Bash(Get-ChildItem -Path \"pharma-stock\\\\src\\\\pages\" -ErrorAction SilentlyContinue)",
       "Bash(Select-Object Name)",
-      "Bash(Get-ChildItem *)"
+      "Bash(Get-ChildItem *)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k,':',v\\) for k,v in d.get\\('dependencies',{}\\).items\\(\\)]\")"
     ]
   }
 }

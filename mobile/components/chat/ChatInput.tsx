@@ -12,7 +12,9 @@ import {
 import { Audio } from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
+import { rowDirection } from '@/lib/rtl';
 import { uploadChatMedia } from '@/services/chat.service';
 import { getSocket } from '@/lib/socket';
 
@@ -36,6 +38,7 @@ type PendingAttachment = {
 };
 
 export function ChatInput({ conversationId, onSend, disabled }: Props) {
+  const { t } = useTranslation();
   const [text, setText] = useState('');
   const [uploading, setUploading] = useState(false);
   const [recording, setRecording] = useState(false);
@@ -82,7 +85,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
   async function handlePickImage() {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) {
-      Alert.alert('Permission required', 'Allow photo library access to send images.');
+      Alert.alert(t('common.permission_required'), t('common.photo_permission'));
       return;
     }
 
@@ -108,7 +111,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
         metadata: { width: uploaded.width, height: uploaded.height, size: uploaded.size },
       });
     } catch (e) {
-      Alert.alert('Upload failed', 'Could not upload image. Please try again.');
+      Alert.alert(t('common.upload_failed'), t('common.image_upload_error'));
       console.error('[ChatInput] image upload error:', e);
     } finally {
       setUploading(false);
@@ -118,7 +121,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
   async function startRecording() {
     const { granted } = await Audio.requestPermissionsAsync();
     if (!granted) {
-      Alert.alert('Permission required', 'Allow microphone access to send voice messages.');
+      Alert.alert(t('common.permission_required'), t('common.mic_permission'));
       return;
     }
 
@@ -194,7 +197,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
         duration: capturedDuration,
       });
     } catch (e) {
-      Alert.alert('Upload failed', 'Could not upload voice message. Please try again.');
+      Alert.alert(t('common.upload_failed'), t('common.voice_upload_error'));
       console.error('[ChatInput] voice upload error:', e);
     } finally {
       setUploading(false);
@@ -204,12 +207,12 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
   // ── Pending attachment preview ─────────────────────────────────────────────
   if (pendingAttachment) {
     return (
-      <View style={styles.previewBar}>
+      <View style={[styles.previewBar, { flexDirection: rowDirection }]}>
         <TouchableOpacity onPress={discardAttachment} style={styles.previewDiscard}>
           <Ionicons name="close-circle" size={26} color={Colors.danger} />
         </TouchableOpacity>
 
-        <View style={styles.previewContent}>
+        <View style={[styles.previewContent, { flexDirection: rowDirection }]}>
           {pendingAttachment.type === 'image' ? (
             <Image
               source={{ uri: pendingAttachment.localUri }}
@@ -217,16 +220,16 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
               resizeMode="cover"
             />
           ) : (
-            <View style={styles.previewVoice}>
+            <View style={[styles.previewVoice, { flexDirection: rowDirection }]}>
               <Ionicons name="mic" size={22} color={Colors.primary} />
               <Text style={styles.previewVoiceText}>
                 {pendingAttachment.duration !== undefined
                   ? `${Math.floor(pendingAttachment.duration / 60)}:${String(pendingAttachment.duration % 60).padStart(2, '0')}`
-                  : 'Voice note'}
+                  : t('chat.voice_note')}
               </Text>
             </View>
           )}
-          <Text style={styles.previewHint}>Tap send to deliver</Text>
+          <Text style={styles.previewHint}>{t('chat.tap_send')}</Text>
         </View>
 
         <TouchableOpacity
@@ -243,11 +246,11 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
   // ── Recording bar ──────────────────────────────────────────────────────────
   if (recording) {
     return (
-      <View style={styles.recordingBar}>
+      <View style={[styles.recordingBar, { flexDirection: rowDirection }]}>
         <TouchableOpacity onPress={() => stopRecording(false)} style={styles.cancelBtn}>
           <Ionicons name="close" size={22} color={Colors.danger} />
         </TouchableOpacity>
-        <View style={styles.recordingInfo}>
+        <View style={[styles.recordingInfo, { flexDirection: rowDirection }]}>
           <View style={styles.recDot} />
           <Text style={styles.recDuration}>
             {Math.floor(recordDuration / 60)}:{(recordDuration % 60).toString().padStart(2, '0')}
@@ -262,7 +265,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
 
   // ── Normal input ───────────────────────────────────────────────────────────
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { flexDirection: rowDirection }]}>
       <TouchableOpacity
         style={styles.attachBtn}
         onPress={handlePickImage}
@@ -279,7 +282,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
         style={styles.input}
         value={text}
         onChangeText={handleTextChange}
-        placeholder="Type a message..."
+        placeholder={t('chat.input_placeholder')}
         placeholderTextColor={Colors.textMuted}
         multiline
         maxLength={2000}
@@ -310,7 +313,6 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
     alignItems: 'flex-end',
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -350,7 +352,6 @@ const styles = StyleSheet.create({
 
   // Voice recording bar
   recordingBar: {
-    flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -364,7 +365,6 @@ const styles = StyleSheet.create({
   },
   recordingInfo: {
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
@@ -390,7 +390,6 @@ const styles = StyleSheet.create({
 
   // Pending attachment preview bar
   previewBar: {
-    flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -404,7 +403,6 @@ const styles = StyleSheet.create({
   },
   previewContent: {
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
@@ -414,7 +412,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   previewVoice: {
-    flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
   },

@@ -16,10 +16,24 @@ export async function GET(req: NextRequest) {
       [payload.userId]
     ),
     pool.query(
-      `SELECT id, type, title, body, data, read_at, created_at
-       FROM in_app_notifications
-       WHERE user_id = $1
-       ORDER BY created_at DESC
+      `SELECT
+         n.id,
+         n.type,
+         CASE
+           WHEN u.preferred_language = 'ar' AND n.title_ar IS NOT NULL THEN n.title_ar
+           ELSE COALESCE(n.title_en, n.title)
+         END AS title,
+         CASE
+           WHEN u.preferred_language = 'ar' AND n.body_ar IS NOT NULL THEN n.body_ar
+           ELSE COALESCE(n.body_en, n.body)
+         END AS body,
+         n.data,
+         n.read_at,
+         n.created_at
+       FROM in_app_notifications n
+       JOIN users u ON u.id = n.user_id
+       WHERE n.user_id = $1
+       ORDER BY n.created_at DESC
        LIMIT $2 OFFSET $3`,
       [payload.userId, limit, offset]
     ),

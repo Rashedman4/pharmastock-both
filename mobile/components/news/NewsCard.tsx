@@ -11,21 +11,20 @@ interface NewsCardProps {
   onPress?: () => void;
 }
 
-function timeAgo(dateStr: string): string {
-  const now = Date.now();
-  const then = new Date(dateStr).getTime();
-  const diffMs = now - then;
-  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (days === 0) return 'Today';
-  if (days === 1) return '1 day ago';
-  if (days < 30) return `${days} days ago`;
-  const months = Math.floor(days / 30);
-  return months === 1 ? '1 month ago' : `${months} months ago`;
-}
-
 export function NewsCard({ item, onPress }: NewsCardProps) {
   const { t } = useTranslation();
   const getField = useLocalizedField();
+
+  function timeAgo(dateStr: string): string {
+    const now = Date.now();
+    const then = new Date(dateStr).getTime();
+    const days = Math.floor((now - then) / (1000 * 60 * 60 * 24));
+    if (days === 0) return t('news.today');
+    if (days === 1) return t('news.one_day_ago');
+    if (days < 30) return t('news.days_ago', { count: days });
+    const months = Math.floor(days / 30);
+    return months === 1 ? t('news.one_month_ago') : t('news.months_ago', { count: months });
+  }
 
   return (
     <Card onPress={onPress}>

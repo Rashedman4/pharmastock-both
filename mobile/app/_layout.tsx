@@ -67,7 +67,7 @@ export default function RootLayout() {
             <Stack.Screen name="(auth)" />
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="notifications" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="elite" options={{ headerShown: false }} />
+            <Stack.Screen name="settings" options={{ headerShown: false }} />
           </Stack>
         </I18nextProvider>
       </QueryClientProvider>
