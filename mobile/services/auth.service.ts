@@ -41,6 +41,15 @@ export const authService = {
     return res.data;
   },
 
+  async googleLogin(params: {
+    idToken: string;
+    deviceId?: string;
+    deviceName?: string;
+  }): Promise<LoginResponse> {
+    const res = await apiClient.post<LoginResponse>(API_ROUTES.auth.googleLogin, params);
+    return res.data;
+  },
+
   async getMe(): Promise<UserProfile> {
     const res = await apiClient.get<UserProfile>(API_ROUTES.me);
     return res.data;

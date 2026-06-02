@@ -10,6 +10,7 @@ export const API_ROUTES = {
     logout: '/api/mobile/v1/auth/logout',
     forgotPassword: '/api/mobile/v1/auth/forgot-password',
     resetPassword: '/api/mobile/v1/auth/reset-password',
+    googleLogin: '/api/mobile/v1/auth/google',
   },
   me: '/api/mobile/v1/me',
   meLanguage: '/api/mobile/v1/me/language',

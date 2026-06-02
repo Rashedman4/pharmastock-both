@@ -15,10 +15,22 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.biopharmastock.app",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "NSCameraUsageDescription": "Used for profile photo and document scanning.",
         "NSPhotoLibraryUsageDescription": "Used to upload images.",
-        "NSMicrophoneUsageDescription": "Used for voice messages in community chat."
+        "NSMicrophoneUsageDescription": "Used for voice messages in community chat.",
+        "UIBackgroundModes": ["remote-notification", "fetch"],
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.626285874163-2jqr9ahnn2novak1v5foirlr9ehm350i"
+            ]
+          }
+        ]
+      },
+      "entitlements": {
+        "aps-environment": "production"
       }
     },
     "android": {
@@ -36,7 +48,8 @@
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.VIBRATE",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.POST_NOTIFICATIONS"
       ]
     },
     "web": {
@@ -47,6 +60,12 @@
       "expo-dev-client",
       "expo-secure-store",
       "expo-localization",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.626285874163-2jqr9ahnn2novak1v5foirlr9ehm350i"
+        }
+      ],
       [
         "expo-notifications",
         {

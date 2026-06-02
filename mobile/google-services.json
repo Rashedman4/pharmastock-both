@@ -12,7 +12,20 @@
           "package_name": "com.biopharmastock.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "626285874163-pamam46ajc72uvjn32le2iq6c2b9utqg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.biopharmastock.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "626285874163-3ebopf6u8mnmm7orseal422m7onobfiq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAthF3WpFef-7lmLRv3vTY-WM5njH92RDM"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "626285874163-3ebopf6u8mnmm7orseal422m7onobfiq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "626285874163-2jqr9ahnn2novak1v5foirlr9ehm350i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.biopharmastock.app"
+              }
+            }
+          ]
         }
       }
     }

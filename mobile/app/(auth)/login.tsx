@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useForm, Controller } from 'react-hook-form';
@@ -12,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { KeyboardAvoidingContainer } from '@/components/ui/KeyboardAvoidingContainer';
@@ -19,7 +21,10 @@ import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { Colors } from '@/constants/colors';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
+import { signInWithGoogle, configureGoogleSignIn } from '@/lib/googleSignIn';
 import type { AuthUser } from '@/types/user';
+
+configureGoogleSignIn();
 
 const schema = z.object({
   email: z.string().email('Invalid email'),
@@ -31,6 +36,7 @@ type FormData = z.infer<typeof schema>;
 export default function LoginScreen() {
   const { t } = useTranslation();
   const { setTokens, setUser } = useAuthStore();
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const {
     control,
@@ -53,6 +59,29 @@ export default function LoginScreen() {
   });
 
   const onSubmit = (data: FormData) => mutation.mutate(data);
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      const { idToken } = await signInWithGoogle();
+      const data = await authService.googleLogin({ idToken });
+      await setTokens(data.access_token, data.refresh_token);
+      await setUser(data.user as AuthUser);
+      router.replace('/(tabs)/home');
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code;
+      console.log('[Google] error code:', code, 'full:', JSON.stringify(err));
+      if (code === 'SIGN_IN_CANCELLED' || code === '12501') return; // user cancelled
+      const apiErr = (err as { response?: { data?: { error?: { message?: string } } } })
+        ?.response?.data?.error;
+      Alert.alert(
+        t('common.error_title'),
+        apiErr?.message ?? `${t('errors.unknownError')} (code: ${code ?? 'none'})`,
+      );
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   return (
     <KeyboardAvoidingContainer>
@@ -105,6 +134,28 @@ export default function LoginScreen() {
           isLoading={mutation.isPending}
           containerStyle={styles.submitBtn}
         />
+
+        <View style={styles.dividerRow}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>{t('auth.orContinueWith')}</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        <TouchableOpacity
+          style={styles.googleBtn}
+          onPress={handleGoogleSignIn}
+          disabled={googleLoading || mutation.isPending}
+          activeOpacity={0.8}
+        >
+          {googleLoading ? (
+            <ActivityIndicator color={Colors.textPrimary} size="small" />
+          ) : (
+            <>
+              <Ionicons name="logo-google" size={20} color="#EA4335" />
+              <Text style={styles.googleBtnText}>{t('auth.continueWithGoogle')}</Text>
+            </>
+          )}
+        </TouchableOpacity>
       </View>
 
       <View style={styles.footer}>
@@ -127,6 +178,38 @@ const styles = StyleSheet.create({
   forgotLink: { alignSelf: 'flex-end', marginBottom: 24 },
   forgotText: { color: Colors.primary, fontSize: 14, fontWeight: '500' },
   submitBtn: { marginTop: 8 },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+    gap: 10,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.borderLight,
+  },
+  dividerText: {
+    fontSize: 13,
+    color: Colors.textMuted,
+    fontWeight: '500',
+  },
+  googleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    borderWidth: 1.5,
+    borderColor: Colors.borderLight,
+    borderRadius: 12,
+    paddingVertical: 13,
+    backgroundColor: Colors.white,
+  },
+  googleBtnText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: Colors.textPrimary,
+  },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',

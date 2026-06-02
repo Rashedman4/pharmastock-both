@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
 import { changeLanguage } from '@/i18n';
 import { useUiStore } from '@/stores/ui.store';
-import { apiClient } from '@/services/api';
-import { API_ROUTES } from '@/constants/api';
 
 export function LanguageToggle() {
   const { t, i18n } = useTranslation();
@@ -25,8 +23,6 @@ export function LanguageToggle() {
       const willBeRTL = nextLang === 'ar';
       await changeLanguage(nextLang);
       setLanguage(nextLang);
-      // Sync language preference to backend (fire-and-forget; may fail if not logged in)
-      apiClient.patch(API_ROUTES.meLanguage, { language: nextLang }).catch(() => {});
       if (wasRTL !== willBeRTL) {
         Alert.alert(
           t('settings.restart_title'),
