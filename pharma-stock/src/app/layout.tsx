@@ -195,7 +195,9 @@ export default function RootLayout({
         <SessionWrapper>
           <AuthModal />
         </SessionWrapper>
-        <Footer />
+        <SessionWrapper>
+          <Footer />
+        </SessionWrapper>
       </body>
     </html>
   );

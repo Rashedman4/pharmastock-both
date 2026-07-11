@@ -866,6 +866,42 @@ GROUP BY pa.id`,
       partnerName: row.partnerName ?? null,
     }));
   }
+
+  async getPendingFirmProfitByMember() {
+    const { rows } = await pool.query(
+      `SELECT em.id AS "memberId",
+              eps.id AS "portfolioId",
+              COALESCE(${displayNameSql}, u.email) AS "investorName",
+              u.email,
+              COALESCE(SUM(pcs.firm_profit_share_amount), 0) - COALESCE(SUM(alloc.amount_applied), 0) AS "pendingFirmProfit"
+       FROM elite_members em
+       JOIN users u ON u.id = em.user_id
+       LEFT JOIN elite_portfolios_simple eps ON eps.elite_member_id = em.id
+       LEFT JOIN portfolio_positions_simple pps ON pps.portfolio_id = eps.id
+       LEFT JOIN position_closures_simple pcs ON pcs.position_id = pps.id
+       LEFT JOIN (
+         SELECT fppa.closure_id,
+                SUM(fppa.amount_applied) AS amount_applied
+         FROM firm_profit_payment_allocations fppa
+         JOIN firm_profit_payments fpp ON fpp.id = fppa.payment_id
+         WHERE fpp.status = 'PAID'
+         GROUP BY fppa.closure_id
+       ) alloc ON alloc.closure_id = pcs.id
+       GROUP BY em.id, eps.id, u.id
+       HAVING COALESCE(SUM(pcs.firm_profit_share_amount), 0) - COALESCE(SUM(alloc.amount_applied), 0) > 0
+       ORDER BY "pendingFirmProfit" DESC`,
+      [],
+    );
+
+    return rows.map((row) => ({
+      memberId: Number(row.memberId),
+      portfolioId: row.portfolioId ? Number(row.portfolioId) : null,
+      investorName: row.investorName,
+      email: row.email,
+      pendingFirmProfit: toNumber(row.pendingFirmProfit),
+    }));
+  }
+
   async reviewInvestorApplication(
     applicationId: number,
     adminUserId: number,

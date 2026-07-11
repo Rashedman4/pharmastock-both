@@ -285,8 +285,8 @@ function CloseRequestCard({
         <View style={{ flex: 1, marginRight: 8 }}>
           <Text style={[styles.crFrom, isAdminPending && { color: Colors.danger }]}>
             {item.initiatedByRole === 'ADMIN'
-              ? `⚡ ${t('elite.admin_requests_close')}`
-              : `✅ ${t('elite.submitted_by_you')}`}
+              ? t('elite.admin_requests_close')
+              : t('elite.submitted_by_you')}
           </Text>
           <Text style={styles.crDetail}>
             {t('elite.quantity')}: {Number(item.requestedQuantity).toLocaleString()}

@@ -4,44 +4,40 @@ import Link from "next/link";
 import { Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Rubik } from "next/font/google";
 import Image from "next/image";
 
-// Import Rubik with Arabic subset
 const rubik = Rubik({
-  weight: ["400"], // Define font weights
-  subsets: ["arabic"], // Include Arabic subset
+  weight: ["400"],
+  subsets: ["arabic"],
 });
+
 const Footer = () => {
   const pathName = usePathname();
   const langPrefix = pathName ? pathName.split("/")[1] : "en";
   const isArabic = langPrefix === "ar";
+  const { status } = useSession();
+  const isAuthenticated = status === "authenticated";
 
   const quickLinks = isArabic
     ? [
         { href: "/ar", label: "الصفحة الرئيسية" },
         { href: "/ar/ask-about-stock", label: "اسأل عن سهم" },
         { href: "/ar/news", label: "الأخبار" },
-        // { href: "/ar/daily-video", label: "الفيديو اليومي" },
         { href: "/ar/signals", label: "الأفكار" },
         { href: "/ar/history", label: "النتائج" },
-        {
-          href: "/ar/fda-designation",
-          label: "تصنيفات هيئة الغذاء والدواء (FDA)",
-        },
+        { href: "/ar/fda-designation", label: "تصنيفات هيئة الغذاء والدواء (FDA)" },
         { href: "/ar/elite-group", label: "برنامج إيليت" },
-        //{ href: "/ar/subscription", label: "الأشتراكات" },
       ]
     : [
         { href: "/en", label: "Home" },
         { href: "/en/ask-about-stock", label: "Ask About Stock" },
         { href: "/en/news", label: "News" },
-        //  { href: "/en/daily-video", label: "Financial Calendar" },
         { href: "/en/signals", label: "Ideas" },
         { href: "/en/history", label: "History" },
         { href: "/en/fda-designation", label: "FDA Designations" },
         { href: "/en/elite-group", label: "Elite Program" },
-        //{ href: "/en/subscription", label: "Subscriptions" },
       ];
 
   return (
@@ -53,6 +49,7 @@ const Footer = () => {
     >
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Bio Pharma Stock</h3>
             <p className="text-sm">
@@ -71,7 +68,7 @@ const Footer = () => {
                 alt="BioPharmaStock Logo"
                 width={150}
                 height={100}
-                className="hidden md:block md:w-45 md:h-30 object-contain rounded-lg  p-1 shadow"
+                className="hidden md:block md:w-45 md:h-30 object-contain rounded-lg p-1 shadow"
                 priority
               />
               <Image
@@ -79,14 +76,15 @@ const Footer = () => {
                 alt="BioPharmaStock Logo"
                 width={150}
                 height={100}
-                className="md:hidden md:w-30 md:h-20 object-contain rounded-lg  p-1 shadow"
+                className="md:hidden md:w-30 md:h-20 object-contain rounded-lg p-1 shadow"
                 priority
               />
             </div>
           </div>
+
+          {/* Quick Links */}
           <div>
             <h4 className="text-md font-semibold mb-4">
-              {" "}
               {isArabic ? "روابط سريعة" : "Quick Links"}
             </h4>
             <ul className="space-y-2">
@@ -102,22 +100,19 @@ const Footer = () => {
               ))}
             </ul>
           </div>
+
+          {/* Contact */}
           <div>
             <h4 className="text-md font-semibold mb-4">
               {isArabic ? "اتصل بنا" : "Contact Us"}
             </h4>
-
             <p className="text-sm mb-2">
-              <a
-                href="mailto:info@biopharmastock.com"
-                className="hover:underline"
-              >
+              <a href="mailto:info@biopharmastock.com" className="hover:underline">
                 {isArabic
-                  ? " البريد الإلكتروني: info@biopharmastock.com "
+                  ? "البريد الإلكتروني: info@biopharmastock.com"
                   : "Email: info@biopharmastock.com"}
               </a>
             </p>
-
             <p className="text-sm mb-2">
               {isArabic ? (
                 <>
@@ -132,8 +127,6 @@ const Footer = () => {
                 </a>
               )}
             </p>
-
-            {/* 🌟 Added Community link */}
             <p className="text-sm mt-3">
               <Link
                 href={`/${isArabic ? "ar" : "en"}/community`}
@@ -152,22 +145,43 @@ const Footer = () => {
               </Link>
             </p>
           </div>
+
+          {/* Account + Social */}
           <div>
+            {isAuthenticated && (
+              <div className="mb-6">
+                <h4 className="text-md font-semibold mb-4">
+                  {isArabic ? "حسابي" : "My Account"}
+                </h4>
+                <Link
+                  href={`/${langPrefix}/profile`}
+                  className="inline-flex items-center gap-2 text-sm text-brightTeal hover:underline font-medium transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828A2 2 0 019.07 16.5H7.5v-1.57a2 2 0 01.586-1.414z"
+                    />
+                  </svg>
+                  {isArabic ? "تعديل الملف الشخصي" : "Edit Profile"}
+                </Link>
+              </div>
+            )}
+
             <h4 className="text-md font-semibold mb-4">
-              {" "}
-              {isArabic ? "تابعنا" : "Follow US"}
+              {isArabic ? "تابعنا" : "Follow Us"}
             </h4>
             <div className="flex space-x-4">
-              {/*    <Button
-                variant="ghost"
-                size="icon"
-                className="hover:text-brightTeal transition-colors"
-              >
-                <Facebook className="h-5 w-5" />
-                <span className="sr-only">Facebook</span>
-              </Button> */}
               <a
-                href="https://x.com/m_almanasrah" // replace with your actual Twitter link
+                href="https://x.com/m_almanasrah"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -180,25 +194,10 @@ const Footer = () => {
                   <span className="sr-only">Twitter</span>
                 </Button>
               </a>
-              {/*      <Button
-                variant="ghost"
-                size="icon"
-                className="hover:text-brightTeal transition-colors"
-              >
-                <Linkedin className="h-5 w-5" />
-                <span className="sr-only">LinkedIn</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:text-brightTeal transition-colors"
-              >
-                <Instagram className="h-5 w-5" />
-                <span className="sr-only">Instagram</span>
-              </Button> */}
             </div>
           </div>
         </div>
+
         <div className="mt-8 pt-4 border-t border-pureWhite/20 text-center text-sm">
           <p>
             {isArabic

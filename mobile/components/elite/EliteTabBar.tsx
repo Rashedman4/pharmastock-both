@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
 import { usePathname, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,7 +20,7 @@ const TABS: Tab[] = [
     iconActive: 'grid',
   },
   {
-    label: 'Signals',
+    label: 'Plans',
     path: '/elite/trade-plans',
     icon: 'trending-up-outline',
     iconActive: 'trending-up',
@@ -30,12 +30,6 @@ const TABS: Tab[] = [
     path: '/elite/portfolio',
     icon: 'briefcase-outline',
     iconActive: 'briefcase',
-  },
-  {
-    label: 'Payments',
-    path: '/elite/firm-profit',
-    icon: 'cash-outline',
-    iconActive: 'cash',
   },
 ];
 
@@ -72,6 +66,16 @@ export function EliteTabBar() {
           </TouchableOpacity>
         );
       })}
+      <TouchableOpacity
+        style={styles.tab}
+        onPress={() => Linking.openURL('https://biopharmastock.com/en/elite-group')}
+        activeOpacity={0.7}
+      >
+        <View style={styles.iconWrap}>
+          <Ionicons name="cash-outline" size={20} color={Colors.textMuted} />
+        </View>
+        <Text style={styles.label}>Payments</Text>
+      </TouchableOpacity>
     </View>
   );
 }

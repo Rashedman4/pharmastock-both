@@ -21,7 +21,7 @@ const loginSchema = z.object({
 
 const loginLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 10,
   keyFn: getClientIP,
 });
 

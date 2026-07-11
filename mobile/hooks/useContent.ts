@@ -4,6 +4,10 @@ import {
   fetchNewsItem,
 } from '@/services/news.service';
 import {
+  fetchDailyUpdates,
+  fetchDailyUpdateItem,
+} from '@/services/dailyUpdates.service';
+import {
   fetchBreakthroughs,
   fetchBreakthrough,
   fetchMarketPrice,
@@ -25,6 +29,26 @@ export function useNewsItem(id: number) {
   return useQuery({
     queryKey: ['news', id],
     queryFn: () => fetchNewsItem(id),
+    enabled: !!id,
+    staleTime: 120_000,
+  });
+}
+
+export function useDailyUpdates() {
+  return useInfiniteQuery({
+    queryKey: ['dailyUpdates'],
+    queryFn: ({ pageParam = 1 }) => fetchDailyUpdates(pageParam as number),
+    getNextPageParam: (lastPage) =>
+      lastPage.pagination.hasNext ? lastPage.pagination.page + 1 : undefined,
+    initialPageParam: 1,
+    staleTime: 120_000,
+  });
+}
+
+export function useDailyUpdateItem(id: number) {
+  return useQuery({
+    queryKey: ['dailyUpdates', id],
+    queryFn: () => fetchDailyUpdateItem(id),
     enabled: !!id,
     staleTime: 120_000,
   });

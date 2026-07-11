@@ -9,7 +9,7 @@ const service = new ProgramService();
 
 const applyLimiter = createRateLimiter({
   windowMs: 60 * 60 * 1000,
-  max: 3,
+  max: 6,
   keyFn: (req) => req.headers.get('authorization') ?? 'unknown',
 });
 

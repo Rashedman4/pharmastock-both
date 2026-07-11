@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Alert, ScrollView, TouchableOpacity } from 'rea
 import { router } from 'expo-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/ui/Button';
 import { Colors } from '@/constants/colors';
 import { authService } from '@/services/auth.service';
@@ -103,6 +104,24 @@ export default function ProfileScreen() {
       </View>
 
       <EliteSection isElite={!!user?.is_elite} />
+
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>{t('profile.account_section')}</Text>
+        <TouchableOpacity
+          style={[styles.eliteRow, { flexDirection: rowDirection }]}
+          onPress={() => router.push('/edit-profile')}
+          activeOpacity={0.7}
+        >
+          <View style={[styles.eliteRowLeft, { flexDirection: rowDirection }]}>
+            <Ionicons name="person-outline" size={22} color={Colors.primary} />
+            <View>
+              <Text style={styles.eliteRowTitle}>{t('profile.edit_profile')}</Text>
+              <Text style={styles.eliteRowSub}>{t('profile.edit_profile_subtitle')}</Text>
+            </View>
+          </View>
+          <Text style={styles.arrow}>{directionArrow}</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>{t('settings.app_preferences')}</Text>

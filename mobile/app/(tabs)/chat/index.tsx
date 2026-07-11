@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
 import { useConversations, useChatConnection } from '@/hooks/useChat';
 import { ConversationItem } from '@/components/chat/ConversationItem';
+import { LanguageToggle } from '@/components/ui/LanguageToggle';
+import { rowDirection } from '@/lib/rtl';
 import type { Conversation } from '@/types/content';
 
 export default function ChatInboxScreen() {
@@ -27,8 +29,9 @@ export default function ChatInboxScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: rowDirection }]}>
         <Text style={styles.headerTitle}>{t('chat.title')}</Text>
+        <LanguageToggle style={styles.languageToggle} />
       </View>
 
       {isLoading ? (
@@ -55,7 +58,6 @@ export default function ChatInboxScreen() {
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyIcon}>💬</Text>
               <Text style={styles.emptyTitle}>{t('chat.empty')}</Text>
             </View>
           }
@@ -71,6 +73,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   header: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
@@ -82,6 +86,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: Colors.primary,
   },
+  languageToggle: { marginBottom: 0 },
   centered: {
     flex: 1,
     justifyContent: 'center',
@@ -91,10 +96,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: 80,
-  },
-  emptyIcon: {
-    fontSize: 48,
-    marginBottom: 16,
   },
   emptyTitle: {
     fontSize: 16,

@@ -129,6 +129,8 @@ export default function TabsLayout() {
       />
       {/* Elite section — inside tabs so the tab bar stays visible, hidden from the tab bar itself */}
       <Tabs.Screen name="elite" options={{ href: null }} />
+      {/* Daily update details — reachable from the News tab's nested switcher, hidden from the tab bar */}
+      <Tabs.Screen name="daily-updates" options={{ href: null }} />
     </Tabs>
   );
 }

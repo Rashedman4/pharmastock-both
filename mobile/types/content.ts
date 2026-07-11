@@ -31,6 +31,16 @@ export interface NewsItem {
   published_date: string;
 }
 
+export interface DailyUpdateItem {
+  id: number;
+  symbol: string;
+  subtitle_en: string | null;
+  subtitle_ar: string | null;
+  description_en: string;
+  description_ar: string;
+  published_date: string;
+}
+
 export interface Breakthrough {
   id: number;
   title_en: string;

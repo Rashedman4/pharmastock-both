@@ -1,4 +1,4 @@
-import NewsFeed from "@/components/app/NewsFeed";
+import NewsSection from "@/components/app/NewsSection";
 export const metadata = {
   title: "اخر الأخبار | Bio Pharma Stock",
   description:
@@ -27,7 +27,7 @@ export default function NewsPage() {
       <h1 className="text-3xl font-bold text-royalBlue mb-6">
         آخر الأخبار الدوائية{" "}
       </h1>
-      <NewsFeed lang="ar" />
+      <NewsSection lang="ar" />
     </main>
   );
 }

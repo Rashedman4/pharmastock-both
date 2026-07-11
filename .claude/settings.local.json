@@ -26,7 +26,11 @@
       "Bash(Get-ChildItem *)",
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(Sort-Object)",
-      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k,':',v\\) for k,v in d.get\\('dependencies',{}\\).items\\(\\)]\")"
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k,':',v\\) for k,v in d.get\\('dependencies',{}\\).items\\(\\)]\")",
+      "Bash(npx eslint *)",
+      "Bash(node -e \"console.log\\(require\\('./package.json'\\).scripts.lint\\)\")",
+      "Bash(ls -la .env*)",
+      "Bash(cat .env)"
     ]
   }
 }

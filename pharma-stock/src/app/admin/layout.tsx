@@ -11,6 +11,7 @@ const links = [
   { href: "/admin/referrals", label: "Attribution Links" },
   { href: "/admin/signals", label: "Signals" },
   { href: "/admin/news", label: "News" },
+  { href: "/admin/daily-updates", label: "Daily Updates" },
   { href: "/admin/history", label: "History" },
   { href: "/admin/messages", label: "Messages" },
 ];

@@ -12,11 +12,12 @@ const registerSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
   firstName: z.string().min(2, 'First name must be at least 2 characters').max(100),
   lastName: z.string().min(1, 'Last name is required').max(100),
+  phoneNumber: z.string().max(20).optional(),
 });
 
 const registerLimiter = createRateLimiter({
   windowMs: 60 * 60 * 1000,
-  max: 3,
+  max: 6,
   keyFn: getClientIP,
 });
 
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { email, password, firstName, lastName } = parsed.data;
+  const { email, password, firstName, lastName, phoneNumber } = parsed.data;
 
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
@@ -75,9 +76,9 @@ export async function POST(req: NextRequest) {
   const verificationCode = uuidv4().slice(0, 6).toUpperCase();
 
   await pool.query(
-    `INSERT INTO pendingusers (firstname, lastname, email, password, verification_code, created_at)
-     VALUES ($1, $2, $3, $4, $5, NOW())`,
-    [firstName, lastName, email, hashedPassword, verificationCode]
+    `INSERT INTO pendingusers (firstname, lastname, email, password, phonenumber, verification_code, created_at)
+     VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
+    [firstName, lastName, email, hashedPassword, phoneNumber?.length ? phoneNumber : null, verificationCode]
   );
 
   await sendEmail(email, 'Verification Code', verificationCode);

@@ -131,8 +131,6 @@ export async function POST(
     const transferReference = formData.get('transfer_reference')
       ? String(formData.get('transfer_reference')).trim()
       : null;
-    const note = formData.get('note') ? String(formData.get('note')).trim() : null;
-
     // Update the payment record
     await pool.query(
       `UPDATE firm_profit_payments

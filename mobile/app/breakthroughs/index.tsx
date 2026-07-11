@@ -96,7 +96,7 @@ export default function BreakthroughsScreen() {
           <ActivityIndicator size="large" color={Colors.primary} />
         </View>
       ) : isError ? (
-        <EmptyState icon="⚠️" title={t('common.error')} actionLabel={t('common.retry')} onAction={() => refetch()} />
+        <EmptyState title={t('common.error')} actionLabel={t('common.retry')} onAction={() => refetch()} />
       ) : (
         <FlatList
           data={allItems}
@@ -108,7 +108,7 @@ export default function BreakthroughsScreen() {
             />
           )}
           contentContainerStyle={allItems.length === 0 ? styles.emptyContent : styles.listContent}
-          ListEmptyComponent={<EmptyState icon="🔬" title={t('breakthroughs.empty')} />}
+          ListEmptyComponent={<EmptyState title={t('breakthroughs.empty')} />}
           ListFooterComponent={
             isFetchingNextPage ? (
               <ActivityIndicator color={Colors.primary} style={{ marginVertical: 16 }} />

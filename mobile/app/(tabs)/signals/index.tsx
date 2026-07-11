@@ -15,7 +15,9 @@ import { useOpenSignals, useSignalHistory } from '@/hooks/useSignals';
 import { SignalCard } from '@/components/signals/SignalCard';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { Colors } from '@/constants/colors';
+import { rowDirection } from '@/lib/rtl';
 import type { Signal, SignalHistoryItem } from '@/types/content';
 
 type Tab = 'open' | 'history';
@@ -77,8 +79,9 @@ export default function SignalsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Screen header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: rowDirection }]}>
         <Text style={styles.headerTitle}>{t('signals.title')}</Text>
+        <LanguageToggle style={styles.languageToggle} />
       </View>
 
       {/* Segmented control */}
@@ -107,7 +110,6 @@ export default function SignalsScreen() {
         </View>
       ) : query.isError ? (
         <EmptyState
-          icon="⚠️"
           title={t('common.error')}
           actionLabel={t('common.retry')}
           onAction={() => query.refetch()}
@@ -134,7 +136,6 @@ export default function SignalsScreen() {
           }
           ListEmptyComponent={
             <EmptyState
-              icon="📊"
               title={
                 activeTab === 'open' ? t('signals.empty') : t('signals.history_empty')
               }
@@ -165,6 +166,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.backgroundSecondary },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 14,
     backgroundColor: Colors.white,
@@ -172,6 +175,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.borderLight,
   },
   headerTitle: { fontSize: 22, fontWeight: '800', color: Colors.primary },
+  languageToggle: { marginBottom: 0 },
 
   // Segmented control
   segmented: {

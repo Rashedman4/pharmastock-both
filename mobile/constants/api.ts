@@ -11,6 +11,7 @@ export const API_ROUTES = {
     forgotPassword: '/api/mobile/v1/auth/forgot-password',
     resetPassword: '/api/mobile/v1/auth/reset-password',
     googleLogin: '/api/mobile/v1/auth/google',
+    appleLogin: '/api/mobile/v1/auth/apple',
   },
   me: '/api/mobile/v1/me',
   meLanguage: '/api/mobile/v1/me/language',
@@ -22,6 +23,10 @@ export const API_ROUTES = {
   news: {
     list: '/api/mobile/v1/news',
     detail: (id: number) => `/api/mobile/v1/news/${id}`,
+  },
+  dailyUpdates: {
+    list: '/api/mobile/v1/daily-updates',
+    detail: (id: number) => `/api/mobile/v1/daily-updates/${id}`,
   },
   breakthroughs: {
     list: '/api/mobile/v1/breakthroughs',

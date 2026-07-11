@@ -8,6 +8,7 @@ export interface AuthUser {
   name: string;
   role: string;
   phonenumber: string | null;
+  provider?: string | null;
   is_elite: boolean;
   is_partner: boolean;
   created_at: string;

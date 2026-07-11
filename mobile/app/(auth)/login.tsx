@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useForm, Controller } from 'react-hook-form';
@@ -22,6 +23,8 @@ import { Colors } from '@/constants/colors';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { signInWithGoogle, configureGoogleSignIn } from '@/lib/googleSignIn';
+import { signInWithApple, isAppleAuthAvailable } from '@/lib/appleSignIn';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import type { AuthUser } from '@/types/user';
 
 configureGoogleSignIn();
@@ -37,6 +40,14 @@ export default function LoginScreen() {
   const { t } = useTranslation();
   const { setTokens, setUser } = useAuthStore();
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
+  const [appleAvailable, setAppleAvailable] = useState(false);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      isAppleAuthAvailable().then(setAppleAvailable);
+    }
+  }, []);
 
   const {
     control,
@@ -59,6 +70,29 @@ export default function LoginScreen() {
   });
 
   const onSubmit = (data: FormData) => mutation.mutate(data);
+
+  const handleAppleSignIn = async () => {
+    setAppleLoading(true);
+    try {
+      const credential = await signInWithApple();
+      if (!credential.identityToken) throw new Error('No identity token');
+      const data = await authService.appleLogin({
+        identityToken: credential.identityToken,
+        fullName: credential.fullName
+          ? { firstName: credential.fullName.givenName, lastName: credential.fullName.familyName }
+          : null,
+      });
+      await setTokens(data.access_token, data.refresh_token);
+      await setUser(data.user as AuthUser);
+      router.replace('/(tabs)/home');
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code;
+      if (code === 'ERR_REQUEST_CANCELED') return;
+      Alert.alert(t('common.error_title'), t('errors.unknownError'));
+    } finally {
+      setAppleLoading(false);
+    }
+  };
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
@@ -156,6 +190,16 @@ export default function LoginScreen() {
             </>
           )}
         </TouchableOpacity>
+
+        {appleAvailable && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+            cornerRadius={12}
+            style={{ width: '100%', height: 48, marginTop: 12 }}
+            onPress={handleAppleSignIn}
+          />
+        )}
       </View>
 
       <View style={styles.footer}>

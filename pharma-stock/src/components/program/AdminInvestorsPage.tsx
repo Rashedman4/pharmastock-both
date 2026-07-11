@@ -39,10 +39,18 @@ interface PartnerOption {
   referralCode?: string | null;
   email: string;
 }
+interface PendingFirmProfitRow {
+  memberId: number;
+  portfolioId: number | null;
+  investorName: string;
+  email: string;
+  pendingFirmProfit: number;
+}
 export default function AdminInvestorsPage() {
   const [rows, setRows] = useState<InvestorRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pendingProfit, setPendingProfit] = useState<PendingFirmProfitRow[]>([]);
   const [manualUsers, setManualUsers] = useState<CandidateUser[]>([]);
   const [manualQuery, setManualQuery] = useState("");
   const [partnerOptions, setPartnerOptions] = useState<PartnerOption[]>([]);
@@ -71,6 +79,20 @@ export default function AdminInvestorsPage() {
     }
   }
 
+  async function loadPendingProfit() {
+    try {
+      const res = await fetch("/api/admin/elite-portfolios/pending-profit", {
+        cache: "no-store",
+      });
+      const json = await res.json();
+      if (!res.ok)
+        throw new Error(json?.message || "Failed to load pending firm profit.");
+      setPendingProfit(Array.isArray(json) ? json : []);
+    } catch (err: any) {
+      setError(err.message || "Failed to load pending firm profit.");
+    }
+  }
+
   async function loadManualUsers(query?: string) {
     try {
       const params = new URLSearchParams();
@@ -91,6 +113,7 @@ export default function AdminInvestorsPage() {
     loadData();
     loadManualUsers();
     loadPartnerOptions();
+    loadPendingProfit();
   }, []);
 
   useEffect(() => {
@@ -304,6 +327,36 @@ export default function AdminInvestorsPage() {
           </div>
         </form>
       </SectionCard>
+
+      {pendingProfit.length > 0 ? (
+        <SectionCard
+          title="Pending Firm Profit"
+          description="Investors with unpaid firm profit share owed from closed positions, sorted by amount owed."
+        >
+          <div className="space-y-2">
+            {pendingProfit
+              .slice()
+              .sort((a, b) => b.pendingFirmProfit - a.pendingFirmProfit)
+              .map((row) => (
+                <Link
+                  key={row.memberId}
+                  href={`/admin/elite-portfolios/${row.memberId}`}
+                  className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm transition hover:border-amber-300 hover:bg-amber-100"
+                >
+                  <div>
+                    <p className="font-semibold text-slate-900">
+                      {row.investorName}
+                    </p>
+                    <p className="text-slate-500">{row.email}</p>
+                  </div>
+                  <span className="text-base font-semibold text-amber-700">
+                    {money(row.pendingFirmProfit)}
+                  </span>
+                </Link>
+              ))}
+          </div>
+        </SectionCard>
+      ) : null}
 
       <SectionCard
         title="Elite investors"

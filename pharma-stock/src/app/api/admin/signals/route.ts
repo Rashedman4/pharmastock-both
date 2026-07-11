@@ -80,10 +80,10 @@ export async function POST(req: NextRequest) {
     try {
       await createNotificationForAll({
         type: "signal_open",
-        title_en: `New Signal: ${symbol}`,
-        title_ar: `إشارة جديدة: ${symbol}`,
-        body_en: `Buy signal opened for ${symbol}`,
-        body_ar: `تم فتح إشارة شراء لـ ${symbol}`,
+        title_en: `New Idea: ${symbol}`,
+        title_ar: `فكرة جديدة: ${symbol}`,
+        body_en: `New investment idea opened for ${symbol}`,
+        body_ar: `تم فتح فكرة استثمارية جديدة لـ ${symbol}`,
         data: { signalId: newSignal.id, symbol, action: "Buy", screen: "signals" },
       });
     } catch (notifErr) {
@@ -205,15 +205,15 @@ export async function DELETE(req: NextRequest) {
     revalidatePath("/api/signals");
     revalidatePath("/api/signalHistory");
 
-    try {
-      if (closeSignal === "yes") {
+    if (closeSignal === "yes") {
+      try {
         const success = signal.enter_price < signal.price_now;
         await createNotificationForAll({
           type: "signal_close",
-          title_en: `Signal Closed: ${signal.symbol}`,
-          title_ar: `إشارة مغلقة: ${signal.symbol}`,
-          body_en: `${signal.symbol} signal closed ${success ? "successfully" : "with a loss"}`,
-          body_ar: `تم إغلاق إشارة ${signal.symbol} ${success ? "بنجاح" : "بخسارة"}`,
+          title_en: `Idea Closed: ${signal.symbol}`,
+          title_ar: `إغلاق فكرة: ${signal.symbol}`,
+          body_en: `${signal.symbol} idea closed ${success ? "successfully" : "with a loss"}`,
+          body_ar: `تم إغلاق فكرة ${signal.symbol} ${success ? "بنجاح" : "بخسارة"}`,
           data: {
             symbol: signal.symbol,
             success,
@@ -222,18 +222,9 @@ export async function DELETE(req: NextRequest) {
             screen: "signals",
           },
         });
-      } else {
-        await createNotificationForAll({
-          type: "signal_close",
-          title_en: `Signal Removed: ${signal.symbol}`,
-          title_ar: `تم إزالة الإشارة: ${signal.symbol}`,
-          body_en: `The ${signal.symbol} signal has been removed`,
-          body_ar: `تمت إزالة إشارة ${signal.symbol}`,
-          data: { symbol: signal.symbol, screen: "signals" },
-        });
+      } catch (notifErr) {
+        console.error("[Notification] Failed to send signal_close notification:", notifErr);
       }
-    } catch (notifErr) {
-      console.error("[Notification] Failed to send signal_close notification:", notifErr);
     }
 
     return NextResponse.json({ success: true }, { status: 200 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -137,7 +137,7 @@ export default function EliteDashboardScreen() {
           <View style={styles.divider} />
           <QuickLink
             label={t('elite.firm_profit')}
-            onPress={() => router.push('/elite/firm-profit')}
+            onPress={() => Linking.openURL('https://biopharmastock.com/en/elite-group')}
           />
         </Card>
 

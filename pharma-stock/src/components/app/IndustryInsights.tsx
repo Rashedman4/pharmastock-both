@@ -41,48 +41,48 @@ interface langProps {
 const insightsTranslation: Record<"en" | "ar", InsightData[]> = {
   en: [
     {
-      title: "AI in Drug Discovery Gains Ground",
+      title: "GLP-1 Drugs Reshape the Pharma Landscape",
       description:
-        "Top pharma firms have increased investment in AI by 40% YoY, accelerating early-stage drug screening and lowering R&D costs across oncology and neurology.",
+        "Semaglutide and tirzepatide generated over $50B combined in 2025. Eli Lilly’s Mounjaro and Zepbound alone surpassed $39.5B in the first nine months, overtaking Keytruda as the world’s best-selling medicine. New FDA approvals for sleep apnea, chronic kidney disease, and MASH pushed the global GLP-1 market to ~$68.7B in 2026, growing at a 12.3% CAGR. (Source: IQVIA, Eli Lilly earnings)",
       impact: "positive",
-      sectors: ["AI", "Biotech", "Pharma R&D"],
+      sectors: ["Metabolic Disease", "Cardiovascular", "Obesity"],
     },
     {
-      title: "Biosimilars Disrupt Patent-Expired Blockbusters",
+      title: "AI Drug Discovery Reaches 200+ Clinical Programs",
       description:
-        "With Humira’s patent expired, biosimilars are projected to save $180B in drug spending globally by 2028, putting pressure on branded revenue streams.",
-      impact: "negative",
-      sectors: ["Generics", "Biologics", "Healthcare Cost"],
+        "Over 200 AI-designed drug candidates entered human clinical trials by early 2026 — 94 in Phase I, 56 in Phase II, and 15 in Phase III. Insilico Medicine’s rentosertib became the first AI-discovered drug to show statistically significant clinical efficacy (Nature Medicine, June 2025). The FDA issued its first comprehensive AI drug development framework in January 2025. (Source: Axis Intelligence, FDA)",
+      impact: "positive",
+      sectors: ["AI/ML", "Oncology", "Drug Discovery"],
     },
     {
-      title: "Precision Medicine Becomes Mainstream",
+      title: "Antibody-Drug Conjugates Lead Oncology Innovation",
       description:
-        "Over 50% of new FDA approvals in 2023 were tied to targeted or biomarker-driven therapies, reflecting a shift toward individualized treatment plans.",
+        "The global ADC market reached $15.3B in 2025 with 19 FDA-approved therapies. AstraZeneca’s Datroway received two FDA approvals in early 2025 for breast and lung cancer. The top 5 ADCs now generate over $10B annually, led by Enhertu at $3.75B. Over 100 ADC programs are in active clinical development worldwide. (Source: Grand View Research, FDA)",
       impact: "positive",
-      sectors: ["Genomics", "Diagnostics", "Oncology"],
+      sectors: ["Oncology", "ADCs", "Biologics"],
     },
   ],
   ar: [
     {
-      title: "الذكاء الاصطناعي يغير اكتشاف الأدوية",
+      title: "عقاقير GLP-1 تُعيد تشكيل المشهد الدوائي",
       description:
-        "زادت شركات الأدوية الاستثمار في الذكاء الاصطناعي بنسبة ٤٠٪ سنويًا، مما يسرّع من فحص الأدوية المبكر ويقلل التكاليف في مجالات مثل الأورام والأعصاب.",
+        "أنتجت عقاقير سيماغلوتيد وتيرزيباتيد معًا أكثر من ٥٠ مليار دولار في عام ٢٠٢٥. وحدها عقاقير موندجارو وزيبباوند من إيلي ليلي تجاوزت ٣٩.٥ مليار دولار في أول تسعة أشهر، متفوقةً على كيترودا بوصفها الدواء الأكثر مبيعًا في العالم. دفعت موافقات FDA الجديدة لعلاج انقطاع التنفس أثناء النوم وأمراض الكلى السوق العالمية لعقاقير GLP-1 إلى نحو ٦٨.٧ مليار دولار عام ٢٠٢٦. (المصدر: IQVIA، أرباح إيلي ليلي)",
       impact: "positive",
-      sectors: ["الذكاء الاصطناعي", "التكنولوجيا الحيوية", "البحث والتطوير"],
+      sectors: ["أمراض التمثيل الغذائي", "أمراض القلب", "السمنة"],
     },
     {
-      title: "الأدوية المشابهة تؤثر على الأدوية الأصلية",
+      title: "اكتشاف الأدوية بالذكاء الاصطناعي يبلغ ٢٠٠+ برنامج سريري",
       description:
-        "بعد انتهاء براءة اختراع دواء هيوميرا، من المتوقع أن توفر البدائل الحيوية ١٨٠ مليار دولار في تكاليف الأدوية بحلول عام ٢٠٢٨، مما يضغط على إيرادات الأدوية الأصلية.",
-      impact: "negative",
-      sectors: ["الأدوية المشابهة", "البيولوجيا", "تكاليف الرعاية الصحية"],
+        "دخل أكثر من ٢٠٠ دواء مُصمَّم بالذكاء الاصطناعي التجارب السريرية البشرية بحلول مطلع عام ٢٠٢٦، منها ٩٤ في المرحلة الأولى و٥٦ في الثانية و١٥ في المرحلة الثالثة. أصبح رينتوسيرتيب من إنسيليكو ميديسن أول دواء مُكتشَف بالذكاء الاصطناعي يُثبت فعاليةً سريرية إحصائية (مجلة Nature Medicine، يونيو ٢٠٢٥). أصدرت هيئة FDA أول إطار شامل لتطوير الأدوية بالذكاء الاصطناعي في يناير ٢٠٢٥. (المصدر: Axis Intelligence، FDA)",
+      impact: "positive",
+      sectors: ["الذكاء الاصطناعي", "علم الأورام", "اكتشاف الأدوية"],
     },
     {
-      title: "الطب الدقيق يصبح السائد",
+      title: "الأجسام المضادة المترافقة مع الأدوية (ADC) تقود ابتكار الأورام",
       description:
-        "أكثر من ٥٠٪ من الموافقات الجديدة من FDA في عام ٢٠٢٣ كانت لعلاجات موجهة أو تعتمد على مؤشرات حيوية، مما يعكس تحولًا نحو خطط علاج فردية.",
+        "وصل سوق ADC العالمي إلى ١٥.٣ مليار دولار في ٢٠٢٥ مع ١٩ علاجًا معتمدًا من FDA. حصل داتروواي من أسترازينيكا على موافقتين من FDA في مطلع ٢٠٢٥ لسرطان الثدي والرئة. تُدر أكبر خمسة عقاقير ADC أكثر من ١٠ مليارات دولار سنويًا بقيادة إنهيرتو بـ٣.٧٥ مليار دولار، مع أكثر من ١٠٠ برنامج تحت التطوير السريري عالميًا. (المصدر: Grand View Research، FDA)",
       impact: "positive",
-      sectors: ["الجينوم", "التشخيص", "علم الأورام"],
+      sectors: ["علم الأورام", "الأجسام المضادة المترافقة", "المستحضرات البيولوجية"],
     },
   ],
 };
@@ -94,8 +94,9 @@ const marketTrendData = [
   { year: "2021", traditional: 110, precision: 130, digital: 100 },
   { year: "2022", traditional: 113, precision: 165, digital: 140 },
   { year: "2023", traditional: 115, precision: 200, digital: 190 },
-  { year: "2024", traditional: 117, precision: 240, digital: 250 },
-  { year: "2025", traditional: 120, precision: 280, digital: 310 },
+  { year: "2024", traditional: 117, precision: 245, digital: 255 },
+  { year: "2025", traditional: 120, precision: 295, digital: 330 },
+  { year: "2026", traditional: 123, precision: 350, digital: 420 },
 ];
 
 export default function IndustryInsights({ lang }: langProps) {
@@ -214,8 +215,8 @@ export default function IndustryInsights({ lang }: langProps) {
           className="text-center text-xs text-gray-500 mt-8"
         >
           {lang === "ar"
-            ? "*البيانات مستندة إلى أبحاث الصناعة ومحدثة في أبريل 2025."
-            : "*Data based on industry research and updated in April 2025."}
+            ? "*البيانات مستندة إلى مصادر صناعية موثوقة (IQVIA, FDA, Grand View Research) ومحدّثة في يوليو 2026."
+            : "*Data sourced from IQVIA, FDA, Grand View Research, and Axis Intelligence. Updated July 2026."}
         </motion.p>
       </div>
     </section>

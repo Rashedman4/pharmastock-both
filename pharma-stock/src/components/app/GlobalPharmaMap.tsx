@@ -87,80 +87,76 @@ const translatedRegions = {
     {
       id: "north-america",
       name: "North America",
-      growth: 6.15, // CAGR 2024–2033
-      companies: 2325, // Number of brand name pharmaceutical manufacturers in the U.S. as of 2023
-      topSectors: ["Oncology", "Neurology", "Biologics"],
+      growth: 5.8, // CAGR 2025–2030, Grand View Research 2026
+      companies: 2400, // Estimated active pharma manufacturers in the U.S. and Canada, 2025
+      topSectors: ["Oncology", "GLP-1 / Metabolic", "ADCs"],
       description:
-        "The U.S. leads the global pharmaceutical market, accounting for approximately 30–40% of global sales, with a strong focus on oncology and biologics.",
+        "North America represents ~47% of global pharmaceutical revenue in 2025. GLP-1 drugs (semaglutide, tirzepatide) are the fastest-growing category, with Eli Lilly and Novo Nordisk dominating. The U.S. also leads in ADC approvals — 19 therapies cleared by mid-2026 — and AI-driven drug discovery, with 173+ clinical programs active. (Source: IQVIA, Grand View Research)",
     },
     {
       id: "europe",
       name: "Europe",
-      growth: 5.7, // CAGR 2024–2033
-      companies: 1800, // Estimated number of pharmaceutical companies in Europe
-      topSectors: ["Oncology", "Cardiovascular", "Vaccines"],
+      growth: 4.8, // CAGR 2025–2030, Precedence Research 2026
+      companies: 1850, // Estimated pharmaceutical companies in Europe, 2025
+      topSectors: ["Oncology", "Biosimilars", "Cardiovascular"],
       description:
-        "Europe maintains a robust pharmaceutical industry with significant contributions in oncology, cardiovascular treatments, and vaccine development.",
+        "Europe accounts for ~18% of global pharmaceutical sales, with Germany, France, and Switzerland as the largest markets. Biosimilar adoption is accelerating rapidly as key biologics lose exclusivity, with the EU biosimilars segment growing at ~14% CAGR. Oncology remains the dominant therapy area by spend. EMA approved 89 new medicines in 2025. (Source: EMA, Precedence Research)",
     },
     {
       id: "asia-pacific",
       name: "Asia-Pacific",
-      growth: 11.4, // CAGR 2024–2030
-      companies: 3100, // Estimated number of pharmaceutical companies in Asia-Pacific
-      topSectors: ["Generics", "Biosimilars", "Traditional Medicine"],
+      growth: 9.5, // CAGR 2025–2030, multiple sources
+      companies: 3400, // Estimated pharmaceutical companies in Asia-Pacific, 2025
+      topSectors: ["Generics", "Biosimilars", "AI Drug Discovery"],
       description:
-        "Asia-Pacific is the fastest-growing pharmaceutical market, driven by generics, biosimilars, and traditional medicine, with significant contributions from countries like India and China.",
+        "Asia-Pacific is the fastest-growing pharmaceutical region with a projected CAGR of ~9.5% through 2030. China's pharmaceutical output exceeded $200B in 2025, while India remains the world's largest supplier of generic medicines by volume, supplying ~20% of global generic exports. Japan leads Asia in ADC and biologics development. AI drug discovery in China has surged, with over 40 companies active. (Source: GlobalData, IQVIA)",
     },
     {
       id: "emerging-markets",
       name: "Emerging Markets",
-      growth: 9.8, // Estimated CAGR
-      companies: 1420, // Estimated number of pharmaceutical companies in emerging markets
-      topSectors: ["Infectious Diseases", "Affordable Medicine", "Telehealth"],
+      growth: 7.5, // CAGR 2025–2030; Latin America 7.03%, Middle East/Africa similar
+      companies: 1600, // Estimated active pharmaceutical companies in EM, 2025
+      topSectors: ["Generics", "Vaccines", "Biosimilars"],
       description:
-        "Emerging markets are rapidly developing pharmaceutical infrastructures focusing on accessible healthcare, infectious disease treatment, and telehealth solutions.",
+        "Emerging markets (Latin America, Middle East, Africa) represent a combined pharmaceutical market of over $200B in 2025. Brazil leads Latin America at ~$50B, with the region growing at 7% CAGR to 2034. Biosimilar and vaccine rollouts, improving healthcare infrastructure, and a rising middle class are the primary growth engines. GLP-1 access programs are beginning to expand in these regions. (Source: Precedence Research, Grand View Research)",
     },
   ],
   ar: [
     {
       id: "north-america",
       name: "أمريكا الشمالية",
-      growth: 6.15,
-      companies: 2325,
-      topSectors: ["علم الأورام", "علم الأعصاب", "المنتجات البيولوجية"],
+      growth: 5.8,
+      companies: 2400,
+      topSectors: ["علم الأورام", "عقاقير GLP-1 / الاستقلاب", "الأجسام المضادة المترافقة"],
       description:
-        "تتصدر الولايات المتحدة سوق الأدوية العالمي، حيث تمثل ما يقرب من 30–40٪ من المبيعات العالمية، مع تركيز قوي على علم الأورام والمنتجات البيولوجية.",
+        "تمثل أمريكا الشمالية نحو ٤٧٪ من إيرادات الأدوية العالمية في ٢٠٢٥. تُعد عقاقير GLP-1 (سيماغلوتيد وتيرزيباتيد) الفئة الأسرع نموًا، بقيادة إيلي ليلي ونوفو نورديسك. تتصدر الولايات المتحدة أيضًا في موافقات الأجسام المضادة المترافقة (ADC) بـ١٩ علاجًا معتمدًا، وفي اكتشاف الأدوية بالذكاء الاصطناعي بأكثر من ١٧٣ برنامجًا سريريًا نشطًا. (المصدر: IQVIA، Grand View Research)",
     },
     {
       id: "europe",
       name: "أوروبا",
-      growth: 5.7,
-      companies: 1800,
-      topSectors: ["علم الأورام", "أمراض القلب والأوعية الدموية", "اللقاحات"],
+      growth: 4.8,
+      companies: 1850,
+      topSectors: ["علم الأورام", "الأدوية البيولوجية المشابهة", "أمراض القلب"],
       description:
-        "تحافظ أوروبا على صناعة دوائية قوية بمساهمات كبيرة في مجالات علم الأورام، وعلاج أمراض القلب، وتطوير اللقاحات.",
+        "تمثل أوروبا نحو ١٨٪ من مبيعات الأدوية العالمية، وتُعدّ ألمانيا وفرنسا وسويسرا أكبر أسواقها. يتسارع تبني الأدوية البيولوجية المشابهة (biosimilars) مع انتهاء فترات الحصرية للعقاقير الحيوية الكبرى، بمعدل نمو سنوي ~١٤٪. يستحوذ علم الأورام على أكبر حصة من الإنفاق العلاجي. وافقت وكالة EMA على ٨٩ دواءً جديدًا في ٢٠٢٥. (المصدر: EMA، Precedence Research)",
     },
     {
       id: "asia-pacific",
       name: "آسيا والمحيط الهادئ",
-      growth: 11.4,
-      companies: 3100,
-      topSectors: ["الأدوية الجنيسة", "البدائل البيولوجية", "الطب التقليدي"],
+      growth: 9.5,
+      companies: 3400,
+      topSectors: ["الأدوية الجنيسة", "الأدوية البيولوجية المشابهة", "اكتشاف الأدوية بالذكاء الاصطناعي"],
       description:
-        "تُعد آسيا والمحيط الهادئ السوق الأسرع نموًا في صناعة الأدوية، مدفوعة بالأدوية الجنيسة، والبدائل البيولوجية، والطب التقليدي، مع مساهمات كبيرة من دول مثل الهند والصين.",
+        "تُعد آسيا والمحيط الهادئ المنطقة الأسرع نموًا دوائيًا بمعدل نمو سنوي متوقع ~٩.٥٪ حتى ٢٠٣٠. تجاوز الإنتاج الدوائي الصيني ٢٠٠ مليار دولار في ٢٠٢٥، فيما تظل الهند المورد الأكبر للأدوية الجنيسة عالميًا بنسبة ~٢٠٪ من الصادرات. تقود اليابان آسيا في تطوير الأجسام المضادة المترافقة والمستحضرات البيولوجية، فيما تضم الصين أكثر من ٤٠ شركة نشطة في مجال الذكاء الاصطناعي الدوائي. (المصدر: GlobalData، IQVIA)",
     },
     {
       id: "emerging-markets",
       name: "الأسواق الناشئة",
-      growth: 9.8,
-      companies: 1420,
-      topSectors: [
-        "الأمراض المعدية",
-        "الأدوية ميسورة التكلفة",
-        "الرعاية الصحية عن بُعد",
-      ],
+      growth: 7.5,
+      companies: 1600,
+      topSectors: ["الأدوية الجنيسة", "اللقاحات", "الأدوية البيولوجية المشابهة"],
       description:
-        "تعمل الأسواق الناشئة على تطوير بنى تحتية دوائية بسرعة، مع تركيز على الرعاية الصحية الميسورة، وعلاج الأمراض المعدية، وحلول الرعاية عن بُعد.",
+        "تمثل الأسواق الناشئة (أمريكا اللاتينية، الشرق الأوسط، أفريقيا) سوقًا دوائيًا مجمعًا يتجاوز ٢٠٠ مليار دولار في ٢٠٢٥. تتصدر البرازيل أمريكا اللاتينية بنحو ٥٠ مليار دولار، بمعدل نمو إقليمي ٧٪ حتى ٢٠٣٤. تُشكّل برامج توزيع اللقاحات والأدوية البيولوجية المشابهة، وتحسن البنية التحتية الصحية، والطبقة الوسطى المتنامية محركات النمو الرئيسية. (المصدر: Precedence Research، Grand View Research)",
     },
   ],
 };

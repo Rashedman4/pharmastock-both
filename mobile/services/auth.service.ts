@@ -9,6 +9,7 @@ import type {
   ForgotPasswordRequest,
   ResetPasswordRequest,
   UserProfile,
+  UpdateProfileRequest,
 } from '@/types/api';
 
 export const authService = {
@@ -50,8 +51,23 @@ export const authService = {
     return res.data;
   },
 
+  async appleLogin(payload: {
+    identityToken: string;
+    fullName?: { firstName?: string | null; lastName?: string | null } | null;
+    deviceId?: string;
+    deviceName?: string;
+  }): Promise<LoginResponse> {
+    const res = await apiClient.post<LoginResponse>(API_ROUTES.auth.appleLogin, payload);
+    return res.data;
+  },
+
   async getMe(): Promise<UserProfile> {
     const res = await apiClient.get<UserProfile>(API_ROUTES.me);
+    return res.data;
+  },
+
+  async updateProfile(data: UpdateProfileRequest): Promise<UserProfile> {
+    const res = await apiClient.patch<UserProfile>(API_ROUTES.me, data);
     return res.data;
   },
 };

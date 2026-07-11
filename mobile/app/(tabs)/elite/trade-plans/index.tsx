@@ -41,7 +41,7 @@ function TradePlanCard({ item }: { item: TradePlan }) {
       {needsAction && (
         <View style={styles.actionBanner}>
           <Text style={styles.actionText}>
-            {item.status === 'SENT' ? '⚡ Awaiting your response' : '⚡ Ready to execute'}
+            {item.status === 'SENT' ? 'Awaiting your response' : 'Ready to execute'}
           </Text>
         </View>
       )}

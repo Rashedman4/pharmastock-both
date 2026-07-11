@@ -18,7 +18,9 @@ import { SignalCard } from '@/components/signals/SignalCard';
 import { NewsCard } from '@/components/news/NewsCard';
 import { BreakthroughCard } from '@/components/breakthroughs/BreakthroughCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
+import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { Colors } from '@/constants/colors';
+import { rowDirection } from '@/lib/rtl';
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -47,17 +49,20 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.appHeader}>
-        <Image
-          source={require('@/assets/logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <View>
-          <Text style={styles.welcomeText}>
-            {t(welcomeKey, { name: welcomeName })}
-          </Text>
+      <View style={[styles.appHeader, { flexDirection: rowDirection }]}>
+        <View style={[styles.appHeaderLeft, { flexDirection: rowDirection }]}>
+          <Image
+            source={require('@/assets/logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <View>
+            <Text style={styles.welcomeText}>
+              {t(welcomeKey, { name: welcomeName })}
+            </Text>
+          </View>
         </View>
+        <LanguageToggle style={styles.languageToggle} />
       </View>
 
       <ScrollView
@@ -138,15 +143,20 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.backgroundSecondary },
   appHeader: {
-    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: Colors.white,
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderLight,
-    gap: 12,
   },
+  appHeaderLeft: {
+    alignItems: 'center',
+    gap: 12,
+    flexShrink: 1,
+  },
+  languageToggle: { marginBottom: 0 },
   logo: { width: 44, height: 44 },
   welcomeText: {
     fontSize: 15,

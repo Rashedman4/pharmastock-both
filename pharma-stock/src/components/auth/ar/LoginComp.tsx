@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle, FaApple } from "react-icons/fa";
 const errTranslate: { [key: string]: string } = {
   "Invalid password": "كلمة مرور غير صحيحة",
   "No user found with this email":
@@ -147,8 +147,17 @@ export default function LoginComp() {
                   onClick={() => signIn("google")}
                 >
                   تسجيل الدخول باستخدام جوجل
-                  <FaGoogle className="mr-2" />
+                  <FaGoogle className="ml-2" />
                 </Button>
+                {process.env.NEXT_PUBLIC_APPLE_SIGN_IN_ENABLED === "true" && (
+                  <Button
+                    className="flex items-center justify-center w-full bg-black hover:bg-black/90 text-white font-bold py-2"
+                    onClick={() => signIn("apple")}
+                  >
+                    تسجيل الدخول باستخدام آبل
+                    <FaApple className="ml-2" />
+                  </Button>
+                )}
               </div>
               <p className="mt-4 text-center text-xs text-gray-500">
                 ليس لديك حساب؟{" "}

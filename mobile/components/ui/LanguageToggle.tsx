@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, Text, StyleSheet, Alert, View } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Alert, View, StyleProp, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
 import { changeLanguage } from '@/i18n';
 import { useUiStore } from '@/stores/ui.store';
 
-export function LanguageToggle() {
+interface LanguageToggleProps {
+  style?: StyleProp<ViewStyle>;
+}
+
+export function LanguageToggle({ style }: LanguageToggleProps = {}) {
   const { t, i18n } = useTranslation();
   const { setLanguage } = useUiStore();
   const [switching, setSwitching] = useState(false);
@@ -36,7 +40,7 @@ export function LanguageToggle() {
   };
 
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, style]}>
       <TouchableOpacity style={styles.btn} onPress={handleToggle} disabled={switching}>
         <Ionicons name="language-outline" size={15} color={Colors.primary} />
         <Text style={styles.label}>{label}</Text>

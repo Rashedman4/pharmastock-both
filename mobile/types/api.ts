@@ -27,6 +27,7 @@ export interface RegisterRequest {
   password: string;
   firstName: string;
   lastName: string;
+  phoneNumber?: string;
 }
 
 export interface VerifyRequest {
@@ -67,7 +68,16 @@ export interface UserProfile {
   name: string;
   role: string;
   phonenumber: string | null;
+  provider?: string | null;
   is_elite?: boolean;
   is_partner?: boolean;
   created_at: string;
+}
+
+export interface UpdateProfileRequest {
+  firstName?: string;
+  lastName?: string;
+  phonenumber?: string | null;
+  currentPassword?: string;
+  newPassword?: string;
 }

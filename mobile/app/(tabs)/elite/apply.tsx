@@ -68,7 +68,7 @@ export default function EliteApplyScreen() {
           <Text style={styles.title}>{t('elite.apply')}</Text>
           <Text style={styles.subtitle}>{t('elite.apply_subtitle')}</Text>
           <View style={styles.minBadge}>
-            <Text style={styles.minText}>{t('elite.invest_min')}</Text>
+            <Text style={styles.minText}>{t('elite.invest_advisory_note')}</Text>
           </View>
         </View>
 
@@ -83,7 +83,7 @@ export default function EliteApplyScreen() {
           />
 
           <Input
-            label={t('elite.investment_amount')}
+            label={t('elite.advisory_amount_label')}
             value={investmentAmount}
             onChangeText={setInvestmentAmount}
             placeholder="100,000"

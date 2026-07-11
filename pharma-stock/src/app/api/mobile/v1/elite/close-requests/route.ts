@@ -4,8 +4,10 @@ import pool from '@/lib/db';
 import { getMobileAuthPayload } from '@/lib/mobile/auth-middleware';
 import { err } from '@/lib/mobile/api-handler';
 import { parsePaginationParams, buildPaginationMeta } from '@/lib/mobile/paginate';
+import { ProgramService } from '@/modules/program/program.service';
 
 export const runtime = 'nodejs';
+const programService = new ProgramService();
 
 const MAGIC: Array<{ bytes: number[]; ext: string; mime: string }> = [
   { bytes: [0xFF, 0xD8, 0xFF],       ext: 'jpg',  mime: 'image/jpeg' },
@@ -110,6 +112,7 @@ export async function POST(req: NextRequest) {
     const requestNote = formData.get('request_note')
       ? String(formData.get('request_note')).trim()
       : null;
+    const forceClose = String(formData.get('force_close') || '').toLowerCase() === 'true';
     const evidenceFile = formData.get('evidence');
 
     if (!positionId || isNaN(positionId)) {
@@ -179,6 +182,39 @@ export async function POST(req: NextRequest) {
 
       evidenceUrl = uploadJson.secure_url;
       evidenceName = evidenceFile.name;
+    }
+
+    if (forceClose) {
+      if (!evidenceUrl) {
+        return err('VALIDATION_ERROR', 'Evidence image is required to force close', 400);
+      }
+
+      try {
+        const forceResult = await programService.forceClosePositionByInvestor(auth.userId, {
+          positionId,
+          requestedQuantity,
+          requestedExitPrice,
+          requestNote,
+          evidenceUrl,
+          evidenceName,
+        });
+
+        const { rows } = await pool.query(
+          `SELECT pcr.*,
+                  pps.symbol, pps.side, pps.quantity_open, pps.entry_price, pps.status AS position_status,
+                  tp.company_name
+           FROM position_close_requests pcr
+           JOIN portfolio_positions_simple pps ON pps.id = pcr.position_id
+           JOIN trade_plans tp ON tp.id = pps.trade_plan_id
+           WHERE pcr.id = $1`,
+          [forceResult.requestId],
+        );
+
+        return NextResponse.json(rows[0], { status: 201 });
+      } catch (e: any) {
+        console.error('[elite/close-requests] force close error', e);
+        return err('VALIDATION_ERROR', e?.message || 'Failed to force close position', 400);
+      }
     }
 
     const result = await pool.query(

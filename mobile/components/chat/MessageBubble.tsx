@@ -54,7 +54,7 @@ export function MessageBubble({ message, myUserId }: Props) {
 
         {message.messageType === 'video' && message.attachmentUrl && (
           <Text style={fromAdmin ? styles.adminText : styles.userText}>
-            🎬 Video message
+            Video message
           </Text>
         )}
 
