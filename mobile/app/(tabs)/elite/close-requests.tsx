@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Input } from '@/components/ui/Input';
 import { Colors } from '@/constants/colors';
+import { rowDirection } from '@/lib/rtl';
 import { fetchCloseRequests, submitCloseRequest } from '@/services/elite.service';
 import type { CloseRequest } from '@/types/elite';
 
@@ -110,7 +111,7 @@ export default function CloseRequestsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, { flexDirection: rowDirection }]}>
         <Text style={styles.count}>
           {data?.pagination?.total ?? 0} Request(s)
         </Text>
@@ -135,7 +136,7 @@ export default function CloseRequestsScreen() {
       )}
 
       <Modal visible={showModal} animationType="slide" presentationStyle="pageSheet">
-        <View style={styles.modalHeader}>
+        <View style={[styles.modalHeader, { flexDirection: rowDirection }]}>
           <Text style={styles.modalTitle}>{t('elite.new_close_request')}</Text>
           <Button title={t('common.cancel')} variant="ghost" onPress={() => setShowModal(false)} containerStyle={{ height: 38 }} />
         </View>

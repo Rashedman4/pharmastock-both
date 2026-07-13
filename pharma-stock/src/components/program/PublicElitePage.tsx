@@ -29,6 +29,7 @@ interface EliteStatus {
   status: string;
   memberId?: number | null;
   currentCapitalAmount?: number;
+  adminResponse?: string | null;
 }
 const translations = {
   en: {
@@ -107,6 +108,7 @@ const translations = {
       "Track your application and membership approval from here.",
     referralDetected:
       "Referral code detected in the URL and saved for attribution.",
+    adminNoteLabel: "Note from the admin",
 
     statusLabel: "Status:",
     applicationTitle: "Apply for Elite Membership",
@@ -195,6 +197,7 @@ const translations = {
     statusTitle: "حالة عضوية النخبة",
     statusDescription: "تابع من هنا حالة الطلب والموافقة على العضوية.",
     referralDetected: "تم اكتشاف كود الإحالة في الرابط وحفظه للاحتساب.",
+    adminNoteLabel: "ملاحظة من المشرف",
 
     applicationTitle: "قدّم لعضوية مجموعة إيليت",
     applicationDescription:
@@ -398,6 +401,15 @@ export default function PublicElitePage({
       <SectionCard title={t.statusTitle} description={t.statusDescription}>
         <div className={`space-y-4 ${isArabic ? "text-right" : ""}`}>
           <StatusBadge status={status?.status || "NONE"} lang={lang} />
+
+          {status?.adminResponse ? (
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {t.adminNoteLabel}
+              </p>
+              <p className="mt-1 text-sm text-slate-700">{status.adminResponse}</p>
+            </div>
+          ) : null}
 
           {ref ? (
             <p className="text-sm text-slate-500">{t.referralDetected}</p>

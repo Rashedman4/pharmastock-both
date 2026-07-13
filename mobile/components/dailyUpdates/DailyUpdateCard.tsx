@@ -11,7 +11,7 @@ interface DailyUpdateCardProps {
   onPress?: () => void;
 }
 
-export function DailyUpdateCard({ item, onPress }: DailyUpdateCardProps) {
+export const DailyUpdateCard = React.memo(function DailyUpdateCard({ item, onPress }: DailyUpdateCardProps) {
   const { t } = useTranslation();
   const getField = useLocalizedField();
 
@@ -51,7 +51,7 @@ export function DailyUpdateCard({ item, onPress }: DailyUpdateCardProps) {
       <Text style={styles.date}>{timeAgo(item.published_date)}</Text>
     </Card>
   );
-}
+});
 
 const styles = StyleSheet.create({
   header: {

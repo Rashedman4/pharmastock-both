@@ -217,18 +217,34 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const result = await pool.query(
-      `INSERT INTO position_close_requests
-         (position_id, initiated_by_user_id, initiated_by_role,
-          requested_quantity, requested_exit_price, request_note,
-          evidence_url, evidence_name,
-          status, created_at, updated_at)
-       VALUES ($1, $2, 'INVESTOR', $3, $4, $5, $6, $7, 'PENDING', NOW(), NOW())
-       RETURNING *`,
-      [positionId, auth.userId, requestedQuantity, requestedExitPrice, requestNote, evidenceUrl, evidenceName]
-    );
+    try {
+      const requestResult = await programService.requestInvestorClose(auth.userId, {
+        positionId,
+        requestedQuantity,
+        requestedExitPrice,
+        requestNote,
+        evidenceUrl,
+        evidenceName,
+      });
 
-    return NextResponse.json(result.rows[0], { status: 201 });
+      const { rows } = await pool.query(
+        `SELECT pcr.*,
+                pps.symbol, pps.side, pps.quantity_open, pps.entry_price, pps.status AS position_status,
+                tp.company_name
+         FROM position_close_requests pcr
+         JOIN portfolio_positions_simple pps ON pps.id = pcr.position_id
+         JOIN trade_plans tp ON tp.id = pps.trade_plan_id
+         WHERE pcr.id = $1`,
+        [requestResult.closeRequestId],
+      );
+
+      return NextResponse.json(rows[0], { status: 201 });
+    } catch (e: any) {
+      console.error('[elite/close-requests] request close error', e);
+      const msg: string = e?.message ?? 'Failed to submit close request';
+      if (msg.includes('already a pending')) return err('CONFLICT', msg, 409);
+      return err('VALIDATION_ERROR', msg, 400);
+    }
   } catch (e) {
     console.error('[elite/close-requests] POST error', e);
     return err('INTERNAL_ERROR', 'Failed to submit close request', 500);

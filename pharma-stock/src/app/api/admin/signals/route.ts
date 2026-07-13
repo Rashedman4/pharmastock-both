@@ -56,21 +56,51 @@ export async function POST(req: NextRequest) {
     }
 
     const client = await pool.connect();
+
+    // A symbol can only have one open signal at a time — signals only ever
+    // holds currently-open rows (closing one deletes it here and inserts
+    // into signal_history instead).
+    const existing = await client.query(
+      `SELECT id FROM signals WHERE UPPER(symbol) = UPPER($1) LIMIT 1`,
+      [symbol]
+    );
+    if (existing.rows.length > 0) {
+      client.release();
+      return NextResponse.json(
+        { error: `A signal for ${symbol} is already open.` },
+        { status: 409 }
+      );
+    }
+
     const query = `
       INSERT INTO signals (symbol, type, enter_price, price_now, first_target, second_target, reason_en,reason_ar)
       VALUES ($1, $2, $3, $4, $5, $6, $7,$8)
       RETURNING *;
     `;
-    const result = await client.query(query, [
-      symbol,
-      "Buy",
-      enterPrice,
-      currentPrice,
-      firstTarget,
-      secondTarget,
-      reason_en,
-      reason_ar,
-    ]);
+    let result;
+    try {
+      result = await client.query(query, [
+        symbol,
+        "Buy",
+        enterPrice,
+        currentPrice,
+        firstTarget,
+        secondTarget,
+        reason_en,
+        reason_ar,
+      ]);
+    } catch (insertError: any) {
+      client.release();
+      // DB-level safety net (unique index on UPPER(symbol)) in case of a
+      // race with another request between the check above and this insert.
+      if (insertError?.code === "23505") {
+        return NextResponse.json(
+          { error: `A signal for ${symbol} is already open.` },
+          { status: 409 }
+        );
+      }
+      throw insertError;
+    }
     client.release();
 
     // Revalidate the customer-facing signals route

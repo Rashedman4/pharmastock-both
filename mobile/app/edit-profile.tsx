@@ -21,6 +21,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Colors } from '@/constants/colors';
+import { isRTL, rowDirection } from '@/lib/rtl';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import type { AuthUser } from '@/types/user';
@@ -139,9 +140,9 @@ export default function EditProfileScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: rowDirection }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color={Colors.primary} />
+          <Ionicons name={isRTL ? 'arrow-forward' : 'arrow-back'} size={24} color={Colors.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('profile.edit_profile')}</Text>
         <View style={styles.backBtn} />

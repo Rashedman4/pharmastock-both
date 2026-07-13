@@ -18,6 +18,7 @@ export function useNotifications() {
     getNextPageParam: (last) =>
       last.pagination.hasNext ? last.pagination.page + 1 : undefined,
     initialPageParam: 1,
+    staleTime: 30_000,
   });
 }
 

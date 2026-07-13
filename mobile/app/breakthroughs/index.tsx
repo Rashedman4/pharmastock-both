@@ -8,14 +8,15 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useBreakthroughs } from '@/hooks/useContent';
 import { BreakthroughCard } from '@/components/breakthroughs/BreakthroughCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Colors } from '@/constants/colors';
+import { isRTL, rowDirection } from '@/lib/rtl';
 import type { Breakthrough } from '@/types/content';
 
 type CategoryFilter = 'all' | 'drug' | 'therapy' | 'device';
@@ -54,9 +55,9 @@ export default function BreakthroughsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: rowDirection }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={styles.backArrow}>‹</Text>
+          <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('breakthroughs.title')}</Text>
         <View style={{ width: 40 }} />

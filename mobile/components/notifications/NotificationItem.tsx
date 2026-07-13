@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { Colors } from '@/constants/colors';
+import { isRTL, rowDirection } from '@/lib/rtl';
 import type { InAppNotification } from '@/types/content';
 
 function formatRelativeTime(dateStr: string): string {
@@ -18,19 +19,19 @@ interface Props {
   onPress: () => void;
 }
 
-export function NotificationItem({ notification, onPress }: Props) {
+export const NotificationItem = React.memo(function NotificationItem({ notification, onPress }: Props) {
   const isUnread = notification.read_at === null;
 
   return (
     <TouchableOpacity
-      style={[styles.container, isUnread && styles.unread]}
+      style={[styles.container, { flexDirection: rowDirection }, isUnread && styles.unread]}
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <View style={styles.dotColumn}>
+      <View style={[styles.dotColumn, isRTL && styles.dotColumnRTL]}>
         <View style={[styles.dot, isUnread ? styles.dotUnread : styles.dotRead]} />
       </View>
-      <View style={styles.content}>
+      <View style={[styles.content, isRTL && styles.contentRTL]}>
         <Text style={[styles.title, isUnread && styles.titleUnread]} numberOfLines={1}>
           {notification.title}
         </Text>
@@ -38,10 +39,12 @@ export function NotificationItem({ notification, onPress }: Props) {
           {notification.body}
         </Text>
       </View>
-      <Text style={styles.time}>{formatRelativeTime(notification.created_at)}</Text>
+      <Text style={[styles.time, { textAlign: isRTL ? 'left' : 'right' }]}>
+        {formatRelativeTime(notification.created_at)}
+      </Text>
     </TouchableOpacity>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -62,6 +65,10 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     marginRight: 10,
   },
+  dotColumnRTL: {
+    marginRight: 0,
+    marginLeft: 10,
+  },
   dot: {
     width: 8,
     height: 8,
@@ -76,6 +83,10 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     marginRight: 8,
+  },
+  contentRTL: {
+    marginRight: 0,
+    marginLeft: 8,
   },
   title: {
     fontSize: 14,

@@ -24,7 +24,7 @@ const stageVariant = {
   approved: 'success' as const,
 };
 
-export function BreakthroughCard({ item, onPress }: BreakthroughCardProps) {
+export const BreakthroughCard = React.memo(function BreakthroughCard({ item, onPress }: BreakthroughCardProps) {
   const { t } = useTranslation();
   const getField = useLocalizedField();
 
@@ -64,7 +64,7 @@ export function BreakthroughCard({ item, onPress }: BreakthroughCardProps) {
       </View>
     </Card>
   );
-}
+});
 
 const styles = StyleSheet.create({
   header: {

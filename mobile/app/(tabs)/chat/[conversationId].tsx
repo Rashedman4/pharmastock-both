@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
+import { isRTL, rowDirection } from '@/lib/rtl';
 import { useMessages, useSendMessage, useSocketMessages } from '@/hooks/useChat';
 import { MessageBubble } from '@/components/chat/MessageBubble';
 import { ChatInput } from '@/components/chat/ChatInput';
@@ -79,11 +80,11 @@ export default function ChatThreadScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: rowDirection }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="chevron-back" size={26} color={Colors.primary} />
+          <Ionicons name={isRTL ? 'chevron-forward' : 'chevron-back'} size={26} color={Colors.primary} />
         </TouchableOpacity>
-        <View style={styles.headerInfo}>
+        <View style={[styles.headerInfo, isRTL && styles.headerInfoRTL]}>
           <Text style={styles.headerName}>Admin</Text>
         </View>
       </View>
@@ -157,6 +158,10 @@ const styles = StyleSheet.create({
   headerInfo: {
     flex: 1,
     marginLeft: 4,
+  },
+  headerInfoRTL: {
+    marginLeft: 0,
+    marginRight: 4,
   },
   headerName: {
     fontSize: 17,

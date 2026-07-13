@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Colors } from '@/constants/colors';
+import { rowDirection } from '@/lib/rtl';
 import { fetchTradePlan, respondToTradePlan, submitExecution } from '@/services/elite.service';
 
 type BadgeVariant = 'success' | 'danger' | 'warning' | 'info' | 'neutral' | 'primary';
@@ -58,6 +59,7 @@ export default function TradePlanDetailScreen() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['elite-trade-plan', id],
     queryFn: () => fetchTradePlan(Number(id)),
+    staleTime: 30_000,
   });
 
   const respondMutation = useMutation({
@@ -208,7 +210,7 @@ export default function TradePlanDetailScreen() {
             multiline
             numberOfLines={3}
           />
-          <View style={styles.respondBtns}>
+          <View style={[styles.respondBtns, { flexDirection: rowDirection }]}>
             <Button
               title={t('elite.accept')}
               variant="primary"

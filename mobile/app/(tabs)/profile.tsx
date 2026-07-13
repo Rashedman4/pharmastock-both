@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -11,14 +11,33 @@ import { useAuthStore } from '@/stores/auth.store';
 import { fetchEliteStatus } from '@/services/elite.service';
 import { directionArrow, rowDirection } from '@/lib/rtl';
 
-function EliteSection({ isElite }: { isElite: boolean }) {
+function EliteSection() {
   const { t } = useTranslation();
 
-  const { data: eliteStatus } = useQuery({
+  // Source of truth is always the fresh elite-status query — never the auth
+  // store's cached user.is_elite, which can be stale right after an approval
+  // and would otherwise flash "Apply for Elite" for an already-enrolled user.
+  const { data: eliteStatus, isLoading } = useQuery({
     queryKey: ['elite-status'],
     queryFn: fetchEliteStatus,
     staleTime: 60_000,
   });
+
+  if (isLoading) {
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>{t('profile.elite_section')}</Text>
+        <View style={[styles.eliteRow, { flexDirection: rowDirection, opacity: 0.6 }]}>
+          <View style={[styles.eliteRowLeft, { flexDirection: rowDirection }]}>
+            <Text style={styles.eliteIcon}>⭐</Text>
+            <ActivityIndicator size="small" color={Colors.primary} />
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  const isElite = !!eliteStatus?.is_elite_member;
 
   const navigateElite = () => {
     if (isElite) {
@@ -103,7 +122,7 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      <EliteSection isElite={!!user?.is_elite} />
+      <EliteSection />
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>{t('profile.account_section')}</Text>

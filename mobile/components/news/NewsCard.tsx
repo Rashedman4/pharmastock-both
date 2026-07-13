@@ -11,7 +11,7 @@ interface NewsCardProps {
   onPress?: () => void;
 }
 
-export function NewsCard({ item, onPress }: NewsCardProps) {
+export const NewsCard = React.memo(function NewsCard({ item, onPress }: NewsCardProps) {
   const { t } = useTranslation();
   const getField = useLocalizedField();
 
@@ -44,7 +44,7 @@ export function NewsCard({ item, onPress }: NewsCardProps) {
       <Text style={styles.date}>{timeAgo(item.published_date)}</Text>
     </Card>
   );
-}
+});
 
 const styles = StyleSheet.create({
   header: {

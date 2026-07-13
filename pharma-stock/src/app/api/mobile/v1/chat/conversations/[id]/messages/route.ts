@@ -4,6 +4,7 @@ import { ok, err } from '@/lib/mobile/api-handler';
 import { chatService } from '@/lib/services/chat.service';
 import { createRateLimiter, rateLimitResponse, getClientIP } from '@/lib/mobile/rate-limit';
 import { getIO } from '@/lib/socket/socket-server';
+import { sendEmailNotification } from '@/lib/emailService';
 
 const messageLimiter = createRateLimiter({
   windowMs: 60_000,
@@ -34,8 +35,9 @@ export async function GET(req: NextRequest, ctx: Ctx) {
     direction
   );
 
-  // Reset user unread count when they load messages
+  // Reset user unread count and mark admin's messages as seen when they load the thread
   await chatService.resetUnreadCount(conversationId, 'user');
+  await chatService.markConversationReadByUser(conversationId, payload.userId);
 
   return ok({ data: messages, nextCursor });
 }
@@ -97,5 +99,37 @@ export async function POST(req: NextRequest, ctx: Ctx) {
     });
   }
 
+  notifyAdminsOfUserMessage(payload.email, conversationId, type, content).catch((error) => {
+    console.error('[EmailNotification] new_user_chat_message:', error);
+  });
+
   return ok(message, 201);
+}
+
+async function notifyAdminsOfUserMessage(
+  senderEmail: string,
+  conversationId: string,
+  messageType: string,
+  content?: string
+) {
+  const authorizedEmails = (process.env.AUTHORIZED_EMAILS ?? '')
+    .split(',')
+    .map((email) => email.trim())
+    .filter(Boolean);
+  if (!authorizedEmails.length) return;
+
+  const preview =
+    messageType === 'text'
+      ? (content?.trim() ?? '').slice(0, 200)
+      : `[${messageType} message]`;
+
+  const message = `${senderEmail} sent a new message: "${preview}"\n\nConversation reference: ${conversationId}\nReply from the admin messages dashboard.`;
+
+  await Promise.all(
+    authorizedEmails.map((adminEmail) =>
+      sendEmailNotification(adminEmail, 'New Chat Message', message).catch((error) =>
+        console.error(`[EmailNotification] failed for ${adminEmail}:`, error)
+      )
+    )
+  );
 }

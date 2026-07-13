@@ -24,7 +24,7 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-export function SignalCard({ signal, onPress, compact = false }: SignalCardProps) {
+export const SignalCard = React.memo(function SignalCard({ signal, onPress, compact = false }: SignalCardProps) {
   const { t } = useTranslation();
   const getField = useLocalizedField();
 
@@ -60,7 +60,7 @@ export function SignalCard({ signal, onPress, compact = false }: SignalCardProps
       )}
     </Card>
   );
-}
+});
 
 function PriceColumn({ label, value }: { label: string; value: string }) {
   return (

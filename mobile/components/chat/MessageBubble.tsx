@@ -17,7 +17,7 @@ function formatTime(dateStr: string): string {
   });
 }
 
-export function MessageBubble({ message, myUserId }: Props) {
+export const MessageBubble = React.memo(function MessageBubble({ message, myUserId }: Props) {
   const isMe = message.senderType === 'user' && message.senderId === myUserId;
   const isAdmin = message.senderType === 'admin';
   const fromAdmin = isAdmin || (!isMe);
@@ -65,7 +65,7 @@ export function MessageBubble({ message, myUserId }: Props) {
       </View>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   wrapper: {

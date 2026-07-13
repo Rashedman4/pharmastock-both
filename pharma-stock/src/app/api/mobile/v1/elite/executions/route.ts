@@ -4,8 +4,11 @@ import pool from '@/lib/db';
 import { getMobileAuthPayload } from '@/lib/mobile/auth-middleware';
 import { err } from '@/lib/mobile/api-handler';
 import { parsePaginationParams, buildPaginationMeta } from '@/lib/mobile/paginate';
+import { ProgramService } from '@/modules/program/program.service';
 
 export const runtime = 'nodejs';
+
+const programService = new ProgramService();
 
 const MAGIC: Array<{ bytes: number[]; ext: string; mime: string }> = [
   { bytes: [0xFF, 0xD8, 0xFF],       ext: 'jpg',  mime: 'image/jpeg' },
@@ -185,99 +188,41 @@ export async function POST(req: NextRequest) {
       screenshotName = screenshotFile.name;
     }
 
-    const grossCost = executedQuantity * executedPrice;
-
-    // Use a dedicated client for the transaction so FOR UPDATE locks work correctly
-    const client = await pool.connect();
+    // Delegate the actual money-moving transaction (capital lock/check, execution +
+    // position insert, capital deduction, member capital sync, marking the plan
+    // EXECUTED) to the same service method web uses, instead of a second hand-written
+    // copy of that logic.
     try {
-      await client.query('BEGIN');
+      const submitResult = await programService.submitTradeExecution(auth.userId, planId, {
+        executedQuantity,
+        executedPrice,
+        executedAt,
+        screenshotUrl,
+        screenshotName,
+        investorNote,
+      });
 
-      // Lock portfolio row and check free capital
-      const portfolioLockRes = await client.query(
-        `SELECT eps.current_capital_amount, em.id AS member_id
-         FROM elite_portfolios_simple eps
-         JOIN elite_members em ON em.id = eps.elite_member_id
-         WHERE eps.id = $1
-         FOR UPDATE`,
-        [portfolioId]
+      // Mobile's client expects the full execution row back (unlike web, which only
+      // needs { executionId, currentCapitalAmount }), so re-fetch it by id.
+      const { rows } = await pool.query(
+        `SELECT * FROM trade_executions WHERE id = $1`,
+        [submitResult.executionId]
       );
-      const freeCapital = Number(portfolioLockRes.rows[0]?.current_capital_amount ?? 0);
-      const memberId: number = portfolioLockRes.rows[0]?.member_id;
-      if (grossCost > freeCapital) {
-        await client.query('ROLLBACK');
-        return err('INSUFFICIENT_CAPITAL', 'Not enough free capital for this execution', 400);
+
+      return NextResponse.json(rows[0], { status: 201 });
+    } catch (e: any) {
+      console.error('[elite/executions] submit execution error', e);
+      const msg: string = e?.message ?? 'Failed to submit execution';
+      if (msg.includes('Not enough free capital') || msg.includes('negative')) {
+        return err('INSUFFICIENT_CAPITAL', msg, 400);
       }
-
-      // Lock and re-verify plan status
-      const planLockRes = await client.query(
-        `SELECT id, symbol, plan_side, status FROM trade_plans
-         WHERE id = $1 AND portfolio_id = $2
-         FOR UPDATE`,
-        [planId, portfolioId]
-      );
-      const planRow = planLockRes.rows[0];
-      if (!planRow || planRow.status !== 'ACCEPTED_BY_INVESTOR') {
-        await client.query('ROLLBACK');
-        return err('VALIDATION_ERROR', 'Plan must be in ACCEPTED_BY_INVESTOR status', 400);
+      if (msg.includes('already submitted')) {
+        return err('CONFLICT', msg, 409);
       }
-
-      // Insert execution with status OPENED (matches web app flow)
-      const execResult = await client.query(
-        `INSERT INTO trade_executions
-           (trade_plan_id, portfolio_id, executed_quantity, executed_price,
-            executed_at, screenshot_url, screenshot_name, investor_note, status, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'OPENED', NOW(), NOW())
-         RETURNING *`,
-        [planId, portfolioId, executedQuantity, executedPrice, executedAt,
-         screenshotUrl, screenshotName, investorNote]
-      );
-      const executionId: number = execResult.rows[0].id;
-
-      // Create the open position — this is what makes it appear in Portfolio
-      await client.query(
-        `INSERT INTO portfolio_positions_simple
-           (portfolio_id, trade_plan_id, trade_execution_id, symbol, side,
-            quantity_open, entry_price, opened_at, status, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'OPEN', NOW(), NOW())`,
-        [portfolioId, planId, executionId, planRow.symbol, planRow.plan_side,
-         executedQuantity, executedPrice, executedAt]
-      );
-
-      // Deduct gross cost from free capital
-      const capitalRes = await client.query(
-        `UPDATE elite_portfolios_simple
-         SET current_capital_amount = current_capital_amount - $2, updated_at = NOW()
-         WHERE id = $1
-         RETURNING current_capital_amount`,
-        [portfolioId, grossCost]
-      );
-      const nextCapital = Number(capitalRes.rows[0].current_capital_amount);
-      if (nextCapital < 0) {
-        await client.query('ROLLBACK');
-        return err('INSUFFICIENT_CAPITAL', 'Free capital cannot become negative', 400);
+      if (msg.includes('not found')) {
+        return err('NOT_FOUND', msg, 404);
       }
-
-      // Sync elite_members capital
-      await client.query(
-        `UPDATE elite_members
-         SET current_capital_amount = $2, capital_updated_at = NOW()
-         WHERE id = $1`,
-        [memberId, nextCapital]
-      );
-
-      // Mark plan as executed
-      await client.query(
-        `UPDATE trade_plans SET status = 'EXECUTED', updated_at = NOW() WHERE id = $1`,
-        [planId]
-      );
-
-      await client.query('COMMIT');
-      return NextResponse.json(execResult.rows[0], { status: 201 });
-    } catch (txErr) {
-      await client.query('ROLLBACK');
-      throw txErr;
-    } finally {
-      client.release();
+      return err('VALIDATION_ERROR', msg, 400);
     }
   } catch (e) {
     console.error('[elite/executions] POST error', e);

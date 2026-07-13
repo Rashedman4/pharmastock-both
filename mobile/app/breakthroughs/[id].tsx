@@ -6,14 +6,15 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useBreakthrough } from '@/hooks/useContent';
 import { Badge } from '@/components/ui/Badge';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
+import { isRTL, rowDirection } from '@/lib/rtl';
 
 const categoryVariant = {
   drug: 'info' as const,
@@ -55,9 +56,9 @@ export default function BreakthroughDetailScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: rowDirection }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={styles.backArrow}>‹</Text>
+          <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle} numberOfLines={1}>
           {item.symbol}

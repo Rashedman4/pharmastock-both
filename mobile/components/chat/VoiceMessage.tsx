@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
+import { isRTL, rowDirection } from '@/lib/rtl';
 
 interface Props {
   uri: string;
@@ -67,7 +68,7 @@ export function VoiceMessage({ uri, duration, isAdmin }: Props) {
   const bubbleStyle = isAdmin ? styles.adminBar : styles.userBar;
 
   return (
-    <View style={[styles.container, isAdmin ? styles.adminContainer : styles.userContainer]}>
+    <View style={[styles.container, { flexDirection: rowDirection }, isAdmin ? styles.adminContainer : styles.userContainer]}>
       <TouchableOpacity onPress={togglePlay} style={styles.playBtn}>
         <Ionicons
           name={playing ? 'pause' : 'play'}
@@ -83,7 +84,7 @@ export function VoiceMessage({ uri, duration, isAdmin }: Props) {
         </View>
       </View>
 
-      <Text style={[styles.duration, isAdmin ? styles.adminText : styles.userText]}>
+      <Text style={[styles.duration, { textAlign: isRTL ? 'left' : 'right' }, isAdmin ? styles.adminText : styles.userText]}>
         {formatDuration(playing ? position : total)}
       </Text>
     </View>

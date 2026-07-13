@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import useSWR from "swr";
-import { Send, Plus, Users, X, MessageCircle, ChevronDown, Image as ImageIcon, Mic, Square } from "lucide-react";
+import { Send, Plus, Users, X, MessageCircle, ChevronDown, Image as ImageIcon, Mic, Square, Check, CheckCheck, Search } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -72,7 +72,20 @@ type UserItem = { id: number; email: string; firstname: string | null; lastname:
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    const error = new Error(body?.error || `Request failed with status ${res.status}`) as Error & {
+      status?: number;
+      info?: unknown;
+    };
+    error.status = res.status;
+    error.info = body;
+    throw error;
+  }
+  return res.json();
+};
 
 const AUDIENCE_LABELS: Record<string, string> = {
   all_users: "All Users", elite_users: "Elite", subscription_users: "Subscribers", custom: "Custom",
@@ -511,10 +524,27 @@ export default function AdminMessagesPage() {
   const groupEndRef = useScrollBottom(groupMessages.length);
 
   // ── DMs ─────────────────────────────────────────────────────────────────────
-  const { data: convsData, mutate: mutateConvs } = useSWR("/api/admin/mobile/conversations", fetcher, { refreshInterval: 3000 });
+  const { data: convsData, mutate: mutateConvs } = useSWR("/api/admin/mobile/conversations?limit=50", fetcher, { refreshInterval: 3000 });
   const conversations: AdminConversation[] = convsData?.data ?? [];
   const totalUnread = conversations.reduce((s, c) => s + (c.admin_unread_count ?? 0), 0);
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
+
+  const [convSearch, setConvSearch] = useState("");
+  const [debouncedConvSearch, setDebouncedConvSearch] = useState("");
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedConvSearch(convSearch.trim()), 250);
+    return () => clearTimeout(t);
+  }, [convSearch]);
+
+  const { data: convSearchData } = useSWR(
+    debouncedConvSearch
+      ? `/api/admin/mobile/conversations?limit=50&search=${encodeURIComponent(debouncedConvSearch)}`
+      : null,
+    fetcher
+  );
+  const displayedConversations: AdminConversation[] = debouncedConvSearch
+    ? (convSearchData?.data ?? [])
+    : conversations;
 
   const { data: convDetailData, mutate: mutateConvDetail } = useSWR(
     selectedConvId ? `/api/admin/mobile/conversations/${selectedConvId}` : null,
@@ -603,10 +633,36 @@ export default function AdminMessagesPage() {
 
         {/* DMs list */}
         {activeTab === "dms" && (
-          <div className="flex-1 overflow-y-auto">
-            {conversations.length === 0 ? (
-              <div className="px-4 py-8 text-center"><MessageCircle className="mx-auto mb-2 h-7 w-7 text-slate-300" /><p className="text-xs text-slate-400">No replies yet. Send a group message first.</p></div>
-            ) : conversations.map((c) => (
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <div className="shrink-0 px-3 py-2">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={convSearch}
+                  onChange={(e) => setConvSearch(e.target.value)}
+                  placeholder="Search by name or email…"
+                  className="w-full rounded-md border border-slate-300 bg-white py-1.5 pl-8 pr-7 text-xs focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+                {convSearch && (
+                  <button
+                    onClick={() => setConvSearch("")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+            {displayedConversations.length === 0 ? (
+              <div className="px-4 py-8 text-center">
+                <MessageCircle className="mx-auto mb-2 h-7 w-7 text-slate-300" />
+                <p className="text-xs text-slate-400">
+                  {debouncedConvSearch ? `No conversations match "${debouncedConvSearch}".` : "No replies yet. Send a group message first."}
+                </p>
+              </div>
+            ) : displayedConversations.map((c) => (
               <button key={c.id} onClick={() => setSelectedConvId(c.id)}
                 className={`w-full px-3 py-3 text-left hover:bg-slate-100 transition-colors ${selectedConvId === c.id ? "border-l-2 border-teal-500 bg-teal-50/60" : "border-l-2 border-transparent"}`}>
                 <div className="flex items-center gap-2.5">
@@ -631,6 +687,7 @@ export default function AdminMessagesPage() {
                 </div>
               </button>
             ))}
+            </div>
           </div>
         )}
       </div>
@@ -732,9 +789,19 @@ export default function AdminMessagesPage() {
                           <div className={`rounded-2xl px-4 py-2.5 shadow-sm ${isAdmin ? "rounded-br-sm bg-teal-600" : "rounded-bl-sm border border-slate-200 bg-white"}`}>
                             <MediaBubble messageType={m.message_type} content={m.content} attachmentUrl={m.attachment_url} isAdmin={isAdmin} />
                           </div>
-                          <p className={`mt-1 px-1 text-xs text-slate-400 ${isAdmin ? "text-right" : "text-left"}`}>
-                            {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                            {m.read_at && isAdmin && <span className="ml-1 text-teal-500">· seen</span>}
+                          <p className={`mt-1 flex items-center gap-1 px-1 text-xs text-slate-400 ${isAdmin ? "justify-end text-right" : "justify-start text-left"}`}>
+                            <span>{new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                            {isAdmin && (
+                              m.read_at ? (
+                                <span className="flex items-center gap-0.5 text-teal-500" title="Seen">
+                                  <CheckCheck className="h-3.5 w-3.5" /> seen
+                                </span>
+                              ) : (
+                                <span className="flex items-center gap-0.5 text-slate-400" title="Delivered">
+                                  <Check className="h-3.5 w-3.5" /> delivered
+                                </span>
+                              )
+                            )}
                           </p>
                         </div>
                       </div>

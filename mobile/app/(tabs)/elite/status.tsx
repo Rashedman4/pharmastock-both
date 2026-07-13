@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { Colors } from '@/constants/colors';
 import { fetchEliteStatus } from '@/services/elite.service';
+import { rowDirection } from '@/lib/rtl';
 type BadgeVariant = 'success' | 'danger' | 'warning' | 'info' | 'neutral' | 'primary';
 
 function statusVariant(status: string | null): BadgeVariant {
@@ -20,9 +22,10 @@ function statusVariant(status: string | null): BadgeVariant {
 export default function EliteStatusScreen() {
   const { t } = useTranslation();
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['elite-status'],
     queryFn: fetchEliteStatus,
+    staleTime: 60_000,
   });
 
   if (isLoading) return <LoadingScreen />;
@@ -39,9 +42,16 @@ export default function EliteStatusScreen() {
   const appStatus = data.application_status;
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>{t('elite.status')}</Text>
+    <View style={styles.wrapper}>
+      <View style={[styles.reloadBar, { flexDirection: rowDirection }]}>
+        <Text style={styles.reloadTitle}>{t('elite.status')}</Text>
+        <TouchableOpacity onPress={() => refetch()} style={[styles.reloadBtn, { flexDirection: rowDirection }]} activeOpacity={0.7} disabled={isFetching}>
+          <Ionicons name="refresh-outline" size={20} color={Colors.primary} style={isFetching ? styles.spinning : undefined} />
+          <Text style={styles.reloadText}>{t('common.reload')}</Text>
+        </TouchableOpacity>
+      </View>
 
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Card style={styles.card}>
         <View style={styles.row}>
           <Text style={styles.label}>{t('elite.status')}</Text>
@@ -91,15 +101,29 @@ export default function EliteStatusScreen() {
           containerStyle={styles.actionBtn}
         />
       )}
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: { flex: 1, backgroundColor: Colors.background },
+  reloadBar: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderLight,
+    backgroundColor: '#fff',
+  },
+  reloadTitle: { fontSize: 16, fontWeight: '700', color: Colors.primary },
+  reloadBtn: { alignItems: 'center', gap: 4, padding: 4 },
+  reloadText: { fontSize: 13, fontWeight: '600', color: Colors.primary },
+  spinning: { opacity: 0.4 },
   container: { flex: 1, backgroundColor: Colors.background },
   content: { padding: 24, paddingBottom: 48 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
-  title: { fontSize: 24, fontWeight: '800', color: Colors.primary, marginBottom: 20 },
   card: { marginBottom: 16 },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   label: { fontSize: 14, color: Colors.textSecondary, fontWeight: '500' },

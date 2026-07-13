@@ -4,6 +4,7 @@ import { usePathname, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
+import { rowDirection } from '@/lib/rtl';
 
 type Tab = {
   label: string;
@@ -45,7 +46,7 @@ export function EliteTabBar() {
   };
 
   return (
-    <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, 8) }]}>
+    <View style={[styles.container, { flexDirection: rowDirection, paddingBottom: Math.max(insets.bottom, 8) }]}>
       {TABS.map((tab) => {
         const active = isActive(tab.path);
         return (

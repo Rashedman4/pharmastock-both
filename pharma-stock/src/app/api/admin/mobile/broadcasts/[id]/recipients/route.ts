@@ -23,10 +23,13 @@ export async function GET(req: NextRequest, ctx: Ctx) {
       [campaignId]
     ),
     pool.query(
-      `SELECT br.id, br.user_id, br.delivered_at,
+      `SELECT br.id, br.user_id, br.delivered_at, cm.read_at,
               u.firstname, u.lastname, u.email
        FROM broadcast_recipients br
        LEFT JOIN users u ON u.id = br.user_id
+       LEFT JOIN chat_conversations cc ON cc.user_id = br.user_id
+       LEFT JOIN chat_messages cm ON cm.broadcast_campaign_id = br.campaign_id
+                                  AND cm.conversation_id = cc.id
        WHERE br.campaign_id = $1
        ORDER BY br.id
        LIMIT $2 OFFSET $3`,

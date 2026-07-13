@@ -1,4 +1,4 @@
-//import { Signal } from "lucide-react";
+import { Signal } from "lucide-react";
 import SignalsTable from "@/components/app/SignalsTable";
 
 export const metadata = {
@@ -28,6 +28,7 @@ export default function SignalsPage() {
     <div className="container mx-auto px-4 py-8 relative">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-royalBlue flex items-center">
+          <Signal className="ml-2 h-8 w-8" />
           الأفكار
         </h1>
         <div className="mt-2 h-1 w-20 bg-brightTeal"></div>

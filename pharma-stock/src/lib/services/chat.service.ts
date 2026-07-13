@@ -224,4 +224,22 @@ export const chatService = {
       [conversationId]
     );
   },
+
+  // Marks every unread admin-sent message in a conversation as read by the
+  // user — called when the user opens/loads the thread, since there's no
+  // separate per-message "viewed" event on mobile (WhatsApp-style: opening
+  // the chat marks everything currently in it as seen).
+  async markConversationReadByUser(conversationId: string, userId: number): Promise<void> {
+    await pool.query(
+      `UPDATE chat_messages
+       SET read_at = NOW()
+       WHERE conversation_id = $1
+         AND sender_type = 'admin'
+         AND read_at IS NULL
+         AND conversation_id IN (
+           SELECT id FROM chat_conversations WHERE user_id = $2
+         )`,
+      [conversationId, userId]
+    );
+  },
 };

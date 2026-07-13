@@ -36,11 +36,13 @@ export async function POST(request: NextRequest) {
     );
     const targetUserId: number | null = appRow.rows[0]?.user_id ?? null;
 
+    const adminNote = body?.adminNote ? String(body.adminNote) : null;
+
     const result = await service.reviewInvestorApplication(
       applicationId,
       auth.userId,
       approve,
-      body?.adminNote ? String(body.adminNote) : null,
+      adminNote,
     );
 
     if (targetUserId) {
@@ -48,14 +50,14 @@ export async function POST(request: NextRequest) {
         await createNotification({
           userId: targetUserId,
           type: 'elite_update',
-          title_en: approve ? 'Elite Application Approved' : 'Elite Application Update',
-          title_ar: approve ? 'تمت الموافقة على طلب النخبة' : 'تحديث طلب النخبة',
+          title_en: approve ? 'Your Elite application has been approved!' : 'Elite Application Update',
+          title_ar: approve ? 'تمت الموافقة على طلب انضمامك للنخبة!' : 'تحديث طلب النخبة',
           body_en: approve
             ? 'Your elite application has been approved. Welcome to the elite program.'
-            : 'Your elite application has been reviewed. Please check the details.',
+            : `Your elite application was not approved this time.${adminNote ? ` Admin note: ${adminNote}` : ' Please check the details.'}`,
           body_ar: approve
             ? 'تمت الموافقة على طلب النخبة الخاص بك. مرحباً بك في برنامج النخبة.'
-            : 'تمت مراجعة طلبك. يرجى مراجعة التفاصيل.',
+            : `لم تتم الموافقة على طلب النخبة الخاص بك.${adminNote ? ` ملاحظة المشرف: ${adminNote}` : ' يرجى مراجعة التفاصيل.'}`,
           data: { screen: 'elite' },
         });
       } catch (e) { console.error('[Notification] elite_review:', e); }

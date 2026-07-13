@@ -14,7 +14,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, RefreshCw, Users, CheckSquare } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Send, RefreshCw, Users, CheckSquare, Eye, Check, CheckCheck } from "lucide-react";
 
 type Campaign = {
   id: string;
@@ -37,6 +44,16 @@ type UserItem = {
   lastname: string | null;
 };
 
+type Recipient = {
+  id: string;
+  user_id: number;
+  delivered_at: string | null;
+  read_at: string | null;
+  firstname: string | null;
+  lastname: string | null;
+  email: string;
+};
+
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 const STATUS_COLORS: Record<string, string> = {
@@ -53,6 +70,76 @@ const AUDIENCE_LABELS: Record<string, string> = {
   subscription_users: "Subscribers",
   custom: "Custom",
 };
+
+function recipientName(r: Recipient) {
+  return [r.firstname, r.lastname].filter(Boolean).join(" ") || r.email;
+}
+
+function RecipientsDialog({
+  campaignId,
+  campaignTitle,
+  onClose,
+}: {
+  campaignId: string;
+  campaignTitle: string;
+  onClose: () => void;
+}) {
+  const { data, isLoading } = useSWR(
+    `/api/admin/mobile/broadcasts/${campaignId}/recipients?limit=500`,
+    fetcher
+  );
+  const recipients: Recipient[] = data?.data ?? [];
+  const seenCount = recipients.filter((r) => r.read_at).length;
+
+  return (
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Recipients — {campaignTitle}</DialogTitle>
+          <DialogDescription>
+            {isLoading
+              ? "Loading recipients…"
+              : `${recipients.length} recipient${recipients.length !== 1 ? "s" : ""} · ${seenCount} seen`}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="max-h-96 overflow-y-auto divide-y divide-slate-100 rounded-md border border-slate-200">
+          {isLoading ? (
+            <p className="p-4 text-center text-sm text-slate-400">Loading…</p>
+          ) : recipients.length === 0 ? (
+            <p className="p-4 text-center text-sm text-slate-400">No recipients found.</p>
+          ) : (
+            recipients.map((r) => (
+              <div key={r.id} className="flex items-center justify-between gap-3 px-3 py-2.5">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-slate-800">{recipientName(r)}</p>
+                  <p className="truncate text-xs text-slate-400">{r.email}</p>
+                </div>
+                <div className="shrink-0 text-right">
+                  {r.read_at ? (
+                    <span className="flex items-center gap-1 text-xs font-medium text-teal-600">
+                      <CheckCheck className="h-3.5 w-3.5" /> Seen
+                    </span>
+                  ) : r.delivered_at ? (
+                    <span className="flex items-center gap-1 text-xs font-medium text-slate-500">
+                      <Check className="h-3.5 w-3.5" /> Delivered
+                    </span>
+                  ) : (
+                    <span className="text-xs text-red-500">Failed</span>
+                  )}
+                  {r.read_at && (
+                    <p className="mt-0.5 text-[10px] text-slate-400">
+                      {new Date(r.read_at).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function BroadcastsPage() {
   const { data: campaignsData, mutate } = useSWR(
@@ -73,6 +160,7 @@ export default function BroadcastsPage() {
   const [sending, setSending] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [viewingCampaign, setViewingCampaign] = useState<{ id: string; title: string } | null>(null);
 
   const [users, setUsers] = useState<UserItem[]>([]);
   const [usersLoaded, setUsersLoaded] = useState(false);
@@ -467,14 +555,24 @@ export default function BroadcastsPage() {
                           </Button>
                         )}
                         {c.status === "sent" && (
-                          <span className="text-xs text-green-600 font-medium">
-                            ✓ Delivered
-                            {c.sent_at && (
-                              <span className="ml-1 text-slate-400 font-normal">
-                                {new Date(c.sent_at).toLocaleDateString()}
-                              </span>
-                            )}
-                          </span>
+                          <div className="flex flex-col items-start gap-1">
+                            <span className="text-xs text-green-600 font-medium">
+                              ✓ Delivered
+                              {c.sent_at && (
+                                <span className="ml-1 text-slate-400 font-normal">
+                                  {new Date(c.sent_at).toLocaleDateString()}
+                                </span>
+                              )}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setViewingCampaign({ id: c.id, title: c.title })}
+                              className="flex items-center gap-1 text-xs text-brightTeal hover:underline"
+                            >
+                              <Eye className="w-3 h-3" />
+                              View recipients
+                            </button>
+                          </div>
                         )}
                         {c.status === "sending" && (
                           <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
@@ -491,6 +589,14 @@ export default function BroadcastsPage() {
           )}
         </CardContent>
       </Card>
+
+      {viewingCampaign && (
+        <RecipientsDialog
+          campaignId={viewingCampaign.id}
+          campaignTitle={viewingCampaign.title}
+          onClose={() => setViewingCampaign(null)}
+        />
+      )}
     </div>
   );
 }

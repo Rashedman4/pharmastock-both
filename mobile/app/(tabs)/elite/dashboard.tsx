@@ -4,11 +4,14 @@ import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
+import { Ionicons } from '@expo/vector-icons';
 import { EliteTabBar } from '@/components/elite/EliteTabBar';
 import { Colors } from '@/constants/colors';
 import { fetchEliteDashboard } from '@/services/elite.service';
+import { rowDirection } from '@/lib/rtl';
 
 function fmt(val: number | null | undefined): string {
   if (val == null) return '—';
@@ -63,7 +66,7 @@ function QuickLink({ label, count, onPress }: QuickLinkProps) {
 export default function EliteDashboardScreen() {
   const { t } = useTranslation();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['elite-dashboard'],
     queryFn: fetchEliteDashboard,
     staleTime: 30_000,
@@ -75,6 +78,7 @@ export default function EliteDashboardScreen() {
     return (
       <View style={styles.center}>
         <Text style={styles.errorText}>{t('common.error')}</Text>
+        <Button title={t('common.retry')} onPress={() => refetch()} variant="outline" containerStyle={{ marginTop: 12 }} />
       </View>
     );
   }
@@ -86,7 +90,13 @@ export default function EliteDashboardScreen() {
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <View style={styles.headerRow}>
           <Text style={styles.title}>{t('elite.dashboard')}</Text>
-          <Badge label={t('elite.active')} variant="success" />
+          <View style={[styles.headerActions, { flexDirection: rowDirection }]}>
+            <TouchableOpacity onPress={() => refetch()} style={[styles.reloadBtn, { flexDirection: rowDirection }]} activeOpacity={0.7} disabled={isFetching}>
+              <Ionicons name="refresh-outline" size={18} color={Colors.primary} style={isFetching ? styles.spinning : undefined} />
+              <Text style={styles.reloadText}>{t('common.reload')}</Text>
+            </TouchableOpacity>
+            <Badge label={t('elite.active')} variant="success" />
+          </View>
         </View>
 
         {data.linkedPartnerName && (
@@ -154,6 +164,10 @@ const styles = StyleSheet.create({
   content: { padding: 20, paddingBottom: 16 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
+  headerActions: { alignItems: 'center', gap: 10 },
+  reloadBtn: { alignItems: 'center', gap: 4 },
+  reloadText: { fontSize: 11, fontWeight: '600', color: Colors.primary },
+  spinning: { opacity: 0.4 },
   title: { fontSize: 24, fontWeight: '800', color: Colors.primary },
   sectionTitle: { fontSize: 16, fontWeight: '700', color: Colors.textSecondary, marginBottom: 12, marginTop: 8 },
   partnerBanner: {

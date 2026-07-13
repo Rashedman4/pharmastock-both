@@ -1,6 +1,7 @@
 import pool from "@/lib/db";
 import { getStripeClient, toStripeUnitAmount } from "@/lib/stripe";
 import { SimplePriceCacheService } from "@/modules/program/price-cache.service";
+import { sendEmailNotification } from "@/lib/emailService";
 
 const displayNameSql = `NULLIF(TRIM(CONCAT(COALESCE(u.firstname, ''), ' ', COALESCE(u.lastname, ''))), '')`;
 
@@ -237,6 +238,7 @@ export class ProgramService {
     }
 
     const client = await pool.connect();
+    let applicationId: number;
     try {
       await client.query("BEGIN");
       const insert = await client.query(
@@ -264,7 +266,7 @@ export class ProgramService {
         ],
       );
 
-      const applicationId = Number(insert.rows[0].id);
+      applicationId = Number(insert.rows[0].id);
 
       if (partnerAccountId) {
         await client.query(
@@ -289,13 +291,51 @@ export class ProgramService {
       }
 
       await client.query("COMMIT");
-      return { applicationId };
     } catch (error) {
       await client.query("ROLLBACK");
       throw error;
     } finally {
       client.release();
     }
+
+    // Notify admins by email — best-effort, must never block the investor's submission.
+    this.notifyAdminsOfNewApplication(userId, applicationId, investmentAmount).catch((error) => {
+      console.error("[EmailNotification] elite_application_submitted:", error);
+    });
+
+    return { applicationId };
+  }
+
+  private async notifyAdminsOfNewApplication(
+    userId: number,
+    applicationId: number,
+    investmentAmount: number,
+  ) {
+    const authorizedEmails = (process.env.AUTHORIZED_EMAILS ?? "")
+      .split(",")
+      .map((email) => email.trim())
+      .filter(Boolean);
+    if (!authorizedEmails.length) return;
+
+    const { rows } = await pool.query(
+      `SELECT email, firstname, lastname FROM users WHERE id = $1`,
+      [userId],
+    );
+    const investor = rows[0];
+    const investorName =
+      [investor?.firstname, investor?.lastname].filter(Boolean).join(" ") ||
+      investor?.email ||
+      `User #${userId}`;
+
+    const message = `${investorName} (${investor?.email ?? "unknown email"}) just submitted a new Elite application (#${applicationId}) requesting $${investmentAmount.toLocaleString()} in capital. Review it in the admin dashboard.`;
+
+    await Promise.all(
+      authorizedEmails.map((adminEmail) =>
+        sendEmailNotification(adminEmail, "New Elite Application Submitted", message).catch(
+          (error) => console.error(`[EmailNotification] failed for ${adminEmail}:`, error),
+        ),
+      ),
+    );
   }
 
   async getEliteStatus(userId: number) {
@@ -303,13 +343,16 @@ export class ProgramService {
       `SELECT em.id AS "memberId",
               em.status AS "memberStatus",
               em.current_capital_amount AS "currentCapitalAmount",
+              em.approved_at AS "approvedAt",
               ea.id AS "applicationId",
               ea.status AS "applicationStatus",
               ea.phone_number AS "phoneNumber",
               ea.investment_amount AS "investmentAmount",
               ea.description,
               ea.referral_code_used AS "referralCodeUsed",
-              ea.created_at AS "createdAt"
+              ea.created_at AS "createdAt",
+              ea.admin_response AS "adminResponse",
+              ea.admin_note AS "adminNote"
        FROM elite_members em
        LEFT JOIN elite_applications ea ON ea.id = em.application_id
        WHERE em.user_id = $1
@@ -336,6 +379,8 @@ export class ProgramService {
         currentCapitalAmount: toNumber(row.currentCapitalAmount, 0),
         referralCodeUsed: row.referralCodeUsed ?? null,
         createdAt: row.createdAt ?? null,
+        approvedAt: row.approvedAt ?? null,
+        adminResponse: row.adminResponse ?? row.adminNote ?? null,
         sourceType: row.applicationId ? "APPLICATION" : "MANUAL",
       };
     }
@@ -347,7 +392,9 @@ export class ProgramService {
               ea.investment_amount AS "investmentAmount",
               ea.description,
               ea.referral_code_used AS "referralCodeUsed",
-              ea.created_at AS "createdAt"
+              ea.created_at AS "createdAt",
+              ea.admin_response AS "adminResponse",
+              ea.admin_note AS "adminNote"
        FROM elite_applications ea
        WHERE ea.user_id = $1
        ORDER BY ea.created_at DESC, ea.id DESC
@@ -371,6 +418,8 @@ export class ProgramService {
       currentCapitalAmount: 0,
       referralCodeUsed: row.referralCodeUsed ?? null,
       createdAt: row.createdAt,
+      approvedAt: null,
+      adminResponse: row.adminResponse ?? row.adminNote ?? null,
       sourceType: "APPLICATION",
     };
   }

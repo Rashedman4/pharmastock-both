@@ -30,7 +30,10 @@
       "Bash(npx eslint *)",
       "Bash(node -e \"console.log\\(require\\('./package.json'\\).scripts.lint\\)\")",
       "Bash(ls -la .env*)",
-      "Bash(cat .env)"
+      "Bash(cat .env)",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(cat src/components/ui/toaster.tsx)",
+      "Bash(grep -rn \"container\" src/components/ui/toast.tsx src/components/ui/dialog.tsx)"
     ]
   }
 }
