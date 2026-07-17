@@ -2,6 +2,7 @@ import pool from "@/lib/db";
 import { NextResponse, NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getToken } from "next-auth/jwt";
+import { parsePaginationParams, buildPaginationMeta } from "@/lib/mobile/paginate";
 
 //  GET all signal history
 export async function GET(req: NextRequest) {
@@ -16,12 +17,27 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    const { page, limit, offset } = parsePaginationParams(req);
+
     const client = await pool.connect();
-    const query = `SELECT * FROM signal_history ORDER BY id DESC`;
-    const result = await client.query(query);
+    const [countResult, dataResult] = await Promise.all([
+      client.query("SELECT COUNT(*) FROM signal_history"),
+      client.query(
+        `SELECT * FROM signal_history ORDER BY id DESC LIMIT $1 OFFSET $2`,
+        [limit, offset]
+      ),
+    ]);
     client.release();
 
-    return NextResponse.json(result.rows, { status: 200 });
+    const total = parseInt(countResult.rows[0].count, 10);
+
+    return NextResponse.json(
+      {
+        data: dataResult.rows,
+        pagination: buildPaginationMeta(total, page, limit),
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Error fetching signal history: " + error },

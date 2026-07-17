@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
 import {
   View,
-  FlatList,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -9,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import { FlashList, FlashListRef } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -27,7 +27,7 @@ export default function ChatThreadScreen() {
   const user = useAuthStore((s) => s.user);
 
   const [adminTyping, setAdminTyping] = useState(false);
-  const flatListRef = useRef<FlatList<ChatMessage>>(null);
+  const listRef = useRef<FlashListRef<ChatMessage>>(null);
 
   const {
     data,
@@ -45,11 +45,15 @@ export default function ChatThreadScreen() {
 
   useSocketMessages(conversationId, handleTyping);
 
-  // Data from API is chronological (oldest first). Reverse each page so newest = index 0.
-  // FlatList inverted renders index 0 at the visual bottom (newest message at bottom). ✓
+  // Each fetched page is chronological (oldest→newest) internally, but page 0 is the
+  // *newest* batch (cursor pagination walks backward in time as more pages load).
+  // FlashList v2 has no `inverted` prop, so we build one fully chronological
+  // (oldest→newest) array by reversing the page order, and rely on
+  // maintainVisibleContentPosition to start/stay at the bottom.
   // Dedup by ID: guards against the race where socket appends a message before onSuccess does.
   const messages = React.useMemo(() => {
-    const flat = data?.pages.flatMap((p) => [...p.data].reverse()) ?? [];
+    const pages = data?.pages ?? [];
+    const flat = [...pages].reverse().flatMap((p) => p.data);
     const seen = new Set<string>();
     return flat.filter((m) => {
       if (seen.has(m.id)) return false;
@@ -58,7 +62,9 @@ export default function ChatThreadScreen() {
     });
   }, [data]);
 
-  const handleEndReached = useCallback(() => {
+  // Older messages live in later pages; with a non-inverted list they're loaded
+  // by scrolling toward the top (start) of the list.
+  const handleStartReached = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) fetchNextPage();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
@@ -94,20 +100,22 @@ export default function ChatThreadScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={0}
       >
-        {/* Messages list — inverted so newest is at bottom */}
-        <FlatList
-          ref={flatListRef}
+        {/* Messages list — chronological order, pinned to bottom */}
+        <FlashList
+          ref={listRef}
           data={messages}
-          inverted
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
+          keyExtractor={(item: ChatMessage) => item.id}
+          renderItem={({ item }: { item: ChatMessage }) => (
             <MessageBubble message={item} myUserId={user?.id ?? 0} />
           )}
           contentContainerStyle={styles.listContent}
-          onEndReached={handleEndReached}
-          onEndReachedThreshold={0.3}
-          ListHeaderComponent={adminTyping ? <TypingIndicator /> : null}
-          ListFooterComponent={
+          maintainVisibleContentPosition={{
+            startRenderingFromBottom: true,
+            autoscrollToBottomThreshold: 0.2,
+          }}
+          onStartReached={handleStartReached}
+          onStartReachedThreshold={0.3}
+          ListHeaderComponent={
             isFetchingNextPage ? (
               <ActivityIndicator
                 color={Colors.primary}
@@ -116,6 +124,7 @@ export default function ChatThreadScreen() {
               />
             ) : null
           }
+          ListFooterComponent={adminTyping ? <TypingIndicator /> : null}
         />
 
         {/* Input */}

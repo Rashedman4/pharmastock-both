@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import {
   View,
-  Image,
   Modal,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
 
@@ -33,6 +33,8 @@ export function ImageMessage({ uri, width, height }: Props) {
           source={{ uri }}
           style={[styles.thumbnail, { width: thumbW, height: thumbH }]}
           onLoad={() => setLoading(false)}
+          cachePolicy="disk"
+          transition={150}
         />
         {loading && (
           <View style={[styles.loadingOverlay, { width: thumbW, height: thumbH }]}>
@@ -49,7 +51,8 @@ export function ImageMessage({ uri, width, height }: Props) {
           <Image
             source={{ uri }}
             style={styles.fullImage}
-            resizeMode="contain"
+            contentFit="contain"
+            cachePolicy="disk"
           />
         </View>
       </Modal>

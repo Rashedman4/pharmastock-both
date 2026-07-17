@@ -9,6 +9,11 @@ export function useOpenSignals() {
       lastPage.pagination.hasNext ? lastPage.pagination.page + 1 : undefined,
     initialPageParam: 1,
     staleTime: 60_000,
+    // Prices are re-fetched server-side at most every 2 minutes (see
+    // refreshSignalPricesIfStale); polling every 60s keeps current-price
+    // display fresh without over-requesting. Paused while backgrounded.
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -18,6 +23,8 @@ export function useSignal(id: number) {
     queryFn: () => fetchSignal(id),
     enabled: !!id,
     staleTime: 60_000,
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
   });
 }
 

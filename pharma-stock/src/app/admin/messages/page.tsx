@@ -2,19 +2,19 @@
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import useSWR from "swr";
-import { Send, Plus, Users, X, MessageCircle, ChevronDown, Image as ImageIcon, Mic, Square, Check, CheckCheck, Search } from "lucide-react";
+import { Send, Plus, Users, X, MessageCircle, ChevronDown, Image as ImageIcon, Mic, Square, Check, CheckCheck, Search, Video as VideoIcon } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type SendPayload = {
   content?: string;
-  messageType: "text" | "image" | "voice";
+  messageType: "text" | "image" | "voice" | "video";
   attachmentUrl?: string;
   attachmentMetadata?: Record<string, unknown>;
 };
 
 type AttachmentState = {
-  type: "image" | "voice";
+  type: "image" | "voice" | "video";
   preview: string;
   uploading: boolean;
   error?: string;
@@ -159,6 +159,21 @@ function MediaBubble({
     );
   }
 
+  if (messageType === "video" && attachmentUrl) {
+    return (
+      <div>
+        {/* Native video element — works in all browsers */}
+        <video
+          controls
+          src={attachmentUrl}
+          className="max-w-xs rounded-lg"
+          style={{ maxHeight: 280 }}
+        />
+        {content && <p className={`mt-1.5 text-sm whitespace-pre-wrap ${captionColor}`}>{content}</p>}
+      </div>
+    );
+  }
+
   if (content) {
     return <p className={`whitespace-pre-wrap text-sm leading-relaxed ${textColor}`}>{content}</p>;
   }
@@ -258,16 +273,20 @@ function MessageInput({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fileRef    = useRef<HTMLInputElement>(null);
+  const fileRef      = useRef<HTMLInputElement>(null);
+  const videoFileRef = useRef<HTMLInputElement>(null);
   const recRef     = useRef<MediaRecorder | null>(null);
   const chunksRef  = useRef<Blob[]>([]);
   const timerRef   = useRef<ReturnType<typeof setInterval> | null>(null);
   const textaRef   = useRef<HTMLTextAreaElement>(null);
 
-  // Upload helper
-  const doUpload = useCallback(async (file: File): Promise<{ url: string; metadata: Record<string, unknown> }> => {
+  // Upload helper. `kind: "video"` routes the upload route to its dedicated
+  // video magic-byte check (see /api/admin/mobile/uploads) instead of the
+  // image/voice detection used by everything else.
+  const doUpload = useCallback(async (file: File, kind?: "video"): Promise<{ url: string; metadata: Record<string, unknown> }> => {
     const form = new FormData();
     form.append("file", file);
+    if (kind) form.append("kind", kind);
     const res  = await fetch("/api/admin/mobile/uploads", { method: "POST", body: form });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error ?? "Upload failed");
@@ -288,6 +307,23 @@ function MessageInput({
     } catch (err: unknown) {
       setAttachment(null);
       setError(err instanceof Error ? err.message : "Image upload failed");
+    }
+  }, [doUpload]);
+
+  // Video picker
+  const handleVideoChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+    const preview = URL.createObjectURL(file);
+    setAttachment({ type: "video", preview, uploading: true });
+    setError(null);
+    try {
+      const { url, metadata } = await doUpload(file, "video");
+      setAttachment((p) => p ? { ...p, uploading: false, url, metadata } : null);
+    } catch (err: unknown) {
+      setAttachment(null);
+      setError(err instanceof Error ? err.message : "Video upload failed");
     }
   }, [doUpload]);
 
@@ -428,6 +464,23 @@ function MessageInput({
               <button onClick={clearAttachment} className="text-slate-400 hover:text-slate-600 ml-1"><X className="h-4 w-4" /></button>
             </div>
           )}
+
+          {/* Video preview */}
+          {!recording && attachment?.type === "video" && (
+            <div className="flex items-center gap-3 rounded-xl bg-slate-100 px-3 py-2">
+              <video src={attachment.preview} className="h-14 w-14 rounded-lg object-cover bg-black" muted />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-slate-700">Video attached</p>
+                {attachment.uploading && <p className="text-xs text-slate-400">Uploading…</p>}
+                {attachment.error && <p className="text-xs text-red-500">{attachment.error}</p>}
+              </div>
+              {attachment.uploading
+                ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600" />
+                : <span className="text-xs text-teal-600 font-medium">✓ Ready</span>
+              }
+              <button onClick={clearAttachment} className="text-slate-400 hover:text-slate-600 ml-1"><X className="h-4 w-4" /></button>
+            </div>
+          )}
         </div>
       )}
 
@@ -445,6 +498,17 @@ function MessageInput({
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-teal-600 disabled:opacity-30 transition-colors"
         >
           <ImageIcon className="h-5 w-5" />
+        </button>
+
+        {/* Video picker button */}
+        <input ref={videoFileRef} type="file" accept="video/mp4,video/quicktime,video/webm" className="hidden" onChange={handleVideoChange} />
+        <button
+          onClick={() => videoFileRef.current?.click()}
+          disabled={recording || !!attachment || disabled}
+          title="Attach video"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-teal-600 disabled:opacity-30 transition-colors"
+        >
+          <VideoIcon className="h-5 w-5" />
         </button>
 
         {/* Mic button */}

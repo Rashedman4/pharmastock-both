@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Alert, Image, ActivityIndicator, RefreshControl,
+  Alert, ActivityIndicator, RefreshControl,
 } from 'react-native';
+import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -198,7 +199,7 @@ function PositionCard({
           </Text>
           <TouchableOpacity style={[styles.evidencePicker, isForce && !formState.image && styles.evidenceRequired]} onPress={pickImage} activeOpacity={0.7}>
             {formState.image ? (
-              <Image source={{ uri: formState.image.uri }} style={styles.evidencePreview} resizeMode="contain" />
+              <Image source={{ uri: formState.image.uri }} style={styles.evidencePreview} contentFit="contain" />
             ) : (
               <View style={styles.evidencePlaceholderBox}>
                 <Ionicons name="camera-outline" size={24} color={Colors.textMuted} />
@@ -340,7 +341,7 @@ function CloseRequestCard({
           <Text style={styles.evidenceLabel}>{t('elite.evidence_optional_label')}</Text>
           <TouchableOpacity style={styles.evidencePicker} onPress={pickImage} activeOpacity={0.7}>
             {crForm.image ? (
-              <Image source={{ uri: crForm.image.uri }} style={styles.evidencePreview} resizeMode="contain" />
+              <Image source={{ uri: crForm.image.uri }} style={styles.evidencePreview} contentFit="contain" />
             ) : (
               <View style={styles.evidencePlaceholderBox}>
                 <Ionicons name="camera-outline" size={24} color={Colors.textMuted} />

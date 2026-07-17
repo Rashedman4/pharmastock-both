@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '@/constants/colors';
 import { ImageMessage } from './ImageMessage';
 import { VoiceMessage } from './VoiceMessage';
+import { VideoMessage } from './VideoMessage';
 import type { ChatMessage } from '@/types/content';
 
 interface Props {
@@ -53,9 +54,11 @@ export const MessageBubble = React.memo(function MessageBubble({ message, myUser
         )}
 
         {message.messageType === 'video' && message.attachmentUrl && (
-          <Text style={fromAdmin ? styles.adminText : styles.userText}>
-            Video message
-          </Text>
+          <VideoMessage
+            uri={message.attachmentUrl}
+            width={message.attachmentMetadata.width as number | null}
+            height={message.attachmentMetadata.height as number | null}
+          />
         )}
 
         <Text style={[styles.time, fromAdmin ? styles.adminTime : styles.userTime]}>

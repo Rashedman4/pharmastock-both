@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { getMobileAuthPayload } from '@/lib/mobile/auth-middleware';
+import { refreshSignalPricesIfStale } from '@/modules/market-data/signal-price-refresh.service';
 
 export async function GET(
   req: NextRequest,
@@ -24,6 +25,8 @@ export async function GET(
         { status: 400 }
       );
     }
+
+    await refreshSignalPricesIfStale();
 
     const { rows } = await pool.query(
       `SELECT id, symbol, type, enter_price, price_now, first_target, second_target,

@@ -19,6 +19,8 @@ import { format } from "date-fns";
 import useSWR from "swr";
 import { Textarea } from "@/components/ui/textarea";
 import { EditNewsModal } from "@/components/admin/editNews";
+import { AdminPagination } from "@/components/admin/adminPagination";
+import type { PaginationMeta } from "@/lib/mobile/paginate";
 
 interface NewsItem {
   id: number;
@@ -29,8 +31,15 @@ interface NewsItem {
   published_date: string;
 }
 
-const fetchNews = async (): Promise<NewsItem[]> => {
-  const res = await fetch("/api/admin/news");
+interface NewsResponse {
+  data: NewsItem[];
+  pagination: PaginationMeta;
+}
+
+const PAGE_SIZE = 50;
+
+const fetchNews = async (url: string): Promise<NewsResponse> => {
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch news");
   const data = await res.json();
   return data;
@@ -49,9 +58,10 @@ export default function NewsManagement() {
   const [bulkNews, setBulkNews] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editNews, setEditNews] = useState<NewsItem | null>(null);
+  const [page, setPage] = useState(1);
 
-  const { data: news, mutate } = useSWR<NewsItem[]>(
-    "/api/admin/news",
+  const { data: news, mutate } = useSWR<NewsResponse>(
+    `/api/admin/news?page=${page}&limit=${PAGE_SIZE}`,
     fetchNews
   );
 
@@ -82,7 +92,12 @@ export default function NewsManagement() {
         },
         price: 0,
       });
-      mutate();
+      // New items sort to the top (published_date DESC) — jump back to page 1 to see it.
+      if (page === 1) {
+        mutate();
+      } else {
+        setPage(1);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     }
@@ -102,7 +117,12 @@ export default function NewsManagement() {
         throw new Error("Failed to delete news");
       }
 
-      mutate();
+      // If that was the last item on a page beyond the first, step back a page.
+      if (news?.data.length === 1 && page > 1) {
+        setPage((p) => p - 1);
+      } else {
+        mutate();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete news");
     }
@@ -139,7 +159,11 @@ export default function NewsManagement() {
 
       // Reset form and refresh data
       setBulkNews("");
-      mutate();
+      if (page === 1) {
+        mutate();
+      } else {
+        setPage(1);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred ");
     }
@@ -352,7 +376,7 @@ export default function NewsManagement() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {news?.map((item) => (
+                {news?.data.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.symbol}</TableCell>
                     <TableCell>${item.price}</TableCell>
@@ -384,6 +408,9 @@ export default function NewsManagement() {
               </TableBody>
             </Table>
           </div>
+          {news?.pagination && (
+            <AdminPagination pagination={news.pagination} onPageChange={setPage} />
+          )}
         </CardContent>
       </Card>
 

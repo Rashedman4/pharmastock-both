@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { getMobileAuthPayload } from '@/lib/mobile/auth-middleware';
 import { parsePaginationParams, buildPaginationMeta } from '@/lib/mobile/paginate';
+import { refreshSignalPricesIfStale } from '@/modules/market-data/signal-price-refresh.service';
 
 export async function GET(req: NextRequest) {
   const auth = getMobileAuthPayload(req);
@@ -13,6 +14,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    await refreshSignalPricesIfStale();
     const { page, limit, offset } = parsePaginationParams(req);
 
     const [countResult, dataResult] = await Promise.all([

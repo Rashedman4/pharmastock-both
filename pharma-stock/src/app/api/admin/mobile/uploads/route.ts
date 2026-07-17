@@ -7,6 +7,8 @@ export const runtime = 'nodejs';
 const SIZE_LIMITS: Record<string, number> = {
   image: 5 * 1024 * 1024,
   voice: 15 * 1024 * 1024,
+  // Matches the mobile app's own upload limit (src/app/api/mobile/v1/uploads/chat/route.ts)
+  video: 100 * 1024 * 1024,
 };
 
 const BLOCKED_EXTENSIONS = new Set([
@@ -42,6 +44,22 @@ function classifyType(mime: string): 'image' | 'voice' | null {
   return null;
 }
 
+// Video is only ever picked via the dedicated "attach video" button (kind='video'
+// on the request), never the mic recorder — so unlike the voice-note case above,
+// there's no need to disambiguate an mp4/webm container from an audio recording.
+const VIDEO_MAGIC: Array<{ bytes: number[]; offset?: number; ext: string; mime: string }> = [
+  { bytes: [0x66, 0x74, 0x79, 0x70], offset: 4, ext: 'mp4',  mime: 'video/mp4' },  // MP4/MOV
+  { bytes: [0x1A, 0x45, 0xDF, 0xA3],             ext: 'webm', mime: 'video/webm' }, // WebM/Matroska
+];
+
+function detectVideoMime(buf: Uint8Array): { ext: string; mime: string } | null {
+  for (const sig of VIDEO_MAGIC) {
+    const off = sig.offset ?? 0;
+    if (sig.bytes.every((b, i) => buf[off + i] === b)) return { ext: sig.ext, mime: sig.mime };
+  }
+  return null;
+}
+
 function signCloudinary(params: Record<string, string>, secret: string): string {
   const base = Object.keys(params).sort().map((k) => `${k}=${params[k]}`).join('&');
   return crypto.createHash('sha1').update(`${base}${secret}`).digest('hex');
@@ -58,6 +76,8 @@ export async function POST(req: NextRequest) {
   const file = formData.get('file');
   if (!(file instanceof File)) return NextResponse.json({ error: 'file field required' }, { status: 400 });
 
+  const isVideoUpload = formData.get('kind') === 'video';
+
   // Extension check
   const name = file.name.toLowerCase();
   const ext = name.includes('.') ? name.slice(name.lastIndexOf('.')) : '';
@@ -67,10 +87,10 @@ export async function POST(req: NextRequest) {
 
   // Magic bytes
   const buffer = Buffer.from(await file.arrayBuffer());
-  const detected = detectMime(new Uint8Array(buffer));
+  const detected = isVideoUpload ? detectVideoMime(new Uint8Array(buffer)) : detectMime(new Uint8Array(buffer));
   if (!detected) return NextResponse.json({ error: 'Unrecognised file type' }, { status: 400 });
 
-  const fileType = classifyType(detected.mime);
+  const fileType = isVideoUpload ? 'video' : classifyType(detected.mime);
   if (!fileType) return NextResponse.json({ error: 'Unsupported file type' }, { status: 400 });
 
   const limit = SIZE_LIMITS[fileType];

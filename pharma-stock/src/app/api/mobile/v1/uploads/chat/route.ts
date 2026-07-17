@@ -55,12 +55,14 @@ function detectMimeType(buf: Uint8Array): { ext: string; mime: string } | null {
 
 const AUDIO_EXTENSIONS = new Set(['.m4a', '.3gp', '.3gpp', '.aac', '.caf']);
 
-function classifyType(mime: string, ext: string): 'image' | 'voice' | 'video' | null {
+function classifyType(mime: string, ext: string): 'image' | 'voice' | null {
   if (mime.startsWith('image/')) return 'image';
   if (mime.startsWith('audio/')) return 'voice';
   // M4A, 3GP, CAF: detected as video/mp4 (ftyp magic bytes) but are audio containers
   if (mime === 'video/mp4' && AUDIO_EXTENSIONS.has(ext)) return 'voice';
-  if (mime.startsWith('video/')) return 'video';
+  // Real video uploads are intentionally rejected here — only the admin web
+  // upload route (/api/admin/mobile/uploads) accepts video. Mobile users can
+  // receive video messages but not send them.
   return null;
 }
 

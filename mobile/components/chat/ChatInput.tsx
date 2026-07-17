@@ -7,8 +7,8 @@ import {
   ActivityIndicator,
   Alert,
   Text,
-  Image,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { Audio } from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
@@ -217,7 +217,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
             <Image
               source={{ uri: pendingAttachment.localUri }}
               style={styles.previewThumb}
-              resizeMode="cover"
+              contentFit="cover"
             />
           ) : (
             <View style={[styles.previewVoice, { flexDirection: rowDirection }]}>

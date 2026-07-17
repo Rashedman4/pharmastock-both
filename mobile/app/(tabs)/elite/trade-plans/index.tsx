@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { EliteTabBar } from '@/components/elite/EliteTabBar';
 import { Colors } from '@/constants/colors';
+import { rowDirection } from '@/lib/rtl';
 import { fetchTradePlans } from '@/services/elite.service';
 import type { TradePlan } from '@/types/elite';
 
@@ -124,7 +125,7 @@ export default function TradePlansScreen() {
               </Text>
             </TouchableOpacity>
           )}
-          contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }}
+          contentContainerStyle={{ paddingHorizontal: 16, gap: 8, flexDirection: rowDirection }}
         />
       </View>
 

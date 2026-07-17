@@ -25,6 +25,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import useSWR from "swr";
 import { format } from "date-fns";
+import { AdminPagination } from "@/components/admin/adminPagination";
+import type { PaginationMeta } from "@/lib/mobile/paginate";
 
 interface SignalHistory {
   id: number;
@@ -39,8 +41,15 @@ interface SignalHistory {
   created_at: string;
 }
 
-const fetchHistory = async (): Promise<SignalHistory[]> => {
-  const res = await fetch("/api/admin/history");
+interface HistoryResponse {
+  data: SignalHistory[];
+  pagination: PaginationMeta;
+}
+
+const PAGE_SIZE = 50;
+
+const fetchHistory = async (url: string): Promise<HistoryResponse> => {
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch history");
   return res.json();
 };
@@ -51,6 +60,7 @@ const HistoryManagement = () => {
   const [editSignal, setEditSignal] = useState<SignalHistory | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [page, setPage] = useState(1);
 
   // Form state for adding new signal
   const [newSignal, setNewSignal] = useState({
@@ -64,8 +74,8 @@ const HistoryManagement = () => {
     reason_en: "",
   });
 
-  const { data: history, mutate } = useSWR<SignalHistory[]>(
-    "/api/admin/history",
+  const { data: history, mutate } = useSWR<HistoryResponse>(
+    `/api/admin/history?page=${page}&limit=${PAGE_SIZE}`,
     fetchHistory
   );
 
@@ -146,7 +156,12 @@ const HistoryManagement = () => {
       }
 
       closeAddModal();
-      mutate();
+      // New records sort to the top (id DESC) — jump back to page 1 to see it.
+      if (page === 1) {
+        mutate();
+      } else {
+        setPage(1);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -171,14 +186,19 @@ const HistoryManagement = () => {
           throw new Error(data.error || "Failed to delete record");
         }
 
-        mutate();
+        // If that was the last item on a page beyond the first, step back a page.
+        if (history?.data.length === 1 && page > 1) {
+          setPage((p) => p - 1);
+        } else {
+          mutate();
+        }
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to delete record"
         );
       }
     },
-    [mutate]
+    [mutate, history, page]
   );
 
   const formatDate = (dateString: string) => {
@@ -229,7 +249,7 @@ const HistoryManagement = () => {
           </TableHeader>
 
           <TableBody>
-            {history?.map((signal) => {
+            {history?.data.map((signal) => {
               const profitLoss = calculateProfit(
                 signal.in_price,
                 signal.out_price
@@ -305,7 +325,7 @@ const HistoryManagement = () => {
               );
             })}
 
-            {(!history || history.length === 0) && (
+            {(!history || history.data.length === 0) && (
               <TableRow>
                 <TableCell
                   colSpan={10}
@@ -318,6 +338,9 @@ const HistoryManagement = () => {
           </TableBody>
         </Table>
       </div>
+      {history?.pagination && (
+        <AdminPagination pagination={history.pagination} onPageChange={setPage} />
+      )}
 
       {/* ✅ Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={closeModal}>

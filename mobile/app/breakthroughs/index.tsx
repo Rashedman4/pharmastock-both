@@ -1,14 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import {
   View,
-  FlatList,
   StyleSheet,
   ActivityIndicator,
-  RefreshControl,
   Text,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -64,7 +63,12 @@ export default function BreakthroughsScreen() {
       </View>
 
       <View style={styles.filters}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.filterScroll}
+          contentContainerStyle={{ flexDirection: rowDirection }}
+        >
           {categories.map((c) => (
             <TouchableOpacity
               key={c}
@@ -77,7 +81,12 @@ export default function BreakthroughsScreen() {
             </TouchableOpacity>
           ))}
         </ScrollView>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={[styles.filterScroll, { marginTop: 6 }]}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={[styles.filterScroll, { marginTop: 6 }]}
+          contentContainerStyle={{ flexDirection: rowDirection }}
+        >
           {stages.map((s) => (
             <TouchableOpacity
               key={s}
@@ -99,10 +108,10 @@ export default function BreakthroughsScreen() {
       ) : isError ? (
         <EmptyState title={t('common.error')} actionLabel={t('common.retry')} onAction={() => refetch()} />
       ) : (
-        <FlatList
+        <FlashList
           data={allItems}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => (
+          keyExtractor={(item: Breakthrough) => String(item.id)}
+          renderItem={({ item }: { item: Breakthrough }) => (
             <BreakthroughCard
               item={item}
               onPress={() => router.push(`/breakthroughs/${item.id}` as never)}
@@ -117,14 +126,8 @@ export default function BreakthroughsScreen() {
           }
           onEndReached={onEndReached}
           onEndReachedThreshold={0.3}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefetching}
-              onRefresh={refetch}
-              tintColor={Colors.primary}
-              colors={[Colors.primary]}
-            />
-          }
+          refreshing={isRefetching}
+          onRefresh={refetch}
         />
       )}
     </SafeAreaView>

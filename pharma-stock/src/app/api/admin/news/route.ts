@@ -1,6 +1,7 @@
 import pool from "@/lib/db";
 import { NextResponse, NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { parsePaginationParams, buildPaginationMeta } from "@/lib/mobile/paginate";
 
 export async function POST(req: NextRequest) {
   const token = await getToken({ req });
@@ -81,14 +82,29 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const { page, limit, offset } = parsePaginationParams(req);
+
     const client = await pool.connect();
-    const query = `SELECT * FROM news ORDER BY published_date DESC`;
-    const result = await client.query(query);
+    const [countResult, dataResult] = await Promise.all([
+      client.query("SELECT COUNT(*) FROM news"),
+      client.query(
+        `SELECT * FROM news ORDER BY published_date DESC LIMIT $1 OFFSET $2`,
+        [limit, offset]
+      ),
+    ]);
     client.release();
 
-    return NextResponse.json(result.rows, { status: 200 });
+    const total = parseInt(countResult.rows[0].count, 10);
+
+    return NextResponse.json(
+      {
+        data: dataResult.rows,
+        pagination: buildPaginationMeta(total, page, limit),
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Error fetching news, error: " + error },

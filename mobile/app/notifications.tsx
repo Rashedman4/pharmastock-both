@@ -2,12 +2,11 @@ import React, { useCallback } from 'react';
 import {
   View,
   Text,
-  FlatList,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  RefreshControl,
 } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -72,20 +71,14 @@ export default function NotificationsScreen() {
           <ActivityIndicator size="large" color={Colors.primary} />
         </View>
       ) : (
-        <FlatList
+        <FlashList
           data={notifications}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
+          keyExtractor={(item: InAppNotification) => item.id}
+          renderItem={({ item }: { item: InAppNotification }) => (
             <NotificationItem notification={item} onPress={() => handlePress(item)} />
           )}
-          refreshControl={
-            <RefreshControl
-              refreshing={isLoading}
-              onRefresh={refetch}
-              colors={[Colors.primary]}
-              tintColor={Colors.primary}
-            />
-          }
+          refreshing={isLoading}
+          onRefresh={refetch}
           onEndReached={handleEndReached}
           onEndReachedThreshold={0.3}
           ListFooterComponent={

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, Alert, ActivityIndicator,
-  TouchableOpacity, Image,
+  TouchableOpacity,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -266,7 +267,7 @@ export default function TradePlanDetailScreen() {
           <Text style={styles.screenshotLabel}>Execution Screenshot (optional)</Text>
           <TouchableOpacity style={styles.screenshotPicker} onPress={pickScreenshot} activeOpacity={0.7}>
             {execScreenshot ? (
-              <Image source={{ uri: execScreenshot.uri }} style={styles.screenshotPreview} resizeMode="contain" />
+              <Image source={{ uri: execScreenshot.uri }} style={styles.screenshotPreview} contentFit="contain" />
             ) : (
               <Text style={styles.screenshotPlaceholder}>Tap to attach screenshot</Text>
             )}

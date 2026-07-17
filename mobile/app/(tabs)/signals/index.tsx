@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import {
   View,
-  FlatList,
   StyleSheet,
   ActivityIndicator,
-  RefreshControl,
   TouchableOpacity,
   Text,
 } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -115,11 +114,11 @@ export default function SignalsScreen() {
           onAction={() => query.refetch()}
         />
       ) : (
-        <FlatList
+        <FlashList
           key={activeTab}
           data={allItems}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) =>
+          keyExtractor={(item: Signal | SignalHistoryItem) => String(item.id)}
+          renderItem={({ item }: { item: Signal | SignalHistoryItem }) =>
             activeTab === 'open' ? (
               <SignalCard
                 signal={item as unknown as Signal}
@@ -148,14 +147,8 @@ export default function SignalsScreen() {
           }
           onEndReached={onEndReached}
           onEndReachedThreshold={0.3}
-          refreshControl={
-            <RefreshControl
-              refreshing={query.isRefetching}
-              onRefresh={() => query.refetch()}
-              tintColor={Colors.primary}
-              colors={[Colors.primary]}
-            />
-          }
+          refreshing={query.isRefetching}
+          onRefresh={() => query.refetch()}
         />
       )}
     </SafeAreaView>
