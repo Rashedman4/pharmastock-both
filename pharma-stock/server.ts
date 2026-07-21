@@ -8,8 +8,16 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 app.prepare().then(async () => {
-  // Dynamic import ensures db.ts is loaded AFTER app.prepare() populates process.env from .env.local
-  const { initSocketIO } = await import('./src/lib/socket/socket-server');
+  // Next's production app.prepare() replaces require.extensions, which wipes
+  // out ts-node's '.ts' handler — re-registering it here (before this
+  // require-after-prepare, which is needed so db.ts picks up process.env
+  // from .env.local) restores the ability to require .ts files by extension-less
+  // specifier.
+  require('ts-node').register({
+    project: require.resolve('./tsconfig.server.json'),
+    transpileOnly: true,
+  });
+  const { initSocketIO } = require('./src/lib/socket/socket-server');
 
   const httpServer = createServer((req, res) => {
     const parsedUrl = parse(req.url!, true);

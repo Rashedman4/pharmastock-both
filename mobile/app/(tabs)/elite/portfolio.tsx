@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/Input';
 import { EliteTabBar } from '@/components/elite/EliteTabBar';
 import { Colors } from '@/constants/colors';
 import { rowDirection } from '@/lib/rtl';
+import { formatDate, formatNumber } from '@/lib/format';
 import { fetchElitePortfolio, submitCloseRequest, respondToCloseRequest } from '@/services/elite.service';
 import type { OpenPosition, PortfolioCloseRequest, Closure } from '@/types/elite';
 
@@ -111,7 +112,7 @@ function PositionCard({
         <View>
           <Text style={styles.posSymbol}>{position.symbol}</Text>
           <Text style={styles.posDetail}>
-            {t('elite.quantity')}: {position.quantityOpen.toLocaleString()} · {t('elite.entry')}: {fmt(position.entryPrice)}
+            {t('elite.quantity')}: {formatNumber(position.quantityOpen)} · {t('elite.entry')}: {fmt(position.entryPrice)}
           </Text>
         </View>
         <View style={styles.posRight}>
@@ -149,7 +150,7 @@ function PositionCard({
             onPress={onOpenForce}
             activeOpacity={0.7}
           >
-            <Ionicons name="flash" size={14} color="#fff" style={{ marginRight: 4 }} />
+            <Ionicons name="flash" size={14} color="#fff" style={{ marginEnd: 4 }} />
             <Text style={styles.forceBtnText}>{t('elite.force_close')}</Text>
           </TouchableOpacity>
         </View>
@@ -283,14 +284,14 @@ function CloseRequestCard({
   return (
     <Card style={[styles.crCard, isAdminPending && styles.crAdminPending]}>
       <View style={[styles.crHeader, { flexDirection: rowDirection }]}>
-        <View style={{ flex: 1, marginRight: 8 }}>
+        <View style={{ flex: 1, marginEnd: 8 }}>
           <Text style={[styles.crFrom, isAdminPending && { color: Colors.danger }]}>
             {item.initiatedByRole === 'ADMIN'
               ? t('elite.admin_requests_close')
               : t('elite.submitted_by_you')}
           </Text>
           <Text style={styles.crDetail}>
-            {t('elite.quantity')}: {Number(item.requestedQuantity).toLocaleString()}
+            {t('elite.quantity')}: {formatNumber(item.requestedQuantity)}
             {item.requestedExitPrice != null
               ? ` · ${t('elite.exit_price_label')}: $${Number(item.requestedExitPrice).toFixed(4)}`
               : ` · ${t('elite.at_market_price_short')}`}
@@ -298,7 +299,7 @@ function CloseRequestCard({
           {item.requestNote ? (
             <Text style={styles.crNote}>{item.requestNote}</Text>
           ) : null}
-          <Text style={styles.crDate}>{new Date(item.createdAt).toLocaleDateString()}</Text>
+          <Text style={styles.crDate}>{formatDate(item.createdAt)}</Text>
           {item.responseNote ? (
             <Text style={styles.crResponseNote}>{t('elite.admin')}: {item.responseNote}</Text>
           ) : null}
@@ -308,7 +309,7 @@ function CloseRequestCard({
 
       {isAdminPending && !expanded && (
         <TouchableOpacity style={[styles.executeBtn, { flexDirection: rowDirection }]} onPress={onExpand} activeOpacity={0.7}>
-          <Ionicons name="checkmark-circle-outline" size={15} color="#fff" style={{ marginRight: 4 }} />
+          <Ionicons name="checkmark-circle-outline" size={15} color="#fff" style={{ marginEnd: 4 }} />
           <Text style={styles.executeBtnText}>{t('elite.execute_close')}</Text>
         </TouchableOpacity>
       )}
@@ -323,7 +324,7 @@ function CloseRequestCard({
             <Ionicons name="information-circle-outline" size={14} color={Colors.textSecondary} />
             <Text style={styles.crFormInfoText}>
               {t('elite.confirm_close_detail', {
-                qty: Number(item.requestedQuantity).toLocaleString(),
+                qty: formatNumber(item.requestedQuantity),
                 priceText,
               })}
             </Text>
@@ -389,7 +390,7 @@ function ClosureCard({ item }: { item: Closure }) {
       <View style={[styles.closureMetrics, { flexDirection: rowDirection }]}>
         <View style={styles.closureMetric}>
           <Text style={styles.metricLabel}>{t('elite.qty_closed')}</Text>
-          <Text style={styles.metricValue}>{Number(item.closedQuantity).toLocaleString()}</Text>
+          <Text style={styles.metricValue}>{formatNumber(item.closedQuantity)}</Text>
         </View>
         <View style={styles.closureMetric}>
           <Text style={styles.metricLabel}>{t('elite.exit_price_label')}</Text>
@@ -406,7 +407,7 @@ function ClosureCard({ item }: { item: Closure }) {
           <Text style={styles.metricValue}>{fmt(item.firmShareAmount)}</Text>
         </View>
       </View>
-      <Text style={styles.closureDate}>{new Date(item.closedAt).toLocaleDateString()}</Text>
+      <Text style={styles.closureDate}>{formatDate(item.closedAt)}</Text>
     </Card>
   );
 }

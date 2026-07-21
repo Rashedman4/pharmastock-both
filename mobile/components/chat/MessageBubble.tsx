@@ -4,18 +4,12 @@ import { Colors } from '@/constants/colors';
 import { ImageMessage } from './ImageMessage';
 import { VoiceMessage } from './VoiceMessage';
 import { VideoMessage } from './VideoMessage';
+import { formatTime } from '@/lib/format';
 import type { ChatMessage } from '@/types/content';
 
 interface Props {
   message: ChatMessage;
   myUserId: number;
-}
-
-function formatTime(dateStr: string): string {
-  return new Date(dateStr).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
 }
 
 export const MessageBubble = React.memo(function MessageBubble({ message, myUserId }: Props) {

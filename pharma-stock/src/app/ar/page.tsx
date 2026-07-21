@@ -6,10 +6,12 @@ import BreakthroughSpotlight from "@/components/app/BreakthroughSpotlight";
 import IndustryInsights from "@/components/app/IndustryInsights";
 import GlobalPharmaMap from "@/components/app/GlobalPharmaMap";
 import EliteGroupCTA from "@/components/EliteGroupCTA";
+import { buildAlternates } from "@/lib/seo";
 export const metadata = {
-  title: "أفضل الأسهم الدوائية و تحليلات السوق | Bio Pharma Stock",
+  title: "Bio Pharma Stock | رؤى بحثية لقطاع الأدوية الحيوية — حيث يلتقي العلم بالاستثمار",
   description:
-    "احصل على أحدث التحليلات حول أسهم الأدوية ونتائج التجارب السريرية واتجاهات السوق. تحليل مدعوم بالذكاء الاصطناعي لاتخاذ قرارات استثمارية أكثر ذكاءً.",
+    "حيث يلتقي العلم بالاستثمار. احصل على رؤى بحثية متخصصة في قطاع الأدوية الحيوية — تحليل التجارب السريرية، ومتابعة القرارات التنظيمية لإدارة الغذاء والدواء الأمريكية (FDA)، وإشارات مدعومة بالذكاء الاصطناعي لاستثمار أذكى في قطاعي الأدوية والتكنولوجيا الحيوية.",
+  alternates: buildAlternates("", "ar"),
 };
 
 export default function Home() {

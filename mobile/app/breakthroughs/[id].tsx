@@ -67,7 +67,7 @@ export default function BreakthroughDetailScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.companyRow}>
+        <View style={[styles.companyRow, { flexDirection: rowDirection }]}>
           <Text style={styles.company}>{item.company}</Text>
           <View style={styles.symbolPill}>
             <Text style={styles.symbolText}>{item.symbol}</Text>
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
   },
-  company: { flex: 1, fontSize: 14, fontWeight: '600', color: Colors.textSecondary, marginRight: 8 },
+  company: { flex: 1, fontSize: 14, fontWeight: '600', color: Colors.textSecondary, marginEnd: 8 },
   symbolPill: {
     backgroundColor: Colors.backgroundTertiary,
     paddingHorizontal: 10,

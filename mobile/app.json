@@ -12,8 +12,8 @@
       "bundleIdentifier": "com.biopharmastock.app",
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
-        "NSCameraUsageDescription": "Used for profile photo and document scanning.",
-        "NSPhotoLibraryUsageDescription": "Used to upload images.",
+        "NSCameraUsageDescription": "Used to capture trade evidence photos and share images in chat.",
+        "NSPhotoLibraryUsageDescription": "Used to upload trade evidence and share images in chat.",
         "NSMicrophoneUsageDescription": "Used for voice messages in community chat.",
         "UIBackgroundModes": ["remote-notification", "fetch"],
         "CFBundleURLTypes": [
@@ -97,6 +97,12 @@
       ]
     ],
     "scheme": "pharmastock",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/cf543e1b-ecc0-415e-bc43-56db5e4fc0cb"
+    },
     "extra": {
       "router": {},
       "eas": {

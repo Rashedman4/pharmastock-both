@@ -79,7 +79,7 @@ export function VoiceMessage({ uri, duration, isAdmin }: Props) {
 
       {/* Waveform bar */}
       <View style={styles.trackContainer}>
-        <View style={[styles.track, bubbleStyle]}>
+        <View style={[styles.track, bubbleStyle, { flexDirection: rowDirection }]}>
           <View style={[styles.progress, bubbleStyle, { flex: progress }]} />
         </View>
       </View>

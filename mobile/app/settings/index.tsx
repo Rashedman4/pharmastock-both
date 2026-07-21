@@ -1,20 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Linking } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { useMutation } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
 import { directionArrow, rowDirection } from '@/lib/rtl';
 import Constants from 'expo-constants';
+import { authService } from '@/services/auth.service';
+import { useAuthStore } from '@/stores/auth.store';
+
+const PRIVACY_POLICY_URL: Record<string, string> = {
+  en: 'https://biopharmastock.com/en/privacy-policy',
+  ar: 'https://biopharmastock.com/ar/privacy-policy',
+};
 
 interface SettingsRowProps {
   icon: React.ComponentProps<typeof Ionicons>['name'];
   label: string;
   value?: string;
   onPress: () => void;
+  danger?: boolean;
 }
 
-function SettingsRow({ icon, label, value, onPress }: SettingsRowProps) {
+function SettingsRow({ icon, label, value, onPress, danger }: SettingsRowProps) {
+  const tint = danger ? Colors.danger : Colors.primary;
   return (
     <TouchableOpacity
       style={[styles.row, { flexDirection: rowDirection }]}
@@ -22,10 +32,10 @@ function SettingsRow({ icon, label, value, onPress }: SettingsRowProps) {
       activeOpacity={0.7}
     >
       <View style={[styles.rowLeft, { flexDirection: rowDirection }]}>
-        <View style={styles.iconBox}>
-          <Ionicons name={icon} size={20} color={Colors.primary} />
+        <View style={[styles.iconBox, danger && { backgroundColor: Colors.danger + '15' }]}>
+          <Ionicons name={icon} size={20} color={tint} />
         </View>
-        <Text style={styles.rowLabel}>{label}</Text>
+        <Text style={[styles.rowLabel, danger && { color: Colors.danger }]}>{label}</Text>
       </View>
       <View style={[styles.rowRight, { flexDirection: rowDirection }]}>
         {value ? <Text style={styles.rowValue}>{value}</Text> : null}
@@ -37,8 +47,39 @@ function SettingsRow({ icon, label, value, onPress }: SettingsRowProps) {
 
 export default function SettingsScreen() {
   const { t, i18n } = useTranslation();
+  const { clear } = useAuthStore();
   const currentLang = i18n.language === 'ar' ? t('settings.arabic') : t('settings.english');
   const appVersion = Constants.expoConfig?.version ?? '1.0.0';
+
+  const deleteMutation = useMutation({
+    mutationFn: () => authService.deleteAccount(),
+    onSuccess: async () => {
+      await clear();
+      router.replace('/(auth)/login');
+    },
+    onError: () => {
+      Alert.alert(t('common.error_title'), t('settings.delete_account_error'));
+    },
+  });
+
+  const confirmDeleteAccount = () =>
+    Alert.alert(
+      t('settings.delete_account_confirm_title'),
+      t('settings.delete_account_confirm_message'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('settings.delete_account_button'),
+          style: 'destructive',
+          onPress: () => deleteMutation.mutate(),
+        },
+      ]
+    );
+
+  const openPrivacyPolicy = () => {
+    const url = PRIVACY_POLICY_URL[i18n.language] ?? PRIVACY_POLICY_URL.en;
+    Linking.openURL(url).catch(() => {});
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -55,8 +96,37 @@ export default function SettingsScreen() {
       </View>
 
       <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('settings.about_section')}</Text>
+        <View style={styles.card}>
+          <SettingsRow
+            icon="information-circle-outline"
+            label={t('settings.about_us')}
+            onPress={() => router.push('/settings/about')}
+          />
+          <View style={styles.divider} />
+          <SettingsRow
+            icon="document-text-outline"
+            label={t('settings.privacy_policy')}
+            onPress={openPrivacyPolicy}
+          />
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('settings.account_danger_section')}</Text>
+        <View style={styles.card}>
+          <SettingsRow
+            icon="trash-outline"
+            label={t('settings.delete_account')}
+            onPress={confirmDeleteAccount}
+            danger
+          />
+        </View>
+      </View>
+
+      <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('settings.version')}</Text>
-        <View style={styles.versionCard}>
+        <View style={[styles.versionCard, { flexDirection: rowDirection }]}>
           <Text style={styles.versionLabel}>{t('settings.version')}</Text>
           <Text style={styles.versionValue}>{appVersion}</Text>
         </View>
@@ -103,6 +173,7 @@ const styles = StyleSheet.create({
   rowRight: { alignItems: 'center', gap: 6 },
   rowValue: { fontSize: 14, color: Colors.textSecondary },
   arrow: { fontSize: 20, color: Colors.textMuted },
+  divider: { height: 1, backgroundColor: Colors.borderLight, marginHorizontal: 16 },
   versionCard: {
     backgroundColor: Colors.backgroundTertiary,
     borderRadius: 12,

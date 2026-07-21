@@ -3,6 +3,7 @@ import ErrorComp from "@/components/auth/ar/errorComp";
 
 export const metadata: Metadata = {
   title: "حدث خطأ ما | Bio Pharma Stock",
+  robots: { index: false, follow: true },
 };
 
 export default function LoginPage() {

@@ -28,7 +28,7 @@ const translations: Record<
   en: {
     title: "Welcome to Bio Pharma Stock",
     subtitle:
-      "Create an account or sign in to access personalized signals, watchlists, and more.",
+      "Create an account or sign in to access exclusive research, personalized signals, watchlists, and more.",
     loginTab: "Login",
     registerTab: "Register",
     dismiss: "Maybe later",
@@ -36,7 +36,7 @@ const translations: Record<
   ar: {
     title: "Bio Pharma Stock مرحبًا بك في",
     subtitle:
-      ".أنشئ حسابًا أو سجّل الدخول للوصول إلى توصياتنا و جميع أقسام الموقع",
+      ".أنشئ حسابًا أو سجّل الدخول للوصول إلى أبحاثنا الحصرية، وتوصياتنا الشخصية، وقوائم المتابعة، والمزيد",
     loginTab: "تسجيل الدخول",
     registerTab: "إنشاء حساب",
     dismiss: "لاحقًا",

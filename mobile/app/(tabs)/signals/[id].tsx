@@ -15,20 +15,12 @@ import { Badge } from '@/components/ui/Badge';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
 import { isRTL, rowDirection } from '@/lib/rtl';
+import { formatDate } from '@/lib/format';
 
 function formatPrice(val: string | null | undefined): string {
   if (!val) return '—';
   const n = parseFloat(val);
   return isNaN(n) ? '—' : `$${n.toFixed(2)}`;
-}
-
-function formatDate(dateStr: string | null): string {
-  if (!dateStr) return '—';
-  return new Date(dateStr).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
 }
 
 export default function SignalDetailScreen() {
@@ -71,7 +63,7 @@ export default function SignalDetailScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.topRow}>
+        <View style={[styles.topRow, { flexDirection: rowDirection }]}>
           <Text style={styles.symbol}>{signal.symbol}</Text>
           <Badge
             label={isBuy ? t('signals.buy') : t('signals.sell')}
@@ -79,16 +71,18 @@ export default function SignalDetailScreen() {
           />
         </View>
 
-        <View style={styles.priceGrid}>
+        <View style={[styles.priceGrid, { flexDirection: rowDirection }]}>
           <PriceCell label={t('signals.entry')} value={formatPrice(signal.enter_price)} />
           <PriceCell label={t('signals.target_1')} value={formatPrice(signal.first_target)} />
           <PriceCell label={t('signals.target_2')} value={formatPrice(signal.second_target)} />
           <PriceCell label={t('signals.price_now')} value={formatPrice(signal.price_now)} accent />
         </View>
 
-        <View style={styles.infoRow}>
+        <View style={[styles.infoRow, { flexDirection: rowDirection }]}>
           <Text style={styles.infoLabel}>{t('signals.opened')}</Text>
-          <Text style={styles.infoValue}>{formatDate(signal.date_opened)}</Text>
+          <Text style={styles.infoValue}>
+            {formatDate(signal.date_opened, { year: 'numeric', month: 'long', day: 'numeric' })}
+          </Text>
         </View>
 
         {reason ? (

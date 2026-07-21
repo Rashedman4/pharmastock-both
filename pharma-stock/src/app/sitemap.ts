@@ -1,57 +1,42 @@
 import { MetadataRoute } from "next";
-//you shall implement the dyanmic routes later
-//when implemented you will make it async and promise return
+
+const baseUrl = "https://biopharmastock.com";
+
+// Real public, indexable routes only (excludes auth pages, checkout
+// success/subscription flows, and anything behind the auth gate).
+const PUBLIC_PATHS: { path: string; changefreq: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }[] = [
+  { path: "", changefreq: "daily", priority: 1 },
+  { path: "/ask-about-stock", changefreq: "monthly", priority: 0.7 },
+  { path: "/daily-video", changefreq: "daily", priority: 0.8 },
+  { path: "/history", changefreq: "weekly", priority: 0.6 },
+  { path: "/news", changefreq: "daily", priority: 0.7 },
+  { path: "/signals", changefreq: "daily", priority: 0.7 },
+  { path: "/fda-designation", changefreq: "daily", priority: 0.7 },
+  { path: "/elite-group", changefreq: "weekly", priority: 0.8 },
+  { path: "/partners", changefreq: "weekly", priority: 0.7 },
+  { path: "/community", changefreq: "monthly", priority: 0.6 },
+  { path: "/policy", changefreq: "yearly", priority: 0.3 },
+  { path: "/privacy-policy", changefreq: "yearly", priority: 0.3 },
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXTAUTH_URL || "https://biopharmastock.com";
+  const entries: MetadataRoute.Sitemap = [];
 
-  const staticPages = [
-    { url: `${baseUrl}/en`, changefreq: "daily", priority: 1 },
-    { url: `${baseUrl}/ar`, changefreq: "daily", priority: 1 },
-    {
-      url: `${baseUrl}/en/ask-about-stock`,
-      changefreq: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/en/daily-video`,
-      changefreq: "daily",
-      priority: 0.8,
-    },
-    { url: `${baseUrl}/en/history`, changefreq: "weekly", priority: 0.6 },
-    { url: `${baseUrl}/en/news`, changefreq: "daily", priority: 0.7 },
-    { url: `${baseUrl}/en/signals`, changefreq: "daily", priority: 0.7 },
-    {
-      url: `${baseUrl}/en/fda-designation`,
-      changefreq: "daily",
-      priority: 0.7,
-    },
-    { url: `${baseUrl}/en/subscription`, changefreq: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/en/auth/login`, priority: 0.5 },
-    { url: `${baseUrl}/en/auth/register`, priority: 0.5 },
+  for (const { path, changefreq, priority } of PUBLIC_PATHS) {
+    for (const lang of ["en", "ar"] as const) {
+      entries.push({
+        url: `${baseUrl}/${lang}${path}`,
+        changeFrequency: changefreq,
+        priority,
+        alternates: {
+          languages: {
+            en: `${baseUrl}/en${path}`,
+            ar: `${baseUrl}/ar${path}`,
+          },
+        },
+      });
+    }
+  }
 
-    {
-      url: `${baseUrl}/ar/ask-about-stock`,
-      changefreq: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/ar/daily-video`,
-      changefreq: "daily",
-      priority: 0.8,
-    },
-    { url: `${baseUrl}/ar/history`, changefreq: "weekly", priority: 0.6 },
-    { url: `${baseUrl}/ar/news`, changefreq: "daily", priority: 0.7 },
-    { url: `${baseUrl}/ar/signals`, changefreq: "daily", priority: 0.7 },
-    {
-      url: `${baseUrl}/ar/fda-designation`,
-      changefreq: "daily",
-      priority: 0.7,
-    },
-
-    { url: `${baseUrl}/ar/subscription`, changefreq: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/ar/auth/login`, priority: 0.5 },
-    { url: `${baseUrl}/ar/auth/register`, priority: 0.5 },
-  ];
-
-  return [...staticPages];
+  return entries;
 }

@@ -1,6 +1,7 @@
 import ResetPasswordComp from "@/components/auth/ar/ResetPasswordComp";
 export const metadata = {
   title: "اعادة نغيين كلمة المرور | Bio Pharma Stock",
+  robots: { index: false, follow: true },
 };
 export default function RegisterPage() {
   return (

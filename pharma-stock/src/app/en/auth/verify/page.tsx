@@ -1,6 +1,7 @@
 import VerificationComp from "@/components/auth/en/VerificationComp";
 export const metadata = {
   title: "Verification | Bio Pharma Stock",
+  robots: { index: false, follow: true },
 };
 export default function VerificationPage() {
   return (

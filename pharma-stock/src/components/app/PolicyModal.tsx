@@ -15,7 +15,7 @@ const translations = {
     acceptButton: "I Accept",
     readMore: "Read Full Policy",
     summary:
-      "By using Bio Pharma Stock, you agree to our terms and conditions. We provide stock signals, news, and analysis for the US pharmaceutical market. All investment decisions are your responsibility, and we do not guarantee any specific outcomes.",
+      "By using Bio Pharma Stock, you agree to our terms and conditions. As a biopharma research intelligence company, we provide stock insights, news, and analysis for the US pharmaceutical market. All investment decisions are your responsibility, and we do not guarantee any specific outcomes.",
     switchLang: "العربية",
   },
   ar: {
@@ -23,7 +23,7 @@ const translations = {
     acceptButton: "أوافق",
     readMore: "قراءة السياسة الكاملة",
     summary:
-      "باستخدام Bio Pharma Stock، فإنك توافق على شروطنا وأحكامنا. نقدم إشارات الأسهم والأخبار والتحليلات لسوق الأدوية الأمريكي. جميع قرارات الاستثمار هي مسؤوليتك، ولا نضمن أي نتائج محددة.",
+      "باستخدام Bio Pharma Stock، فإنك توافق على شروطنا وأحكامنا. بصفتنا شركة متخصصة تقدّم رؤى بحثية لقطاع الأدوية الحيوية، نقدم رؤى الأسهم والأخبار والتحليلات لسوق الأدوية الأمريكي. جميع قرارات الاستثمار هي مسؤوليتك، ولا نضمن أي نتائج محددة.",
     switchLang: "English",
   },
 };

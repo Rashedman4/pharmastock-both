@@ -1,8 +1,10 @@
 import AskAboutStockComp from "@/components/app/AskAboutStockComp";
+import { buildAlternates } from "@/lib/seo";
 export const metadata = {
   title: "اسأل عن سهم | Bio Pharma Stock",
   description:
     "احصل على رؤى فورية مدعومة بالذكاء الاصطناعي حول أي سهم. حلل اتجاهات الأسهم الصيدلانية والتجارب السريرية وفرص الاستثمار في قطاع الأدوية.",
+  alternates: buildAlternates("/ask-about-stock", "ar"),
   keywords: [
     "اسأل عن سهم",
     "تحليل الأسهم",

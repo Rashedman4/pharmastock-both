@@ -11,7 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { EliteTabBar } from '@/components/elite/EliteTabBar';
 import { Colors } from '@/constants/colors';
 import { fetchEliteDashboard } from '@/services/elite.service';
-import { rowDirection } from '@/lib/rtl';
+import { rowDirection, directionArrow } from '@/lib/rtl';
 
 function fmt(val: number | null | undefined): string {
   if (val == null) return '—';
@@ -51,14 +51,14 @@ interface QuickLinkProps {
 
 function QuickLink({ label, count, onPress }: QuickLinkProps) {
   return (
-    <TouchableOpacity style={styles.quickLink} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity style={[styles.quickLink, { flexDirection: rowDirection }]} onPress={onPress} activeOpacity={0.7}>
       <Text style={styles.quickLinkLabel}>{label}</Text>
       {count != null && (
         <View style={styles.countBadge}>
           <Text style={styles.countText}>{count}</Text>
         </View>
       )}
-      <Text style={styles.arrow}>›</Text>
+      <Text style={styles.arrow}>{directionArrow}</Text>
     </TouchableOpacity>
   );
 }
@@ -88,7 +88,7 @@ export default function EliteDashboardScreen() {
   return (
     <View style={styles.wrapper}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <View style={styles.headerRow}>
+        <View style={[styles.headerRow, { flexDirection: rowDirection }]}>
           <Text style={styles.title}>{t('elite.dashboard')}</Text>
           <View style={[styles.headerActions, { flexDirection: rowDirection }]}>
             <TouchableOpacity onPress={() => refetch()} style={[styles.reloadBtn, { flexDirection: rowDirection }]} activeOpacity={0.7} disabled={isFetching}>
@@ -107,7 +107,7 @@ export default function EliteDashboardScreen() {
 
         <Text style={styles.sectionTitle}>{t('elite.portfolio_overview')}</Text>
 
-        <View style={styles.metricsGrid}>
+        <View style={[styles.metricsGrid, { flexDirection: rowDirection }]}>
           <MetricCard label={t('elite.total_equity')} value={fmt(data.totalEquity)} accent />
           <MetricCard label={t('elite.free_capital')} value={fmt(data.freeCapitalAmount)} />
           <MetricCard label={t('elite.money_in_market')} value={fmt(data.moneyInMarket)} />
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 7,
     paddingVertical: 2,
-    marginRight: 8,
+    marginEnd: 8,
   },
   countText: { color: '#fff', fontSize: 11, fontWeight: '700' },
   arrow: { fontSize: 20, color: Colors.textMuted },

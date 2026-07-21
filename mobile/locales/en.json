@@ -196,6 +196,7 @@
   "home": {
     "welcome": "Welcome back",
     "welcome_name": "Welcome, {{name}}",
+    "tagline": "Where Science Meets Investing.",
     "open_signals": "Open Ideas",
     "latest_news": "Latest News",
     "breakthroughs": "Breakthroughs",
@@ -402,9 +403,27 @@
     "english": "English",
     "arabic": "Arabic (عربي)",
     "app_preferences": "App Preferences",
-    "restart_title": "Restart Required",
-    "restart_message": "Please restart the app to fully apply the language change.",
+    "applying_language": "Applying language…",
     "version": "Version",
-    "current": "Current"
+    "current": "Current",
+    "about_section": "About",
+    "about_us": "About Us",
+    "about_us_subtitle": "Our mission and company info",
+    "privacy_policy": "Privacy Policy",
+    "account_danger_section": "Account",
+    "delete_account": "Delete Account",
+    "delete_account_subtitle": "Permanently delete your account and personal data",
+    "delete_account_confirm_title": "Delete Account?",
+    "delete_account_confirm_message": "This will permanently delete your account and personal data. This cannot be undone.",
+    "delete_account_button": "Delete My Account",
+    "delete_account_success": "Your account has been deleted.",
+    "delete_account_error": "Failed to delete account. Please try again."
+  },
+  "about": {
+    "title": "About Us",
+    "tagline": "Where Science Meets Investing.",
+    "pitch": "BioPharmaStock is a specialized biopharmaceutical investment intelligence company focused exclusively on publicly traded biotechnology and pharmaceutical companies. Our research team continuously analyzes clinical trials, FDA regulatory events, scientific publications, corporate developments, and market catalysts to deliver timely research and exclusive insights for investors seeking opportunities in one of the world's most knowledge-intensive sectors.",
+    "company_line": "ALNJAM ALAALI SOFTWARE DESIGN CO. L.L.C, UAE, Abu Dhabi",
+    "contact_email": "info@biopharmastock.com"
   }
 }

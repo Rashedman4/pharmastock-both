@@ -13,14 +13,7 @@ import { useDailyUpdateItem } from '@/hooks/useContent';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
 import { isRTL, rowDirection } from '@/lib/rtl';
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
+import { formatDate } from '@/lib/format';
 
 export default function DailyUpdateDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -72,7 +65,7 @@ export default function DailyUpdateDetailScreen() {
 
         <Text style={styles.description}>{getField(item, 'description')}</Text>
 
-        <Text style={styles.date}>{formatDate(item.published_date)}</Text>
+        <Text style={styles.date}>{formatDate(item.published_date, { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
       </ScrollView>
     </SafeAreaView>
   );

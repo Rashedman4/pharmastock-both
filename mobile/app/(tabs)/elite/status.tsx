@@ -11,6 +11,7 @@ import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { Colors } from '@/constants/colors';
 import { fetchEliteStatus } from '@/services/elite.service';
 import { rowDirection } from '@/lib/rtl';
+import { formatDate } from '@/lib/format';
 type BadgeVariant = 'success' | 'danger' | 'warning' | 'info' | 'neutral' | 'primary';
 
 function statusVariant(status: string | null): BadgeVariant {
@@ -53,7 +54,7 @@ export default function EliteStatusScreen() {
 
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Card style={styles.card}>
-        <View style={styles.row}>
+        <View style={[styles.row, { flexDirection: rowDirection }]}>
           <Text style={styles.label}>{t('elite.status')}</Text>
           {appStatus ? (
             <Badge
@@ -66,10 +67,10 @@ export default function EliteStatusScreen() {
         </View>
 
         {data.application_date && (
-          <View style={styles.row}>
+          <View style={[styles.row, { flexDirection: rowDirection }]}>
             <Text style={styles.label}>{t('elite.submitted_at')}</Text>
             <Text style={styles.value}>
-              {new Date(data.application_date).toLocaleDateString()}
+              {formatDate(data.application_date)}
             </Text>
           </View>
         )}

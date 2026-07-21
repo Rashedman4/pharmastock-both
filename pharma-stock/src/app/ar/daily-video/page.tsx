@@ -1,9 +1,11 @@
 import DailyVideo from "@/components/app/DailyVideo";
 import QuestionForm from "@/components/app/QuestionForm";
+import { buildAlternates } from "@/lib/seo";
 export const metadata = {
   title: "تحليلات السوق اليومية | Bio Pharma Stock",
   description:
     "شاهد تحليلات يومية للسوق وتوقعات الأسهم. احصل على آراء الخبراء حول اتجاهات السوق وأداء الأسهم وفرص الاستثمار.",
+  alternates: buildAlternates("/daily-video", "ar"),
   keywords: [
     "تحليلات سوق الأسهم",
     "تحليل السوق اليومي",

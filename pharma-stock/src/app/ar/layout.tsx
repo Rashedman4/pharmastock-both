@@ -1,6 +1,7 @@
 import React from "react";
 import { Rubik } from "next/font/google";
 import WhatsAppButton from "@/components/app/WhatsAppButton";
+import HtmlLangSync from "@/components/app/HtmlLangSync";
 
 // Import Rubik with Arabic subset
 const rubik = Rubik({
@@ -8,9 +9,10 @@ const rubik = Rubik({
   subsets: ["arabic"], // Include Arabic subset
 });
 export const metadata = {
-  title: "الأسهم الدوائية | Bio Pharma Stock",
+  title:
+    "Bio Pharma Stock | رؤى بحثية لقطاع الأدوية الحيوية — إشارات وأخبار وتحليلات استثمارية",
   description:
-    "ابقَ في الصدارة في سوق الأسهم الدوائية مع إشارات حية، وأخبار شركات التكنولوجيا الحيوية، وتحليلات الخبراء، ورؤى استثمارية يومية. احصل على أحدث الاتجاهات والتوقعات واستراتيجيات التداول.",
+    "BioPharmaStock شركة متخصصة تقدّم رؤى بحثية لقطاع الأدوية الحيوية. نحلل التجارب السريرية، والقرارات التنظيمية لإدارة الغذاء والدواء الأمريكية (FDA)، ومحفزات السوق لنقدم إشارات تداول فورية، وأخبار أسهم التكنولوجيا الحيوية، وتحليلات الخبراء، ورؤى استثمارية يومية.",
   keywords: [
     "أسهم الأدوية",
     "أسهم التكنولوجيا الحيوية",
@@ -65,9 +67,9 @@ export const metadata = {
     "سوق الأسهم لشركات الرعاية الصحية",
   ],
   openGraph: {
-    title: "أفضل الأسهم الدوائية و تحليلات السوق | Bio Pharma Stock",
+    title: "Bio Pharma Stock | رؤى بحثية لقطاع الأدوية الحيوية",
     description:
-      "ابقَ في الطليعة في سوق الأسهم الدوائية مع إشارات حية، وأخبار يومية، وتحليلات الخبراء. اشترك للحصول على رؤى معمقة.",
+      "رؤى بحثية متخصصة لقطاع الأدوية الحيوية — إشارات فورية، وأخبار يومية، وتحليلات الخبراء للمستثمرين في قطاعي الأدوية والتكنولوجيا الحيوية. اشترك للحصول على تحليلات معمّقة.",
     url: "https://biopharmastock.com/ar",
     siteName: "Bio Pharma Stock",
     images: [
@@ -82,9 +84,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "أفضل الأسهم الدوائية و تحليلات السوق | Bio Pharma Stock",
+    title: "Bio Pharma Stock | رؤى بحثية لقطاع الأدوية الحيوية",
     description:
-      "إشارات حية للأسهم، وأخبار، وتحديثات عن قطاع الأدوية في الولايات المتحدة. احصل على رؤى يومية وتقارير بالفيديو.",
+      "رؤى بحثية متخصصة لقطاع الأدوية الحيوية، وإشارات تداول فورية، وتحديثات يومية حول قطاع الأدوية الأمريكي.",
     images: [
       {
         url: "https://biopharmastock.com/twitter-image.png", // Absolute URL
@@ -106,6 +108,7 @@ export default function RootLayout({
 }) {
   return (
     <div dir="rtl" className={`${rubik.className} m-0 p-0 rtl`}>
+      <HtmlLangSync lang="ar" />
       {children}
       <WhatsAppButton lang="ar" />
     </div>

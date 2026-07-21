@@ -40,7 +40,7 @@ const translations: Record<"en" | "ar", Translations> = {
           {
             title: "1.2 Services Provided",
             content:
-              "Bio Pharma Stock provides stock signals, news, daily video updates, stock analysis, and subscription-based content related to the US pharmaceutical stock market.",
+              "Bio Pharma Stock is a specialized biopharma research intelligence company. We provide stock insights, news, daily video updates, stock analysis, and subscription-based content related to the US pharmaceutical stock market.",
           },
           {
             title: "1.3 User Responsibilities",
@@ -167,7 +167,7 @@ const translations: Record<"en" | "ar", Translations> = {
           {
             title: "1.2 الخدمات المقدمة",
             content:
-              "يقدم Bio Pharma Stock إشارات الأسهم، الأخبار، التحديثات اليومية بالفيديو، تحليلات الأسهم، والمحتوى القائم على الاشتراك والمتعلق بسوق الأسهم الأمريكية في قطاع الأدوية.",
+              "Bio Pharma Stock شركة متخصصة تقدّم رؤى بحثية لقطاع الأدوية الحيوية. نقدم رؤى الأسهم، والأخبار، والتحديثات اليومية بالفيديو، وتحليلات الأسهم، والمحتوى القائم على الاشتراك المتعلق بسوق الأسهم الأمريكية في قطاع الأدوية.",
           },
           {
             title: "1.3 مسؤوليات المستخدم",

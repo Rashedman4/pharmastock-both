@@ -1,6 +1,7 @@
 import VerificationComp from "@/components/auth/ar/VerificationComp";
 export const metadata = {
   title: "تتحقق من بريدك الالكتروني | Bio Pharma Stock",
+  robots: { index: false, follow: true },
 };
 export default function VerificationPage() {
   return (

@@ -48,7 +48,7 @@ export default function NewsScreen() {
       </View>
 
       {/* Segmented control */}
-      <View style={styles.segmented}>
+      <View style={[styles.segmented, { flexDirection: rowDirection }]}>
         <TouchableOpacity
           style={[styles.segment, activeTab === 'news' && styles.segmentActive]}
           onPress={() => setActiveTab('news')}

@@ -1,6 +1,7 @@
 import ForgotPasswordComp from "@/components/auth/ar/ForgotPasswordComp";
 export const metadata = {
   title: "نسيت كلمة المرور | Bio Pharma Stock",
+  robots: { index: false, follow: true },
 };
 export default function ForgotPasswordPage() {
   return (

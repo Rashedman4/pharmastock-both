@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
 import { isRTL, rowDirection } from '@/lib/rtl';
+import { formatTime as formatClockTime, formatDate } from '@/lib/format';
 import type { Conversation } from '@/types/content';
 
 function formatTime(dateStr: string | null): string {
@@ -12,12 +13,10 @@ function formatTime(dateStr: string | null): string {
   const diffMs = now.getTime() - d.getTime();
   const diffDays = Math.floor(diffMs / 86_400_000);
 
-  if (diffDays === 0) {
-    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
+  if (diffDays === 0) return formatClockTime(dateStr);
   if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return d.toLocaleDateString([], { weekday: 'short' });
-  return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  if (diffDays < 7) return formatDate(dateStr, { weekday: 'short' });
+  return formatDate(dateStr, { month: 'short', day: 'numeric' });
 }
 
 interface Props {

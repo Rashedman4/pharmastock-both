@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
 import { rowDirection } from '@/lib/rtl';
+import { formatTime } from '@/lib/format';
 import { useAuthStore } from '@/stores/auth.store';
 import { fetchTradePlanMessages, sendTradePlanMessage } from '@/services/elite.service';
 import type { TradePlanMessage } from '@/types/elite';
@@ -27,8 +28,8 @@ function MessageBubble({ msg, currentUserId }: { msg: TradePlanMessage; currentU
           {msg.message_text}
         </Text>
       </View>
-      <Text style={[styles.time, isOwn && { textAlign: 'right' }]}>
-        {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+      <Text style={[styles.time, { textAlign: isOwn ? 'right' : 'left' }]}>
+        {formatTime(msg.created_at)}
       </Text>
     </View>
   );

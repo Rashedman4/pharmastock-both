@@ -51,11 +51,16 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Bio Pharma Stock</h3>
+            <h3 className="text-lg font-semibold mb-1">Bio Pharma Stock</h3>
+            <p className="text-sm text-brightTeal font-semibold mb-2">
+              {isArabic
+                ? "حيث يلتقي العلم بالاستثمار"
+                : "Where Science Meets Investing."}
+            </p>
             <p className="text-sm">
               {isArabic
-                ? "تمكين المستثمرين برؤى متطورة حول أسواق الأدوية."
-                : "Empowering investors with cutting-edge insights into pharmaceutical markets."}
+                ? "BioPharmaStock شركة متخصصة تقدّم رؤى بحثية استثمارية لقطاع الأدوية الحيوية، وتركّز حصريًا على شركات التكنولوجيا الحيوية والأدوية المدرجة في الأسواق العامة. يقوم فريق الأبحاث لدينا بتحليل مستمر للتجارب السريرية، والقرارات التنظيمية الصادرة عن إدارة الغذاء والدواء الأمريكية (FDA)، والأبحاث العلمية المنشورة، والمستجدات المؤسسية، والمحفزات السوقية، لتقديم أبحاث دقيقة التوقيت ورؤى حصرية للمستثمرين الباحثين عن فرص في واحد من أكثر القطاعات كثافة بالمعرفة في العالم."
+                : "BioPharmaStock is a specialized biopharmaceutical investment intelligence company focused exclusively on publicly traded biotechnology and pharmaceutical companies. Our research team continuously analyzes clinical trials, FDA regulatory events, scientific publications, corporate developments, and market catalysts to deliver timely research and exclusive insights for investors seeking opportunities in one of the world's most knowledge-intensive sectors."}
             </p>
             <p className="text-sm mt-2">
               {isArabic

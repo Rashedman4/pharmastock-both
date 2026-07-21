@@ -209,7 +209,7 @@ export default function EditProfileScreen() {
             <Text style={styles.sectionLabel}>{t('profile.password_section')}</Text>
 
             {isSocial ? (
-              <View style={styles.socialNote}>
+              <View style={[styles.socialNote, { flexDirection: rowDirection }]}>
                 <Ionicons
                   name="information-circle-outline"
                   size={18}

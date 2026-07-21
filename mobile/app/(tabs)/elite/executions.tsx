@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Colors } from '@/constants/colors';
+import { rowDirection } from '@/lib/rtl';
+import { formatDate, formatNumber } from '@/lib/format';
 import { fetchExecutions } from '@/services/elite.service';
 import type { TradeExecution } from '@/types/elite';
 
@@ -23,7 +25,7 @@ function ExecutionCard({ item }: { item: TradeExecution }) {
   const { t } = useTranslation();
   return (
     <Card>
-      <View style={styles.cardHeader}>
+      <View style={[styles.cardHeader, { flexDirection: rowDirection }]}>
         <View>
           <Text style={styles.symbol}>{item.symbol}</Text>
           {item.company_name && <Text style={styles.company}>{item.company_name}</Text>}
@@ -37,18 +39,18 @@ function ExecutionCard({ item }: { item: TradeExecution }) {
         </View>
       </View>
 
-      <View style={styles.row}>
+      <View style={[styles.row, { flexDirection: rowDirection }]}>
         <View style={styles.col}>
           <Text style={styles.colLabel}>Executed Price</Text>
           <Text style={styles.colValue}>${Number(item.executed_price).toFixed(4)}</Text>
         </View>
         <View style={styles.col}>
           <Text style={styles.colLabel}>Quantity</Text>
-          <Text style={styles.colValue}>{Number(item.executed_quantity).toLocaleString()}</Text>
+          <Text style={styles.colValue}>{formatNumber(item.executed_quantity)}</Text>
         </View>
         <View style={styles.col}>
           <Text style={styles.colLabel}>Date</Text>
-          <Text style={styles.colValue}>{new Date(item.executed_at).toLocaleDateString()}</Text>
+          <Text style={styles.colValue}>{formatDate(item.executed_at)}</Text>
         </View>
       </View>
 

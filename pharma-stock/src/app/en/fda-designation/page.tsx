@@ -1,11 +1,13 @@
 import BreakthroughsPage from "@/components/app/BreakthroughsPage";
 
 import { Metadata } from "next";
+import { buildAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "FDA Designations | Bio Pharma Stock",
   description:
     "Explore current FDA designations for innovative drug stocks and investment insights.",
+  alternates: buildAlternates("/fda-designation", "en"),
   keywords: [
     "FDA drug stocks",
     "biotech signals",

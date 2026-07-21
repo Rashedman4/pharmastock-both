@@ -1,8 +1,10 @@
 import NewsSection from "@/components/app/NewsSection";
+import { buildAlternates } from "@/lib/seo";
 export const metadata = {
   title: "Latest Pharmaceutical News | Bio Pharma Stock",
   description:
     "Stay updated with the latest news and articles about pharmaceutical stocks and market trends.",
+  alternates: buildAlternates("/news", "en"),
   keywords: [
     "pharmaceutical news",
     "pharma stock news",

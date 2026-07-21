@@ -5,6 +5,9 @@ import GoogleProvider from "next-auth/providers/google";
 import AppleProvider from "next-auth/providers/apple";
 import pool from "@/lib/db";
 import crypto from "crypto";
+import { createRateLimiter, getClientIPFromHeaders } from "@/lib/rate-limit";
+
+const loginLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 10 });
 
 function generateAppleClientSecret(): string {
   const privateKey = (process.env.APPLE_PRIVATE_KEY ?? "").replace(/\\n/g, "\n");
@@ -42,7 +45,14 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
+        const ip = getClientIPFromHeaders(
+          req?.headers as Record<string, string | string[] | undefined> | undefined
+        );
+        if (!loginLimiter(`login:${ip}`)) {
+          throw new Error("Too many login attempts. Please try again later.");
+        }
+
         const client = await pool.connect();
         try {
           const userQuery = `SELECT * FROM users WHERE email = $1`;

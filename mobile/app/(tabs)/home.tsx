@@ -60,6 +60,7 @@ export default function HomeScreen() {
             <Text style={styles.welcomeText}>
               {t(welcomeKey, { name: welcomeName })}
             </Text>
+            <Text style={styles.tagline}>{t("home.tagline")}</Text>
           </View>
         </View>
         <LanguageToggle style={styles.languageToggle} />
@@ -173,6 +174,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
     color: Colors.textPrimary,
+  },
+  tagline: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+    marginTop: 2,
   },
   content: { padding: 16 },
   sectionLoader: { marginVertical: 16 },

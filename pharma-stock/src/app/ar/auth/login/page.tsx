@@ -1,6 +1,7 @@
 import LoginComp from "@/components/auth/ar/LoginComp";
 export const metadata = {
   title: "تسجيل الدخول | Bio Pharma Stock",
+  robots: { index: false, follow: true },
 };
 export default function LoginPage() {
   return (

@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { ArrowUpDown } from "lucide-react";
 import HistoryTable from "@/components/app/HistoryTable";
 import HistoryChart from "@/components/app/HistoryChart";
+import { buildAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "النتائج | Bio Pharma Stock",
   description: "عرض بيانات التداول و النتائج لأسهم الأدوية.",
+  alternates: buildAlternates("/history", "ar"),
 };
 
 export default function HistoryPage() {

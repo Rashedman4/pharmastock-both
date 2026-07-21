@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
+import { rowDirection } from '@/lib/rtl';
+import { formatDate } from '@/lib/format';
 import type { Signal } from '@/types/content';
 
 interface SignalCardProps {
@@ -19,11 +21,6 @@ function formatPrice(val: string | null | undefined): string {
   return isNaN(n) ? '—' : `$${n.toFixed(2)}`;
 }
 
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
 export const SignalCard = React.memo(function SignalCard({ signal, onPress, compact = false }: SignalCardProps) {
   const { t } = useTranslation();
   const getField = useLocalizedField();
@@ -34,12 +31,12 @@ export const SignalCard = React.memo(function SignalCard({ signal, onPress, comp
 
   return (
     <Card onPress={onPress}>
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: rowDirection }]}>
         <Text style={styles.symbol}>{signal.symbol}</Text>
         <Badge label={badgeLabel} variant={badgeVariant} />
       </View>
 
-      <View style={styles.priceGrid}>
+      <View style={[styles.priceGrid, { flexDirection: rowDirection }]}>
         <PriceColumn label={t('signals.entry')} value={formatPrice(signal.enter_price)} />
         <PriceDivider />
         <PriceColumn label={t('signals.target_1')} value={formatPrice(signal.first_target)} />
@@ -48,8 +45,8 @@ export const SignalCard = React.memo(function SignalCard({ signal, onPress, comp
       </View>
 
       {!compact && (
-        <View style={styles.footer}>
-          <View style={styles.footerItem}>
+        <View style={[styles.footer, { flexDirection: rowDirection }]}>
+          <View style={[styles.footerItem, { flexDirection: rowDirection }]}>
             <Text style={styles.footerLabel}>{t('signals.price_now')}</Text>
             <Text style={styles.footerValue}>{formatPrice(signal.price_now)}</Text>
           </View>

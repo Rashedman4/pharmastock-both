@@ -15,10 +15,12 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   metadataBase: new URL("https://biopharmastock.com"),
-  title: "Bio Pharma Stock | Pharma Market Signals, News & Investment Insights",
+  title:
+    "Bio Pharma Stock | Biopharma Research Intelligence — Signals, News & Insights",
   description:
-    "Stay ahead in the pharmaceutical stock market with real-time signals, biotech stock news, expert analysis, and daily investment insights. Get the latest trends, forecasts, and trading strategies.",
+    "BioPharmaStock is a specialized biopharma research intelligence company. We analyze clinical trials, FDA regulatory events, and market catalysts to deliver real-time trading signals, biotech stock news, expert analysis, and daily investment insights.",
   keywords: [
+    "biopharma research intelligence",
     "pharma stocks",
     "biotech stocks",
     "pharmaceutical stock signals",
@@ -72,9 +74,9 @@ export const metadata = {
     "stock market for healthcare companies",
   ],
   openGraph: {
-    title: "Bio Pharma Stock | Pharma Market Signals & News",
+    title: "Bio Pharma Stock | Biopharma Research Intelligence",
     description:
-      "Stay ahead in the pharma stock market with real-time signals, daily news, and expert analysis. Subscribe for in-depth insights.",
+      "Specialized biopharma research intelligence — real-time signals, daily news, and expert analysis for pharmaceutical and biotech investors. Subscribe for in-depth insights.",
     url: "https://biopharmastock.com",
     siteName: "Bio Pharma Stock",
     images: [
@@ -89,9 +91,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bio Pharma Stock | Pharma Market Insights",
+    title: "Bio Pharma Stock | Biopharma Research Intelligence",
     description:
-      "Real-time stock signals, news, and updates on the US pharmaceutical sector. Get daily insights and video reports.",
+      "Specialized biopharma research intelligence, real-time trading signals, and daily insights on the US pharmaceutical sector.",
     images: [
       {
         url: "https://biopharmastock.com/twitter-image.png", // Absolute URL
@@ -100,6 +102,14 @@ export const metadata = {
         alt: "Bio Pharma Stock Logo",
       },
     ],
+  },
+  alternates: {
+    canonical: "https://biopharmastock.com/en",
+    languages: {
+      en: "https://biopharmastock.com/en",
+      ar: "https://biopharmastock.com/ar",
+      "x-default": "https://biopharmastock.com/en",
+    },
   },
   icons: {
     icon: ["/app/favicon.ico", "/app/favicon.svg"],
@@ -112,10 +122,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Extract language from pathname
-  const pathname =
-    typeof window !== "undefined" ? window.location.pathname : "";
-  const lang = pathname.startsWith("/ar") ? "ar" : "en";
+  // Static default — the /en and /ar segment layouts correct the actual
+  // lang/dir via HtmlLangSync once mounted. Reading the real pathname here
+  // would require headers()/dynamic rendering for every route in the app.
+  const lang = "en";
 
   return (
     <html lang={lang} className="light">
@@ -127,6 +137,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "Bio Pharma Stock",
+              description:
+                "BioPharmaStock is a specialized biopharmaceutical investment intelligence company focused exclusively on publicly traded biotechnology and pharmaceutical companies. Our research team continuously analyzes clinical trials, FDA regulatory events, scientific publications, corporate developments, and market catalysts to deliver timely research and exclusive insights for investors seeking opportunities in one of the world's most knowledge-intensive sectors.",
               url: "https://biopharmastock.com",
               logo: "https://biopharmastock.com/web-app-manifest-192x192.png",
               /* sameAs: [
@@ -141,6 +153,27 @@ export default function RootLayout({
                 areaServed: "US",
                 availableLanguage: ["English", "Arabic"],
               }, */
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Bio Pharma Stock",
+              url: "https://biopharmastock.com",
+              inLanguage: ["en", "ar"],
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate:
+                    "https://biopharmastock.com/en/ask-about-stock?q={search_term_string}",
+                },
+                "query-input": "required name=search_term_string",
+              },
             }),
           }}
         />

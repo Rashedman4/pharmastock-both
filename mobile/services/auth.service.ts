@@ -70,4 +70,8 @@ export const authService = {
     const res = await apiClient.patch<UserProfile>(API_ROUTES.me, data);
     return res.data;
   },
+
+  async deleteAccount(): Promise<void> {
+    await apiClient.delete(API_ROUTES.me);
+  },
 };

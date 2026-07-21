@@ -1,6 +1,7 @@
 import ForgotPasswordComp from "@/components/auth/en/ForgotPasswordComp";
 export const metadata = {
   title: "Forgot Password | Bio Pharma Stock",
+  robots: { index: false, follow: true },
 };
 export default function ForgotPasswordPage() {
   return (

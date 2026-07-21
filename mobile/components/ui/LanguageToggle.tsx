@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, Text, StyleSheet, Alert, View, StyleProp, ViewStyle } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Modal, View, StyleProp, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
 import { changeLanguage } from '@/i18n';
+import { rowDirection } from '@/lib/rtl';
 import { useUiStore } from '@/stores/ui.store';
+import { LoadingScreen } from './LoadingScreen';
 
 interface LanguageToggleProps {
   style?: StyleProp<ViewStyle>;
@@ -23,18 +25,10 @@ export function LanguageToggle({ style }: LanguageToggleProps = {}) {
     if (switching) return;
     setSwitching(true);
     try {
-      const wasRTL = currentLang === 'ar';
-      const willBeRTL = nextLang === 'ar';
-      await changeLanguage(nextLang);
+      const { reloaded } = await changeLanguage(nextLang);
       setLanguage(nextLang);
-      if (wasRTL !== willBeRTL) {
-        Alert.alert(
-          t('settings.restart_title'),
-          t('settings.restart_message'),
-          [{ text: t('common.ok') }],
-        );
-      }
-    } finally {
+      if (!reloaded) setSwitching(false);
+    } catch {
       setSwitching(false);
     }
   };
@@ -45,6 +39,12 @@ export function LanguageToggle({ style }: LanguageToggleProps = {}) {
         <Ionicons name="language-outline" size={15} color={Colors.primary} />
         <Text style={styles.label}>{label}</Text>
       </TouchableOpacity>
+
+      {/* Full-screen so the brief reload doesn't look like a broken header
+          button — this component is embedded inline in several headers. */}
+      <Modal visible={switching} animationType="fade" statusBarTranslucent>
+        <LoadingScreen message={t('settings.applying_language')} />
+      </Modal>
     </View>
   );
 }
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   btn: {
-    flexDirection: 'row',
+    flexDirection: rowDirection,
     alignItems: 'center',
     gap: 5,
     backgroundColor: Colors.primary + '15',

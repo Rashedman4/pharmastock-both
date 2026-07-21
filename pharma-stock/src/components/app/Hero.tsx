@@ -19,25 +19,29 @@ interface LangProps {
 
 const translations = {
   en: {
+    kicker: "Where Science Meets Investing.",
     title: "Invest Smart in Pharma Stocks",
     description:
       "Unlock the potential of pharmaceutical markets with our advanced insights and expert analysis.",
+    supporting: "Exclusive Research. Smarter Decisions.",
     getStarted: "Register Now",
     learnMore: "Join Our Community",
     advantages: "Bio Pharma Stock Advantages",
     realTimeAnalysis: "Real-time market analysis",
-    highPotential: "High-potential stock picks",
+    highPotential: "High-potential research coverage",
     aiPredictions: "AI-powered predictions",
   },
   ar: {
+    kicker: "حيث يلتقي العلم بالاستثمار",
     title: "استثمر بذكاء في الأسهم الدوائية",
     description:
       "استكشف إمكانيات الأسهم الدوائية مع رؤانا المتقدمة وتحليلات الخبراء.",
+    supporting: "أبحاث حصرية. قرارات أكثر ذكاءً.",
     getStarted: "للتوصيات سجل الآن",
     learnMore: "انضم إلى مجتمعنا",
     advantages: "مزايا Bio Pharma Stock",
     realTimeAnalysis: "تحليل السوق في الوقت الحقيقي",
-    highPotential: "اختيارات الأسهم ذات الإمكانات العالية",
+    highPotential: "تغطية بحثية عالية الإمكانات",
     aiPredictions: "تنبؤات مدعومة بالذكاء الاصطناعي",
   },
 };
@@ -62,6 +66,14 @@ export default function Hero({ lang }: LangProps) {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
+            <motion.p
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="text-brightTeal font-semibold uppercase tracking-wide text-sm mb-2"
+            >
+              {t.kicker}
+            </motion.p>
             <motion.h1
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -74,9 +86,17 @@ export default function Hero({ lang }: LangProps) {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="text-xl mb-8"
+              className="text-xl mb-2"
             >
               {t.description}
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              className="text-pureWhite/90 text-base mb-8"
+            >
+              {t.supporting}
             </motion.p>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}

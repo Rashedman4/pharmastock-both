@@ -13,14 +13,7 @@ import { useNewsItem } from '@/hooks/useContent';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
 import { isRTL, rowDirection } from '@/lib/rtl';
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
+import { formatDate } from '@/lib/format';
 
 export default function NewsDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -60,7 +53,7 @@ export default function NewsDetailScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.symbolRow}>
+        <View style={[styles.symbolRow, { flexDirection: rowDirection }]}>
           <View style={styles.symbolPill}>
             <Text style={styles.symbolText}>{item.symbol}</Text>
           </View>
@@ -72,7 +65,7 @@ export default function NewsDetailScreen() {
         <Text style={styles.title}>{getField(item, 'title')}</Text>
 
         <Text style={styles.date}>
-          {formatDate(item.published_date)}
+          {formatDate(item.published_date, { year: 'numeric', month: 'long', day: 'numeric' })}
         </Text>
       </ScrollView>
     </SafeAreaView>

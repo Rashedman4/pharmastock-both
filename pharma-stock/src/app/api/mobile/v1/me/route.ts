@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import { z } from 'zod';
 import { getMobileAuthPayload } from '@/lib/mobile/auth-middleware';
 
@@ -170,4 +171,71 @@ export async function PATCH(req: NextRequest) {
 
   const { rows: updated } = await pool.query(FULL_USER_QUERY, [auth.userId]);
   return NextResponse.json(buildUserResponse(updated[0]));
+}
+
+// Anonymizes the user's row instead of hard-deleting it, so existing
+// transactions/subscriptions/elite records (FK'd to users.id) stay intact
+// for accounting/legal retention. A minimal record is archived to
+// deleted_accounts for tracking purposes.
+export async function DELETE(req: NextRequest) {
+  const auth = getMobileAuthPayload(req);
+  if (!auth) {
+    return NextResponse.json(
+      { error: { code: 'UNAUTHORIZED', message: 'Valid Bearer token required' } },
+      { status: 401 }
+    );
+  }
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const { rows } = await client.query(
+      `SELECT email, firstname, lastname, phonenumber, provider, created_at
+       FROM users WHERE id = $1 FOR UPDATE`,
+      [auth.userId]
+    );
+    if (rows.length === 0) {
+      await client.query('ROLLBACK');
+      return NextResponse.json(
+        { error: { code: 'USER_NOT_FOUND', message: 'User not found' } },
+        { status: 404 }
+      );
+    }
+    const user = rows[0];
+
+    await client.query(
+      `INSERT INTO deleted_accounts
+         (original_user_id, email, firstname, lastname, phonenumber, provider, account_created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [auth.userId, user.email, user.firstname, user.lastname, user.phonenumber, user.provider, user.created_at]
+    );
+
+    // Revoke mobile sessions and stop notifications immediately
+    await client.query('DELETE FROM mobile_refresh_tokens WHERE user_id = $1', [auth.userId]);
+    await client.query('DELETE FROM user_push_tokens WHERE user_id = $1', [auth.userId]);
+    await client.query('DELETE FROM user_whatsapp WHERE user_id = $1', [auth.userId]);
+
+    const anonymizedEmail = `deleted-user-${auth.userId}-${Date.now()}@deleted.biopharmastock.invalid`;
+    const unusablePasswordHash = await bcrypt.hash(crypto.randomUUID(), 12);
+    await client.query(
+      `UPDATE users
+       SET email = $1, password = $2, firstname = NULL, lastname = NULL,
+           phonenumber = NULL, provider = NULL, provider_id = NULL, provider_email = NULL
+       WHERE id = $3`,
+      [anonymizedEmail, unusablePasswordHash, auth.userId]
+    );
+
+    await client.query('COMMIT');
+    return NextResponse.json({ message: 'Account deleted' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Failed to delete account:', error);
+    return NextResponse.json(
+      { error: { code: 'DELETE_FAILED', message: 'Failed to delete account' } },
+      { status: 500 }
+    );
+  } finally {
+    client.release();
+  }
 }

@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { ArrowUpDown } from "lucide-react";
 import HistoryTable from "@/components/app/HistoryTable";
 import HistoryChart from "@/components/app/HistoryChart";
+import { buildAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "History | Bio Pharma Stock",
-  description: "View historical trading data for pharmaceutical stocks",
+  title: "Signal History | Bio Pharma Stock",
+  description: "View historical trading data and past signal performance for pharmaceutical stocks.",
+  alternates: buildAlternates("/history", "en"),
 };
 
 export default function HistoryPage() {

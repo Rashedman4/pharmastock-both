@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderWidth: 1.5,
     borderColor: Colors.border,
-    marginRight: 8,
+    marginEnd: 8,
     backgroundColor: Colors.white,
   },
   chipActive: {

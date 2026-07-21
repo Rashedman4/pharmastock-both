@@ -1,10 +1,12 @@
 import BreakthroughsPage from "@/components/app/BreakthroughsPage";
 import { Metadata } from "next";
+import { buildAlternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "تصنيفات هيئةالغذاء والدواء | Bio Pharma Stock",
   description:
     "استكشف التصنيفات الحالية لإدارة الغذاء والدواء (FDA) لأسهم الأدوية المبتكرة وأفكار الاستثمار.",
+  alternates: buildAlternates("/fda-designation", "ar"),
   keywords: [
     "أسهم الأدوية المعتمدة من FDA",
     "إشارات البيوتكنولوجي",

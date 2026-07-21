@@ -101,7 +101,7 @@ const translations = {
     alreadySubscribed: "Already Subscribed",
     commonFeatures: [
       "Real-time market insights",
-      "Pharmaceutical stock picks",
+      "Pharmaceutical research coverage",
       "Daily market updates",
       "WhatsApp alerts",
     ],
@@ -126,7 +126,7 @@ const translations = {
     alreadySubscribed: "مشترك بالفعل",
     commonFeatures: [
       "تحليل السوق في الوقت الفعلي",
-      "توصيات لأسهم شركات الأدوية",
+      "تغطية بحثية لقطاع الأدوية",
       "تقارير السوق اليومية",
       "إشعارات واتساب",
     ],

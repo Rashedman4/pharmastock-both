@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { EliteTabBar } from '@/components/elite/EliteTabBar';
 import { Colors } from '@/constants/colors';
 import { rowDirection } from '@/lib/rtl';
+import { formatDate, formatNumber } from '@/lib/format';
 import { fetchTradePlans } from '@/services/elite.service';
 import type { TradePlan } from '@/types/elite';
 
@@ -46,7 +47,7 @@ function TradePlanCard({ item }: { item: TradePlan }) {
           </Text>
         </View>
       )}
-      <View style={styles.cardHeader}>
+      <View style={[styles.cardHeader, { flexDirection: rowDirection }]}>
         <View>
           <Text style={styles.symbol}>{item.symbol}</Text>
           {item.company_name ? (
@@ -62,7 +63,7 @@ function TradePlanCard({ item }: { item: TradePlan }) {
         </View>
       </View>
 
-      <View style={styles.priceRow}>
+      <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
         {item.target_entry_price && (
           <View style={styles.priceItem}>
             <Text style={styles.priceLabel}>{t('elite.entry')}</Text>
@@ -87,11 +88,11 @@ function TradePlanCard({ item }: { item: TradePlan }) {
         )}
       </View>
 
-      <View style={styles.footer}>
+      <View style={[styles.footer, { flexDirection: rowDirection }]}>
         <Text style={styles.qty}>
-          {t('elite.quantity')}: {Number(item.suggested_quantity).toLocaleString()}
+          {t('elite.quantity')}: {formatNumber(item.suggested_quantity)}
         </Text>
-        <Text style={styles.date}>{new Date(item.planned_at).toLocaleDateString()}</Text>
+        <Text style={styles.date}>{formatDate(item.planned_at)}</Text>
       </View>
     </Card>
   );

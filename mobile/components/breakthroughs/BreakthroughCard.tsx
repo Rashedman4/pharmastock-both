@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
+import { rowDirection } from '@/lib/rtl';
+import { formatDate } from '@/lib/format';
 import type { Breakthrough } from '@/types/content';
 
 interface BreakthroughCardProps {
@@ -28,15 +30,11 @@ export const BreakthroughCard = React.memo(function BreakthroughCard({ item, onP
   const { t } = useTranslation();
   const getField = useLocalizedField();
 
-  const date = new Date(item.created_at).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  const date = formatDate(item.created_at, { month: 'short', day: 'numeric', year: 'numeric' });
 
   return (
     <Card onPress={onPress}>
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: rowDirection }]}>
         <Text style={styles.company} numberOfLines={1}>
           {item.company}
         </Text>
@@ -49,7 +47,7 @@ export const BreakthroughCard = React.memo(function BreakthroughCard({ item, onP
         {getField(item, 'title')}
       </Text>
 
-      <View style={styles.badges}>
+      <View style={[styles.badges, { flexDirection: rowDirection }]}>
         <Badge
           label={t(`breakthroughs.${item.category}`)}
           variant={categoryVariant[item.category]}
@@ -78,7 +76,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     color: Colors.textSecondary,
-    marginRight: 8,
+    marginEnd: 8,
   },
   symbolPill: {
     backgroundColor: Colors.backgroundTertiary,

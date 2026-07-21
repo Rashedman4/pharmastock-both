@@ -1,6 +1,7 @@
 import ResetPasswordComp from "@/components/auth/en/ResetPasswordComp";
 export const metadata = {
   title: "Reset Password | Bio Pharma Stock",
+  robots: { index: false, follow: true },
 };
 export default function RegisterPage() {
   return (

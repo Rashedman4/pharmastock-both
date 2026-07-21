@@ -14,6 +14,7 @@ import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Colors } from '@/constants/colors';
 import { rowDirection } from '@/lib/rtl';
+import { formatDate, formatNumber } from '@/lib/format';
 import { fetchTradePlan, respondToTradePlan, submitExecution } from '@/services/elite.service';
 
 type BadgeVariant = 'success' | 'danger' | 'warning' | 'info' | 'neutral' | 'primary';
@@ -38,7 +39,7 @@ function statusVariant(status: string): BadgeVariant {
 function PriceRow({ label, value, color }: { label: string; value: string | null; color?: string }) {
   if (!value) return null;
   return (
-    <View style={styles.priceRow}>
+    <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
       <Text style={styles.priceLabel}>{label}</Text>
       <Text style={[styles.priceValue, color ? { color } : {}]}>${Number(value).toFixed(4)}</Text>
     </View>
@@ -165,7 +166,7 @@ export default function TradePlanDetailScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: rowDirection }]}>
         <View>
           <Text style={styles.symbol}>{data.symbol}</Text>
           {data.company_name ? <Text style={styles.company}>{data.company_name}</Text> : null}
@@ -187,9 +188,9 @@ export default function TradePlanDetailScreen() {
         <PriceRow label={t('elite.target_1')} value={data.target_price_1} color={Colors.success} />
         <PriceRow label={t('elite.target_2')} value={data.target_price_2} color={Colors.success} />
         <PriceRow label={t('elite.stop_loss')} value={data.stop_loss_price} color={Colors.danger} />
-        <View style={styles.priceRow}>
+        <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
           <Text style={styles.priceLabel}>{t('elite.quantity')}</Text>
-          <Text style={styles.priceValue}>{Number(data.suggested_quantity).toLocaleString()}</Text>
+          <Text style={styles.priceValue}>{formatNumber(data.suggested_quantity)}</Text>
         </View>
         {data.admin_note && (
           <View style={styles.noteBox}>
@@ -242,7 +243,7 @@ export default function TradePlanDetailScreen() {
             label="Actual Quantity"
             value={execQty}
             onChangeText={setExecQty}
-            placeholder={`Suggested: ${Number(data.suggested_quantity).toLocaleString()}`}
+            placeholder={`Suggested: ${formatNumber(data.suggested_quantity)}`}
             keyboardType="numeric"
           />
           <Input
@@ -286,21 +287,21 @@ export default function TradePlanDetailScreen() {
       {data.execution_id && (
         <Card style={styles.section}>
           <Text style={styles.sectionTitle}>Execution</Text>
-          <View style={styles.priceRow}>
+          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
             <Text style={styles.priceLabel}>Executed Price</Text>
             <Text style={styles.priceValue}>${Number(data.executed_price).toFixed(4)}</Text>
           </View>
-          <View style={styles.priceRow}>
+          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
             <Text style={styles.priceLabel}>Executed Quantity</Text>
-            <Text style={styles.priceValue}>{Number(data.executed_quantity).toLocaleString()}</Text>
+            <Text style={styles.priceValue}>{formatNumber(data.executed_quantity)}</Text>
           </View>
-          <View style={styles.priceRow}>
+          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
             <Text style={styles.priceLabel}>Executed At</Text>
             <Text style={styles.priceValue}>
-              {data.executed_at ? new Date(data.executed_at).toLocaleDateString() : '—'}
+              {data.executed_at ? formatDate(data.executed_at) : '—'}
             </Text>
           </View>
-          <View style={styles.priceRow}>
+          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
             <Text style={styles.priceLabel}>Status</Text>
             <Badge label={data.execution_status ?? ''} variant="primary" />
           </View>
@@ -314,15 +315,15 @@ export default function TradePlanDetailScreen() {
       {data.position_id && (
         <Card style={styles.section}>
           <Text style={styles.sectionTitle}>Open Position</Text>
-          <View style={styles.priceRow}>
+          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
             <Text style={styles.priceLabel}>Quantity Open</Text>
-            <Text style={styles.priceValue}>{Number(data.quantity_open).toLocaleString()}</Text>
+            <Text style={styles.priceValue}>{formatNumber(data.quantity_open)}</Text>
           </View>
-          <View style={styles.priceRow}>
+          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
             <Text style={styles.priceLabel}>Entry Price</Text>
             <Text style={styles.priceValue}>${Number(data.entry_price).toFixed(4)}</Text>
           </View>
-          <View style={styles.priceRow}>
+          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
             <Text style={styles.priceLabel}>Position Status</Text>
             <Badge label={data.position_status ?? ''} variant="info" />
           </View>

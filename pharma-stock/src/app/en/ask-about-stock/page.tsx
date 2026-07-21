@@ -1,8 +1,10 @@
 import AskAboutStockComp from "@/components/app/AskAboutStockComp";
+import { buildAlternates } from "@/lib/seo";
 export const metadata = {
   title: "Ask About a Stock | Bio Pharma Stock",
   description:
     "Get instant AI-powered insights on any stock. Analyze pharma stock trends, clinical trials, and investment opportunities in the pharmaceutical industry.",
+  alternates: buildAlternates("/ask-about-stock", "en"),
   keywords: [
     "ask about a stock",
     "stock analysis",

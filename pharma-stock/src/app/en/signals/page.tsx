@@ -1,8 +1,10 @@
 import { Signal } from "lucide-react";
 import SignalsTable from "@/components/app/SignalsTable";
+import { buildAlternates } from "@/lib/seo";
 export const metadata = {
   title: "Ideas | Bio Pharma Stock",
   description: "View current trading signals for pharmaceutical stocks.",
+  alternates: buildAlternates("/signals", "en"),
   keywords: [
     "Pharma stock signals",
     "trading signals",

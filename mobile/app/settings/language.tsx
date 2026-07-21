@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
@@ -8,6 +8,7 @@ import { changeLanguage } from '@/i18n';
 import { useUiStore } from '@/stores/ui.store';
 import { apiClient } from '@/services/api';
 import { API_ROUTES } from '@/constants/api';
+import { LoadingScreen } from '@/components/ui/LoadingScreen';
 
 type Lang = 'en' | 'ar';
 
@@ -35,26 +36,24 @@ export default function LanguageScreen() {
 
     setApplying(true);
     try {
-      const wasRTL = currentLang === 'ar';
-      const willBeRTL = lang === 'ar';
-
-      await changeLanguage(lang);
-      setLanguage(lang);
-
       // Sync preference to backend so push notifications arrive in the right language
       apiClient.patch(API_ROUTES.meLanguage, { language: lang }).catch(() => {});
 
-      if (wasRTL !== willBeRTL) {
-        Alert.alert(
-          t('settings.restart_title'),
-          t('settings.restart_message'),
-          [{ text: t('common.ok') }],
-        );
-      }
-    } finally {
+      const { reloaded } = await changeLanguage(lang);
+      setLanguage(lang);
+      // If a reload was triggered, this component's JS context is about to be
+      // torn down — `reloaded` only comes back false when the direction (and
+      // therefore nothing native) needed to change, so it's safe to just stop
+      // showing the spinner in that case.
+      if (!reloaded) setApplying(false);
+    } catch {
       setApplying(false);
     }
   };
+
+  if (applying) {
+    return <LoadingScreen message={t('settings.applying_language')} />;
+  }
 
   return (
     <View style={styles.container}>
@@ -67,7 +66,6 @@ export default function LanguageScreen() {
                 style={[styles.option, { flexDirection: rowDirection }]}
                 onPress={() => handleSelect(lang.code)}
                 activeOpacity={0.7}
-                disabled={applying}
               >
                 <View style={[styles.optionLeft, { flexDirection: rowDirection }]}>
                   <Text style={styles.flag}>{lang.flag}</Text>
@@ -81,9 +79,7 @@ export default function LanguageScreen() {
                   </View>
                 </View>
 
-                {applying && selected ? (
-                  <ActivityIndicator size="small" color={Colors.primary} />
-                ) : selected ? (
+                {selected ? (
                   <Ionicons name="checkmark-circle" size={22} color={Colors.primary} />
                 ) : (
                   <View style={styles.radioEmpty} />
@@ -94,8 +90,6 @@ export default function LanguageScreen() {
           );
         })}
       </View>
-
-      <Text style={styles.hint}>{t('settings.restart_message')}</Text>
     </View>
   );
 }

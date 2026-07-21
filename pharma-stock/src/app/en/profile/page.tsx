@@ -2,6 +2,7 @@ import EditProfileComp from "@/components/auth/en/EditProfileComp";
 
 export const metadata = {
   title: "Edit Profile | Bio Pharma Stock",
+  robots: { index: false, follow: true },
 };
 
 export default function EditProfilePage() {

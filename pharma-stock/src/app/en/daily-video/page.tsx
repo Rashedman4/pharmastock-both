@@ -1,10 +1,12 @@
 import DailyVideo from "@/components/app/DailyVideo";
 import QuestionForm from "@/components/app/QuestionForm";
+import { buildAlternates } from "@/lib/seo";
 
 export const metadata = {
   title: "Daily Market Insights | Bio Pharma Stock",
   description:
     "Watch daily market insights and stock analysis videos. Get expert opinions on market trends, stock performance, and investment opportunities.",
+  alternates: buildAlternates("/daily-video", "en"),
   keywords: [
     "stock market insights",
     "daily market analysis",

@@ -1,4 +1,5 @@
 import WhatsAppButton from "@/components/app/WhatsAppButton";
+import HtmlLangSync from "@/components/app/HtmlLangSync";
 
 export default function englishLayout({
   children,
@@ -7,6 +8,7 @@ export default function englishLayout({
 }) {
   return (
     <div>
+      <HtmlLangSync lang="en" />
       {children}
       <WhatsAppButton lang="en" />
     </div>

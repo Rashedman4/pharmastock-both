@@ -319,8 +319,8 @@ function FooterCTA({ lang }: LangProps) {
           </h3>
           <p className="text-pureWhite/90 mb-6 text-lg">
             {lang === "ar"
-              ? "سجّل حسابك الآن للوصول الى توصياتنا المميزة وتحقيق أفضل الفرص الاستثمارية"
-              : "Sign up now and create your account to access our premium signals and unlock the best opportunities"}
+              ? "سجّل حسابك الآن للوصول إلى أبحاثنا الحصرية وتوصياتنا المميزة وتحقيق أفضل الفرص الاستثمارية"
+              : "Sign up now and create your account to access our exclusive research and premium signals, and unlock the best opportunities"}
           </p>
           <Link href={`/${lang}/auth/login`}>
             <Button

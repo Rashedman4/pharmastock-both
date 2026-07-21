@@ -6,10 +6,13 @@ import BreakthroughSpotlight from "@/components/app/BreakthroughSpotlight";
 import IndustryInsights from "@/components/app/IndustryInsights";
 import GlobalPharmaMap from "@/components/app/GlobalPharmaMap";
 import EliteGroupCTA from "@/components/EliteGroupCTA";
+import { buildAlternates } from "@/lib/seo";
 export const metadata = {
-  title: "Bio Pharma Stock | Top Pharmaceutical Stocks & Market Insights",
+  title:
+    "Bio Pharma Stock | Biopharma Research Intelligence — Where Science Meets Investing",
   description:
-    "Get the latest insights on pharmaceutical stocks, clinical trial results, and market trends. AI-driven analysis for smarter investments in the pharma sector.",
+    "Where science meets investing. Get biopharma research intelligence — clinical trial analysis, FDA regulatory tracking, and AI-driven signals for smarter pharmaceutical and biotech investing.",
+  alternates: buildAlternates("", "en"),
 };
 export default function Home() {
   return (

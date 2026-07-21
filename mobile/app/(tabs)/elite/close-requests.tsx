@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Input } from '@/components/ui/Input';
 import { Colors } from '@/constants/colors';
 import { rowDirection } from '@/lib/rtl';
+import { formatDate, formatNumber } from '@/lib/format';
 import { fetchCloseRequests, submitCloseRequest } from '@/services/elite.service';
 import type { CloseRequest } from '@/types/elite';
 
@@ -31,7 +32,7 @@ function CloseRequestCard({ item }: { item: CloseRequest }) {
   const { t } = useTranslation();
   return (
     <Card>
-      <View style={styles.cardHeader}>
+      <View style={[styles.cardHeader, { flexDirection: rowDirection }]}>
         <View>
           <Text style={styles.symbol}>{item.symbol}</Text>
           {item.company_name && <Text style={styles.company}>{item.company_name}</Text>}
@@ -39,14 +40,14 @@ function CloseRequestCard({ item }: { item: CloseRequest }) {
         <Badge label={item.status} variant={crStatusVariant(item.status)} />
       </View>
 
-      <View style={styles.row}>
+      <View style={[styles.row, { flexDirection: rowDirection }]}>
         <View style={styles.col}>
           <Text style={styles.colLabel}>Side</Text>
           <Text style={styles.colValue}>{item.side}</Text>
         </View>
         <View style={styles.col}>
           <Text style={styles.colLabel}>Requested Qty</Text>
-          <Text style={styles.colValue}>{Number(item.requested_quantity).toLocaleString()}</Text>
+          <Text style={styles.colValue}>{formatNumber(item.requested_quantity)}</Text>
         </View>
         {item.requested_exit_price && (
           <View style={styles.col}>
@@ -60,7 +61,7 @@ function CloseRequestCard({ item }: { item: CloseRequest }) {
         <Text style={styles.note}>{item.request_note}</Text>
       )}
 
-      <Text style={styles.date}>{new Date(item.created_at).toLocaleDateString()}</Text>
+      <Text style={styles.date}>{formatDate(item.created_at)}</Text>
     </Card>
   );
 }
@@ -113,7 +114,7 @@ export default function CloseRequestsScreen() {
     <View style={styles.container}>
       <View style={[styles.topBar, { flexDirection: rowDirection }]}>
         <Text style={styles.count}>
-          {data?.pagination?.total ?? 0} Request(s)
+          {formatNumber(data?.pagination?.total ?? 0)} Request(s)
         </Text>
         <Button
           title={t('elite.new_close_request')}

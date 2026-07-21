@@ -17,14 +17,11 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { Colors } from '@/constants/colors';
 import { rowDirection } from '@/lib/rtl';
+import { formatDate } from '@/lib/format';
 import type { Signal, SignalHistoryItem } from '@/types/content';
 
 type Tab = 'open' | 'history';
 
-function formatDate(d: string | null) {
-  if (!d) return '—';
-  return new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-}
 function fmt(v: string | null) {
   if (!v) return '—';
   const n = parseFloat(v);
@@ -34,14 +31,20 @@ function fmt(v: string | null) {
 function HistoryRow({ item }: { item: SignalHistoryItem }) {
   const { t } = useTranslation();
   return (
-    <View style={styles.historyRow}>
+    <View style={[styles.historyRow, { flexDirection: rowDirection }]}>
       <View>
         <Text style={styles.historySymbol}>{item.symbol}</Text>
-        <Text style={styles.historyDates}>
+        {/* Entrance → closing order is chronological, not reading order — kept
+            LTR-visual regardless of app language, same principle as not
+            mirroring a price chart's time axis. */}
+        <Text style={[styles.historyDates, { textAlign: 'left', writingDirection: 'ltr' }]}>
           {formatDate(item.entrance_date)} → {formatDate(item.closing_date)}
         </Text>
       </View>
       <View style={styles.historyRight}>
+        {/* Entry → exit price is a chronological transition, not reading
+            order — intentionally not flipped for RTL (flexDirection stays
+            plain 'row', not rowDirection), same as the dates above. */}
         <View style={styles.priceRow}>
           <Text style={styles.priceIn}>{fmt(item.in_price)}</Text>
           <Text style={styles.arrow}> → </Text>
@@ -84,7 +87,7 @@ export default function SignalsScreen() {
       </View>
 
       {/* Segmented control */}
-      <View style={styles.segmented}>
+      <View style={[styles.segmented, { flexDirection: rowDirection }]}>
         <TouchableOpacity
           style={[styles.segment, activeTab === 'open' && styles.segmentActive]}
           onPress={() => setActiveTab('open')}
