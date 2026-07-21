@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
-import { isRTL, rowDirection } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -20,11 +20,12 @@ interface InputProps extends TextInputProps {
 
 export function Input({ label, error, rightIcon, isPassword, style, ...props }: InputProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const { isRTL } = useRTL();
 
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[styles.inputWrapper, { flexDirection: rowDirection }, error ? styles.inputError : styles.inputNormal]}>
+      <View style={[styles.inputWrapper, error ? styles.inputError : styles.inputNormal]}>
         <TextInput
           style={[styles.input, style]}
           placeholderTextColor={Colors.textMuted}

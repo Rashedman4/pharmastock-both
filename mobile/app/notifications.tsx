@@ -11,7 +11,6 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 import { useNotifications, useMarkRead, useMarkAllRead } from '@/hooks/useNotifications';
 import { NotificationItem } from '@/components/notifications/NotificationItem';
 import { handleNotificationTap } from '@/lib/notifications';
@@ -55,7 +54,7 @@ export default function NotificationsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('notifications.title')}</Text>
         {notifications.length > 0 && (
           <TouchableOpacity

@@ -13,9 +13,9 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 import { formatDate, formatNumber } from '@/lib/format';
 import { fetchTradePlan, respondToTradePlan, submitExecution } from '@/services/elite.service';
+import { planStatusLabel, executionStatusLabel, positionStatusLabel } from '@/lib/eliteStatus';
 
 type BadgeVariant = 'success' | 'danger' | 'warning' | 'info' | 'neutral' | 'primary';
 
@@ -39,7 +39,7 @@ function statusVariant(status: string): BadgeVariant {
 function PriceRow({ label, value, color }: { label: string; value: string | null; color?: string }) {
   if (!value) return null;
   return (
-    <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
+    <View style={styles.priceRow}>
       <Text style={styles.priceLabel}>{label}</Text>
       <Text style={[styles.priceValue, color ? { color } : {}]}>${Number(value).toFixed(4)}</Text>
     </View>
@@ -90,7 +90,7 @@ export default function TradePlanDetailScreen() {
       qc.invalidateQueries({ queryKey: ['elite-trade-plan', id] });
       qc.invalidateQueries({ queryKey: ['elite-trade-plans'] });
       qc.invalidateQueries({ queryKey: ['elite-portfolio'] });
-      Alert.alert('Success', 'Execution submitted successfully.');
+      Alert.alert(t('common.success'), t('elite.execution_submitted_success'));
     },
     onError: (err: any) => {
       const msg = err?.response?.data?.error?.message ?? t('common.error');
@@ -99,9 +99,10 @@ export default function TradePlanDetailScreen() {
   });
 
   const handleRespond = (decision: 'ACCEPTED' | 'REJECTED') => {
+    const actionLabel = decision === 'ACCEPTED' ? t('elite.accept') : t('elite.reject');
     Alert.alert(
-      decision === 'ACCEPTED' ? t('elite.accept') : t('elite.reject'),
-      `Are you sure you want to ${decision.toLowerCase()} this trade plan?`,
+      actionLabel,
+      t('elite.confirm_respond_message', { action: actionLabel.toLowerCase() }),
       [
         { text: t('common.cancel'), style: 'cancel' },
         { text: t('common.confirm'), onPress: () => respondMutation.mutate(decision) },
@@ -111,19 +112,19 @@ export default function TradePlanDetailScreen() {
 
   const handleExecute = () => {
     if (!execQty || Number(execQty) <= 0) {
-      Alert.alert('Error', 'Please enter a valid quantity');
+      Alert.alert(t('common.error_title'), t('elite.invalid_quantity_error'));
       return;
     }
     if (!execPrice || Number(execPrice) <= 0) {
-      Alert.alert('Error', 'Please enter a valid entry price');
+      Alert.alert(t('common.error_title'), t('elite.invalid_price_error'));
       return;
     }
     Alert.alert(
-      'Submit Execution',
-      `Submit execution of ${execQty} shares at $${Number(execPrice).toFixed(4)}?`,
+      t('elite.submit_execution'),
+      t('elite.confirm_execution_message', { qty: execQty, price: Number(execPrice).toFixed(4) }),
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Submit', onPress: () => executeMutation.mutate() },
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('common.submit'), onPress: () => executeMutation.mutate() },
       ]
     );
   };
@@ -131,7 +132,7 @@ export default function TradePlanDetailScreen() {
   const pickScreenshot = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) {
-      Alert.alert('Permission required', 'Please allow access to your photo library.');
+      Alert.alert(t('common.permission_required'), t('common.photo_permission'));
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -166,7 +167,7 @@ export default function TradePlanDetailScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <View>
           <Text style={styles.symbol}>{data.symbol}</Text>
           {data.company_name ? <Text style={styles.company}>{data.company_name}</Text> : null}
@@ -176,7 +177,7 @@ export default function TradePlanDetailScreen() {
             label={data.plan_side === 'LONG' ? t('elite.long') : t('elite.short')}
             variant={sideVariant(data.plan_side)}
           />
-          <Badge label={data.status.replace(/_/g, ' ')} variant={statusVariant(data.status)} />
+          <Badge label={planStatusLabel(data.status, t)} variant={statusVariant(data.status)} />
         </View>
       </View>
 
@@ -188,13 +189,13 @@ export default function TradePlanDetailScreen() {
         <PriceRow label={t('elite.target_1')} value={data.target_price_1} color={Colors.success} />
         <PriceRow label={t('elite.target_2')} value={data.target_price_2} color={Colors.success} />
         <PriceRow label={t('elite.stop_loss')} value={data.stop_loss_price} color={Colors.danger} />
-        <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
+        <View style={styles.priceRow}>
           <Text style={styles.priceLabel}>{t('elite.quantity')}</Text>
           <Text style={styles.priceValue}>{formatNumber(data.suggested_quantity)}</Text>
         </View>
         {data.admin_note && (
           <View style={styles.noteBox}>
-            <Text style={styles.noteLabel}>Admin Note</Text>
+            <Text style={styles.noteLabel}>{t('elite.admin_note')}</Text>
             <Text style={styles.noteText}>{data.admin_note}</Text>
           </View>
         )}
@@ -212,7 +213,7 @@ export default function TradePlanDetailScreen() {
             multiline
             numberOfLines={3}
           />
-          <View style={[styles.respondBtns, { flexDirection: rowDirection }]}>
+          <View style={styles.respondBtns}>
             <Button
               title={t('elite.accept')}
               variant="primary"
@@ -235,47 +236,47 @@ export default function TradePlanDetailScreen() {
       {/* Execution Form — shown when accepted and no execution yet */}
       {canExecute && (
         <Card style={[styles.section, styles.execSection]}>
-          <Text style={styles.sectionTitle}>Submit Execution</Text>
+          <Text style={styles.sectionTitle}>{t('elite.submit_execution')}</Text>
           <Text style={styles.execHint}>
-            Enter the actual quantity and price at which you executed this trade.
+            {t('elite.execution_hint')}
           </Text>
           <Input
-            label="Actual Quantity"
+            label={t('elite.actual_quantity')}
             value={execQty}
             onChangeText={setExecQty}
-            placeholder={`Suggested: ${formatNumber(data.suggested_quantity)}`}
+            placeholder={t('elite.suggested_placeholder', { value: formatNumber(data.suggested_quantity) })}
             keyboardType="numeric"
           />
           <Input
-            label="Actual Entry Price"
+            label={t('elite.actual_price')}
             value={execPrice}
             onChangeText={setExecPrice}
             placeholder={data.target_entry_price
-              ? `Target: $${Number(data.target_entry_price).toFixed(4)}`
+              ? t('elite.target_placeholder', { value: `$${Number(data.target_entry_price).toFixed(4)}` })
               : '0.0000'}
             keyboardType="decimal-pad"
           />
           <Input
-            label="Note (optional)"
+            label={t('elite.note_optional')}
             value={execNote}
             onChangeText={setExecNote}
-            placeholder="Any notes about your execution..."
+            placeholder={t('elite.execution_note_placeholder')}
             multiline
             numberOfLines={2}
           />
 
           {/* Screenshot picker */}
-          <Text style={styles.screenshotLabel}>Execution Screenshot (optional)</Text>
+          <Text style={styles.screenshotLabel}>{t('elite.screenshot_optional_label')}</Text>
           <TouchableOpacity style={styles.screenshotPicker} onPress={pickScreenshot} activeOpacity={0.7}>
             {execScreenshot ? (
               <Image source={{ uri: execScreenshot.uri }} style={styles.screenshotPreview} contentFit="contain" />
             ) : (
-              <Text style={styles.screenshotPlaceholder}>Tap to attach screenshot</Text>
+              <Text style={styles.screenshotPlaceholder}>{t('elite.tap_attach_execution_screenshot')}</Text>
             )}
           </TouchableOpacity>
 
           <Button
-            title="Submit Execution"
+            title={t('elite.submit_execution')}
             onPress={handleExecute}
             isLoading={executeMutation.isPending}
             containerStyle={styles.execBtn}
@@ -286,27 +287,27 @@ export default function TradePlanDetailScreen() {
       {/* Execution summary */}
       {data.execution_id && (
         <Card style={styles.section}>
-          <Text style={styles.sectionTitle}>Execution</Text>
-          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
-            <Text style={styles.priceLabel}>Executed Price</Text>
+          <Text style={styles.sectionTitle}>{t('elite.execution_section_title')}</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>{t('elite.executed_price')}</Text>
             <Text style={styles.priceValue}>${Number(data.executed_price).toFixed(4)}</Text>
           </View>
-          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
-            <Text style={styles.priceLabel}>Executed Quantity</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>{t('elite.executed_quantity')}</Text>
             <Text style={styles.priceValue}>{formatNumber(data.executed_quantity)}</Text>
           </View>
-          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
-            <Text style={styles.priceLabel}>Executed At</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>{t('elite.executed_at')}</Text>
             <Text style={styles.priceValue}>
               {data.executed_at ? formatDate(data.executed_at) : '—'}
             </Text>
           </View>
-          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
-            <Text style={styles.priceLabel}>Status</Text>
-            <Badge label={data.execution_status ?? ''} variant="primary" />
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>{t('elite.status_label')}</Text>
+            <Badge label={data.execution_status ? executionStatusLabel(data.execution_status, t) : ''} variant="primary" />
           </View>
           {data.screenshot_url && (
-            <Text style={styles.screenshotLink}>Screenshot attached</Text>
+            <Text style={styles.screenshotLink}>{t('elite.screenshot_attached')}</Text>
           )}
         </Card>
       )}
@@ -314,18 +315,18 @@ export default function TradePlanDetailScreen() {
       {/* Open Position */}
       {data.position_id && (
         <Card style={styles.section}>
-          <Text style={styles.sectionTitle}>Open Position</Text>
-          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
-            <Text style={styles.priceLabel}>Quantity Open</Text>
+          <Text style={styles.sectionTitle}>{t('elite.open_position_title')}</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>{t('elite.quantity_open_label')}</Text>
             <Text style={styles.priceValue}>{formatNumber(data.quantity_open)}</Text>
           </View>
-          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
-            <Text style={styles.priceLabel}>Entry Price</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>{t('elite.entry')}</Text>
             <Text style={styles.priceValue}>${Number(data.entry_price).toFixed(4)}</Text>
           </View>
-          <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
-            <Text style={styles.priceLabel}>Position Status</Text>
-            <Badge label={data.position_status ?? ''} variant="info" />
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>{t('elite.position_status_label')}</Text>
+            <Badge label={data.position_status ? positionStatusLabel(data.position_status, t) : ''} variant="info" />
           </View>
         </Card>
       )}

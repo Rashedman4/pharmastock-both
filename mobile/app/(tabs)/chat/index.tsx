@@ -14,7 +14,6 @@ import { Colors } from '@/constants/colors';
 import { useConversations, useChatConnection } from '@/hooks/useChat';
 import { ConversationItem } from '@/components/chat/ConversationItem';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
-import { rowDirection } from '@/lib/rtl';
 import type { Conversation } from '@/types/content';
 
 export default function ChatInboxScreen() {
@@ -29,7 +28,7 @@ export default function ChatInboxScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('chat.title')}</Text>
         <LanguageToggle style={styles.languageToggle} />
       </View>
@@ -73,6 +72,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   header: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,

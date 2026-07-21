@@ -20,6 +20,7 @@ export default function EliteLayout() {
       <Stack.Screen name="portfolio"           options={{ title: t('elite.portfolio') }} />
       <Stack.Screen name="executions"          options={{ title: t('elite.executions') }} />
       <Stack.Screen name="close-requests"      options={{ title: t('elite.close_requests') }} />
+      <Stack.Screen name="payments"             options={{ title: t('elite.firm_profit') }} />
       <Stack.Screen name="trade-plans/index"        options={{ title: t('elite.trade_plans') }} />
       <Stack.Screen name="trade-plans/[id]"         options={{ title: t('elite.plan_detail') }} />
       <Stack.Screen name="trade-plans/[id]/messages" options={{ title: t('elite.messages') }} />

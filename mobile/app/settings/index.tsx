@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
-import { directionArrow, rowDirection } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 import Constants from 'expo-constants';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
@@ -24,22 +24,23 @@ interface SettingsRowProps {
 }
 
 function SettingsRow({ icon, label, value, onPress, danger }: SettingsRowProps) {
+  const { isRTL } = useRTL();
   const tint = danger ? Colors.danger : Colors.primary;
   return (
     <TouchableOpacity
-      style={[styles.row, { flexDirection: rowDirection }]}
+      style={styles.row}
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <View style={[styles.rowLeft, { flexDirection: rowDirection }]}>
+      <View style={styles.rowLeft}>
         <View style={[styles.iconBox, danger && { backgroundColor: Colors.danger + '15' }]}>
           <Ionicons name={icon} size={20} color={tint} />
         </View>
         <Text style={[styles.rowLabel, danger && { color: Colors.danger }]}>{label}</Text>
       </View>
-      <View style={[styles.rowRight, { flexDirection: rowDirection }]}>
+      <View style={styles.rowRight}>
         {value ? <Text style={styles.rowValue}>{value}</Text> : null}
-        <Text style={styles.arrow}>{directionArrow}</Text>
+        <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={Colors.textMuted} />
       </View>
     </TouchableOpacity>
   );
@@ -126,7 +127,7 @@ export default function SettingsScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('settings.version')}</Text>
-        <View style={[styles.versionCard, { flexDirection: rowDirection }]}>
+        <View style={styles.versionCard}>
           <Text style={styles.versionLabel}>{t('settings.version')}</Text>
           <Text style={styles.versionValue}>{appVersion}</Text>
         </View>
@@ -155,12 +156,13 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderLight,
   },
   row: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
-  rowLeft: { alignItems: 'center', gap: 12 },
+  rowLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   iconBox: {
     width: 32,
     height: 32,
@@ -170,9 +172,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowLabel: { fontSize: 15, fontWeight: '500', color: Colors.text },
-  rowRight: { alignItems: 'center', gap: 6 },
+  rowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   rowValue: { fontSize: 14, color: Colors.textSecondary },
-  arrow: { fontSize: 20, color: Colors.textMuted },
   divider: { height: 1, backgroundColor: Colors.borderLight, marginHorizontal: 16 },
   versionCard: {
     backgroundColor: Colors.backgroundTertiary,

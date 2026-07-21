@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/Card';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
-import { rowDirection } from '@/lib/rtl';
 import type { NewsItem } from '@/types/content';
 
 interface NewsCardProps {
@@ -29,7 +28,7 @@ export const NewsCard = React.memo(function NewsCard({ item, onPress }: NewsCard
 
   return (
     <Card onPress={onPress}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <View style={styles.symbolPill}>
           <Text style={styles.symbolText}>{item.symbol}</Text>
         </View>

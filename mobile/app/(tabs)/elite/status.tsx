@@ -10,7 +10,6 @@ import { Card } from '@/components/ui/Card';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { Colors } from '@/constants/colors';
 import { fetchEliteStatus } from '@/services/elite.service';
-import { rowDirection } from '@/lib/rtl';
 import { formatDate } from '@/lib/format';
 type BadgeVariant = 'success' | 'danger' | 'warning' | 'info' | 'neutral' | 'primary';
 
@@ -44,9 +43,9 @@ export default function EliteStatusScreen() {
 
   return (
     <View style={styles.wrapper}>
-      <View style={[styles.reloadBar, { flexDirection: rowDirection }]}>
+      <View style={styles.reloadBar}>
         <Text style={styles.reloadTitle}>{t('elite.status')}</Text>
-        <TouchableOpacity onPress={() => refetch()} style={[styles.reloadBtn, { flexDirection: rowDirection }]} activeOpacity={0.7} disabled={isFetching}>
+        <TouchableOpacity onPress={() => refetch()} style={styles.reloadBtn} activeOpacity={0.7} disabled={isFetching}>
           <Ionicons name="refresh-outline" size={20} color={Colors.primary} style={isFetching ? styles.spinning : undefined} />
           <Text style={styles.reloadText}>{t('common.reload')}</Text>
         </TouchableOpacity>
@@ -54,7 +53,7 @@ export default function EliteStatusScreen() {
 
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Card style={styles.card}>
-        <View style={[styles.row, { flexDirection: rowDirection }]}>
+        <View style={styles.row}>
           <Text style={styles.label}>{t('elite.status')}</Text>
           {appStatus ? (
             <Badge
@@ -67,7 +66,7 @@ export default function EliteStatusScreen() {
         </View>
 
         {data.application_date && (
-          <View style={[styles.row, { flexDirection: rowDirection }]}>
+          <View style={styles.row}>
             <Text style={styles.label}>{t('elite.submitted_at')}</Text>
             <Text style={styles.value}>
               {formatDate(data.application_date)}
@@ -110,6 +109,7 @@ export default function EliteStatusScreen() {
 const styles = StyleSheet.create({
   wrapper: { flex: 1, backgroundColor: Colors.background },
   reloadBar: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   reloadTitle: { fontSize: 16, fontWeight: '700', color: Colors.primary },
-  reloadBtn: { alignItems: 'center', gap: 4, padding: 4 },
+  reloadBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, padding: 4 },
   reloadText: { fontSize: 13, fontWeight: '600', color: Colors.primary },
   spinning: { opacity: 0.4 },
   container: { flex: 1, backgroundColor: Colors.background },

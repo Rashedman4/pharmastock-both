@@ -15,7 +15,7 @@ import { useBreakthroughs } from '@/hooks/useContent';
 import { BreakthroughCard } from '@/components/breakthroughs/BreakthroughCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Colors } from '@/constants/colors';
-import { isRTL, rowDirection } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 import type { Breakthrough } from '@/types/content';
 
 type CategoryFilter = 'all' | 'drug' | 'therapy' | 'device';
@@ -26,6 +26,7 @@ export default function BreakthroughsScreen() {
   const router = useRouter();
   const [category, setCategory] = useState<CategoryFilter>('all');
   const [stage, setStage] = useState<StageFilter>('all');
+  const { isRTL } = useRTL();
 
   const filters = {
     ...(category !== 'all' ? { category } : {}),
@@ -54,7 +55,7 @@ export default function BreakthroughsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
         </TouchableOpacity>
@@ -67,7 +68,7 @@ export default function BreakthroughsScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.filterScroll}
-          contentContainerStyle={{ flexDirection: rowDirection }}
+          contentContainerStyle={{ flexDirection: 'row' }}
         >
           {categories.map((c) => (
             <TouchableOpacity
@@ -85,7 +86,7 @@ export default function BreakthroughsScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           style={[styles.filterScroll, { marginTop: 6 }]}
-          contentContainerStyle={{ flexDirection: rowDirection }}
+          contentContainerStyle={{ flexDirection: 'row' }}
         >
           {stages.map((s) => (
             <TouchableOpacity

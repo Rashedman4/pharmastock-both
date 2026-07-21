@@ -20,7 +20,6 @@ import { BreakthroughCard } from "@/components/breakthroughs/BreakthroughCard";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { Colors } from "@/constants/colors";
-import { rowDirection } from "@/lib/rtl";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -49,8 +48,8 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.appHeader, { flexDirection: rowDirection }]}>
-        <View style={[styles.appHeaderLeft, { flexDirection: rowDirection }]}>
+      <View style={styles.appHeader}>
+        <View style={styles.appHeaderLeft}>
           <Image
             source={require("@/assets/icon-header.png")}
             style={styles.logo}
@@ -155,6 +154,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.backgroundSecondary },
   appHeader: {
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.borderLight,
   },
   appHeaderLeft: {
+    flexDirection: "row",
     alignItems: "center",
     gap: 12,
     flexShrink: 1,

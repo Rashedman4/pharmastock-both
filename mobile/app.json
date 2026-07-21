@@ -15,7 +15,10 @@
         "NSCameraUsageDescription": "Used to capture trade evidence photos and share images in chat.",
         "NSPhotoLibraryUsageDescription": "Used to upload trade evidence and share images in chat.",
         "NSMicrophoneUsageDescription": "Used for voice messages in community chat.",
-        "UIBackgroundModes": ["remote-notification", "fetch"],
+        "UIBackgroundModes": [
+          "remote-notification",
+          "fetch"
+        ],
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": [
@@ -26,13 +29,17 @@
       },
       "entitlements": {
         "aps-environment": "production",
-        "com.apple.developer.applesignin": ["Default"]
+        "com.apple.developer.applesignin": [
+          "Default"
+        ]
       },
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
           }
         ]
       }
@@ -94,7 +101,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#0A2472"
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "scheme": "pharmastock",
     "runtimeVersion": {

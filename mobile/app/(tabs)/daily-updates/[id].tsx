@@ -12,13 +12,14 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useDailyUpdateItem } from '@/hooks/useContent';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
-import { isRTL, rowDirection } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 import { formatDate } from '@/lib/format';
 
 export default function DailyUpdateDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const getField = useLocalizedField();
+  const { isRTL } = useRTL();
   const { data: item, isLoading, isError } = useDailyUpdateItem(Number(id));
 
   if (isLoading) {
@@ -44,7 +45,7 @@ export default function DailyUpdateDetailScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
         </TouchableOpacity>

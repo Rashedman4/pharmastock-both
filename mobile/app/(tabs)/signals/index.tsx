@@ -16,7 +16,6 @@ import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 import { formatDate } from '@/lib/format';
 import type { Signal, SignalHistoryItem } from '@/types/content';
 
@@ -31,7 +30,7 @@ function fmt(v: string | null) {
 function HistoryRow({ item }: { item: SignalHistoryItem }) {
   const { t } = useTranslation();
   return (
-    <View style={[styles.historyRow, { flexDirection: rowDirection }]}>
+    <View style={styles.historyRow}>
       <View>
         <Text style={styles.historySymbol}>{item.symbol}</Text>
         {/* Entrance → closing order is chronological, not reading order — kept
@@ -43,8 +42,10 @@ function HistoryRow({ item }: { item: SignalHistoryItem }) {
       </View>
       <View style={styles.historyRight}>
         {/* Entry → exit price is a chronological transition, not reading
-            order — intentionally not flipped for RTL (flexDirection stays
-            plain 'row', not rowDirection), same as the dates above. */}
+            order — pinned LTR via an explicit `direction` override so RN's
+            automatic RTL mirroring (which now genuinely applies to plain
+            'row' once isRTL is true) doesn't flip it, same as the dates
+            above. */}
         <View style={styles.priceRow}>
           <Text style={styles.priceIn}>{fmt(item.in_price)}</Text>
           <Text style={styles.arrow}> → </Text>
@@ -81,13 +82,13 @@ export default function SignalsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Screen header */}
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('signals.title')}</Text>
         <LanguageToggle style={styles.languageToggle} />
       </View>
 
       {/* Segmented control */}
-      <View style={[styles.segmented, { flexDirection: rowDirection }]}>
+      <View style={styles.segmented}>
         <TouchableOpacity
           style={[styles.segment, activeTab === 'open' && styles.segmentActive]}
           onPress={() => setActiveTab('open')}
@@ -162,6 +163,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.backgroundSecondary },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
@@ -223,7 +225,7 @@ const styles = StyleSheet.create({
   historySymbol: { fontSize: 16, fontWeight: '800', color: Colors.primary, marginBottom: 4 },
   historyDates: { fontSize: 12, color: Colors.textMuted },
   historyRight: { alignItems: 'flex-end', gap: 6 },
-  priceRow: { flexDirection: 'row', alignItems: 'center' },
+  priceRow: { flexDirection: 'row', alignItems: 'center', direction: 'ltr' },
   priceIn: { fontSize: 13, fontWeight: '600', color: Colors.textSecondary },
   arrow: { fontSize: 12, color: Colors.textMuted },
   priceOut: { fontSize: 13, fontWeight: '700', color: Colors.textPrimary },

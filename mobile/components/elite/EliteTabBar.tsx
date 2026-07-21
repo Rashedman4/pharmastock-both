@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { usePathname, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 
 type Tab = {
-  label: string;
+  labelKey: string;
   path: string;
   icon: React.ComponentProps<typeof Ionicons>['name'];
   iconActive: React.ComponentProps<typeof Ionicons>['name'];
@@ -15,26 +15,33 @@ type Tab = {
 
 const TABS: Tab[] = [
   {
-    label: 'Dashboard',
+    labelKey: 'elite.tab_dashboard',
     path: '/elite/dashboard',
     icon: 'grid-outline',
     iconActive: 'grid',
   },
   {
-    label: 'Plans',
+    labelKey: 'elite.tab_plans',
     path: '/elite/trade-plans',
     icon: 'trending-up-outline',
     iconActive: 'trending-up',
   },
   {
-    label: 'Portfolio',
+    labelKey: 'elite.tab_portfolio',
     path: '/elite/portfolio',
     icon: 'briefcase-outline',
     iconActive: 'briefcase',
   },
+  {
+    labelKey: 'elite.tab_payments',
+    path: '/elite/payments',
+    icon: 'cash-outline',
+    iconActive: 'cash',
+  },
 ];
 
 export function EliteTabBar() {
+  const { t } = useTranslation();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
 
@@ -46,7 +53,7 @@ export function EliteTabBar() {
   };
 
   return (
-    <View style={[styles.container, { flexDirection: rowDirection, paddingBottom: Math.max(insets.bottom, 8) }]}>
+    <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, 8) }]}>
       {TABS.map((tab) => {
         const active = isActive(tab.path);
         return (
@@ -63,20 +70,10 @@ export function EliteTabBar() {
                 color={active ? '#fff' : Colors.textMuted}
               />
             </View>
-            <Text style={[styles.label, active && styles.labelActive]}>{tab.label}</Text>
+            <Text style={[styles.label, active && styles.labelActive]}>{t(tab.labelKey)}</Text>
           </TouchableOpacity>
         );
       })}
-      <TouchableOpacity
-        style={styles.tab}
-        onPress={() => Linking.openURL('https://biopharmastock.com/en/elite-group')}
-        activeOpacity={0.7}
-      >
-        <View style={styles.iconWrap}>
-          <Ionicons name="cash-outline" size={20} color={Colors.textMuted} />
-        </View>
-        <Text style={styles.label}>Payments</Text>
-      </TouchableOpacity>
     </View>
   );
 }

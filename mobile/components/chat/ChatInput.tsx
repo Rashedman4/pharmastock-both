@@ -14,7 +14,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 import { uploadChatMedia } from '@/services/chat.service';
 import { getSocket } from '@/lib/socket';
 
@@ -207,12 +206,12 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
   // ── Pending attachment preview ─────────────────────────────────────────────
   if (pendingAttachment) {
     return (
-      <View style={[styles.previewBar, { flexDirection: rowDirection }]}>
+      <View style={styles.previewBar}>
         <TouchableOpacity onPress={discardAttachment} style={styles.previewDiscard}>
           <Ionicons name="close-circle" size={26} color={Colors.danger} />
         </TouchableOpacity>
 
-        <View style={[styles.previewContent, { flexDirection: rowDirection }]}>
+        <View style={styles.previewContent}>
           {pendingAttachment.type === 'image' ? (
             <Image
               source={{ uri: pendingAttachment.localUri }}
@@ -220,7 +219,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
               contentFit="cover"
             />
           ) : (
-            <View style={[styles.previewVoice, { flexDirection: rowDirection }]}>
+            <View style={styles.previewVoice}>
               <Ionicons name="mic" size={22} color={Colors.primary} />
               <Text style={styles.previewVoiceText}>
                 {pendingAttachment.duration !== undefined
@@ -246,11 +245,11 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
   // ── Recording bar ──────────────────────────────────────────────────────────
   if (recording) {
     return (
-      <View style={[styles.recordingBar, { flexDirection: rowDirection }]}>
+      <View style={styles.recordingBar}>
         <TouchableOpacity onPress={() => stopRecording(false)} style={styles.cancelBtn}>
           <Ionicons name="close" size={22} color={Colors.danger} />
         </TouchableOpacity>
-        <View style={[styles.recordingInfo, { flexDirection: rowDirection }]}>
+        <View style={styles.recordingInfo}>
           <View style={styles.recDot} />
           <Text style={styles.recDuration}>
             {Math.floor(recordDuration / 60)}:{(recordDuration % 60).toString().padStart(2, '0')}
@@ -265,7 +264,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
 
   // ── Normal input ───────────────────────────────────────────────────────────
   return (
-    <View style={[styles.container, { flexDirection: rowDirection }]}>
+    <View style={styles.container}>
       <TouchableOpacity
         style={styles.attachBtn}
         onPress={handlePickImage}

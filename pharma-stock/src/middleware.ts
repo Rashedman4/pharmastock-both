@@ -84,6 +84,13 @@ export default withAuth(
         return NextResponse.next();
       }
 
+      // Mobile web-handoff landing page: intentionally public/unauthenticated and must stay
+      // at this exact unprefixed path — the language-redirect below rebuilds the URL from
+      // scratch and does not preserve the `?token=` query string.
+      if (pathname === "/handoff") {
+        return NextResponse.next();
+      }
+
       // Extract the language from the URL (assumes the language comes first in the path)
       const langPrefix = pathname.split("/")[1];
 

@@ -14,7 +14,7 @@ import { useSignal } from '@/hooks/useSignals';
 import { Badge } from '@/components/ui/Badge';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
-import { isRTL, rowDirection } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 import { formatDate } from '@/lib/format';
 
 function formatPrice(val: string | null | undefined): string {
@@ -28,6 +28,7 @@ export default function SignalDetailScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const getField = useLocalizedField();
+  const { isRTL } = useRTL();
   const { data: signal, isLoading, isError } = useSignal(Number(id));
 
   if (isLoading) {
@@ -54,7 +55,7 @@ export default function SignalDetailScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
         </TouchableOpacity>
@@ -63,7 +64,7 @@ export default function SignalDetailScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={[styles.topRow, { flexDirection: rowDirection }]}>
+        <View style={styles.topRow}>
           <Text style={styles.symbol}>{signal.symbol}</Text>
           <Badge
             label={isBuy ? t('signals.buy') : t('signals.sell')}
@@ -71,14 +72,14 @@ export default function SignalDetailScreen() {
           />
         </View>
 
-        <View style={[styles.priceGrid, { flexDirection: rowDirection }]}>
+        <View style={styles.priceGrid}>
           <PriceCell label={t('signals.entry')} value={formatPrice(signal.enter_price)} />
           <PriceCell label={t('signals.target_1')} value={formatPrice(signal.first_target)} />
           <PriceCell label={t('signals.target_2')} value={formatPrice(signal.second_target)} />
           <PriceCell label={t('signals.price_now')} value={formatPrice(signal.price_now)} accent />
         </View>
 
-        <View style={[styles.infoRow, { flexDirection: rowDirection }]}>
+        <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>{t('signals.opened')}</Text>
           <Text style={styles.infoValue}>
             {formatDate(signal.date_opened, { year: 'numeric', month: 'long', day: 'numeric' })}

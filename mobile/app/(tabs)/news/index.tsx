@@ -16,7 +16,6 @@ import { DailyUpdateCard } from '@/components/dailyUpdates/DailyUpdateCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 import type { NewsItem, DailyUpdateItem } from '@/types/content';
 
 type Tab = 'news' | 'daily-updates';
@@ -42,13 +41,13 @@ export default function NewsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('news.title')}</Text>
         <LanguageToggle style={styles.languageToggle} />
       </View>
 
       {/* Segmented control */}
-      <View style={[styles.segmented, { flexDirection: rowDirection }]}>
+      <View style={styles.segmented}>
         <TouchableOpacity
           style={[styles.segment, activeTab === 'news' && styles.segmentActive]}
           onPress={() => setActiveTab('news')}
@@ -114,6 +113,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.backgroundSecondary },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,

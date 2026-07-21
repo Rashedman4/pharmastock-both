@@ -10,9 +10,9 @@ import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { EliteTabBar } from '@/components/elite/EliteTabBar';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 import { formatDate, formatNumber } from '@/lib/format';
 import { fetchTradePlans } from '@/services/elite.service';
+import { planStatusLabel } from '@/lib/eliteStatus';
 import type { TradePlan } from '@/types/elite';
 
 type BadgeVariant = 'success' | 'danger' | 'warning' | 'info' | 'neutral' | 'primary';
@@ -43,11 +43,11 @@ function TradePlanCard({ item }: { item: TradePlan }) {
       {needsAction && (
         <View style={styles.actionBanner}>
           <Text style={styles.actionText}>
-            {item.status === 'SENT' ? 'Awaiting your response' : 'Ready to execute'}
+            {item.status === 'SENT' ? t('elite.awaiting_response') : t('elite.ready_to_execute')}
           </Text>
         </View>
       )}
-      <View style={[styles.cardHeader, { flexDirection: rowDirection }]}>
+      <View style={styles.cardHeader}>
         <View>
           <Text style={styles.symbol}>{item.symbol}</Text>
           {item.company_name ? (
@@ -59,11 +59,11 @@ function TradePlanCard({ item }: { item: TradePlan }) {
             label={item.plan_side === 'LONG' ? t('elite.long') : t('elite.short')}
             variant={item.plan_side === 'LONG' ? 'success' : 'danger'}
           />
-          <Badge label={item.status.replace(/_/g, ' ')} variant={planStatusVariant(item.status)} />
+          <Badge label={planStatusLabel(item.status, t)} variant={planStatusVariant(item.status)} />
         </View>
       </View>
 
-      <View style={[styles.priceRow, { flexDirection: rowDirection }]}>
+      <View style={styles.priceRow}>
         {item.target_entry_price && (
           <View style={styles.priceItem}>
             <Text style={styles.priceLabel}>{t('elite.entry')}</Text>
@@ -88,7 +88,7 @@ function TradePlanCard({ item }: { item: TradePlan }) {
         )}
       </View>
 
-      <View style={[styles.footer, { flexDirection: rowDirection }]}>
+      <View style={styles.footer}>
         <Text style={styles.qty}>
           {t('elite.quantity')}: {formatNumber(item.suggested_quantity)}
         </Text>
@@ -122,32 +122,34 @@ export default function TradePlansScreen() {
               onPress={() => setActiveFilter(item)}
             >
               <Text style={[styles.chipText, activeFilter === item && styles.chipTextActive]}>
-                {item === 'ALL' ? 'All' : item.replace(/_/g, ' ')}
+                {planStatusLabel(item, t)}
               </Text>
             </TouchableOpacity>
           )}
-          contentContainerStyle={{ paddingHorizontal: 16, gap: 8, flexDirection: rowDirection }}
+          contentContainerStyle={{ paddingHorizontal: 16, gap: 8, flexDirection: 'row' }}
         />
       </View>
 
-      {isLoading ? (
-        <ActivityIndicator style={{ marginTop: 40 }} color={Colors.primary} />
-      ) : error ? (
-        <EmptyState
-          title={t('common.error')}
-          actionLabel={t('common.retry')}
-          onAction={refetch}
-        />
-      ) : !data?.data?.length ? (
-        <EmptyState title={t('elite.no_plans')} />
-      ) : (
-        <FlatList
-          data={data.data}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => <TradePlanCard item={item} />}
-          contentContainerStyle={styles.list}
-        />
-      )}
+      <View style={styles.body}>
+        {isLoading ? (
+          <ActivityIndicator style={{ marginTop: 40 }} color={Colors.primary} />
+        ) : error ? (
+          <EmptyState
+            title={t('common.error')}
+            actionLabel={t('common.retry')}
+            onAction={refetch}
+          />
+        ) : !data?.data?.length ? (
+          <EmptyState title={t('elite.no_plans')} />
+        ) : (
+          <FlatList
+            data={data.data}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item }) => <TradePlanCard item={item} />}
+            contentContainerStyle={styles.list}
+          />
+        )}
+      </View>
 
       <EliteTabBar />
     </View>
@@ -156,6 +158,7 @@ export default function TradePlansScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
+  body: { flex: 1 },
   filters: { paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
   chip: {
     paddingHorizontal: 14,

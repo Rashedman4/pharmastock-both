@@ -223,3 +223,8 @@ export async function fetchBankAccounts(): Promise<{ data: BankAccount[] }> {
   const { data } = await apiClient.get<{ data: BankAccount[] }>(API_ROUTES.elite.bankAccounts);
   return data;
 }
+
+export async function requestPaymentHandoff(): Promise<{ url: string; expires_in: number }> {
+  const { data } = await apiClient.post(API_ROUTES.elite.paymentHandoff, {});
+  return data;
+}

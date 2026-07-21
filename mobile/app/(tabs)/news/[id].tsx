@@ -12,13 +12,14 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useNewsItem } from '@/hooks/useContent';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
-import { isRTL, rowDirection } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 import { formatDate } from '@/lib/format';
 
 export default function NewsDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const getField = useLocalizedField();
+  const { isRTL } = useRTL();
   const { data: item, isLoading, isError } = useNewsItem(Number(id));
 
   if (isLoading) {
@@ -42,7 +43,7 @@ export default function NewsDetailScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
         </TouchableOpacity>
@@ -53,7 +54,7 @@ export default function NewsDetailScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={[styles.symbolRow, { flexDirection: rowDirection }]}>
+        <View style={styles.symbolRow}>
           <View style={styles.symbolPill}>
             <Text style={styles.symbolText}>{item.symbol}</Text>
           </View>

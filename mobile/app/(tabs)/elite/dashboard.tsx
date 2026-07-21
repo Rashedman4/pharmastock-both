@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { EliteTabBar } from '@/components/elite/EliteTabBar';
 import { Colors } from '@/constants/colors';
 import { fetchEliteDashboard } from '@/services/elite.service';
-import { rowDirection, directionArrow } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 
 function fmt(val: number | null | undefined): string {
   if (val == null) return '—';
@@ -50,15 +50,16 @@ interface QuickLinkProps {
 }
 
 function QuickLink({ label, count, onPress }: QuickLinkProps) {
+  const { isRTL } = useRTL();
   return (
-    <TouchableOpacity style={[styles.quickLink, { flexDirection: rowDirection }]} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.quickLink} onPress={onPress} activeOpacity={0.7}>
       <Text style={styles.quickLinkLabel}>{label}</Text>
       {count != null && (
         <View style={styles.countBadge}>
           <Text style={styles.countText}>{count}</Text>
         </View>
       )}
-      <Text style={styles.arrow}>{directionArrow}</Text>
+      <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={18} color={Colors.textMuted} />
     </TouchableOpacity>
   );
 }
@@ -88,10 +89,10 @@ export default function EliteDashboardScreen() {
   return (
     <View style={styles.wrapper}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <View style={[styles.headerRow, { flexDirection: rowDirection }]}>
+        <View style={styles.headerRow}>
           <Text style={styles.title}>{t('elite.dashboard')}</Text>
-          <View style={[styles.headerActions, { flexDirection: rowDirection }]}>
-            <TouchableOpacity onPress={() => refetch()} style={[styles.reloadBtn, { flexDirection: rowDirection }]} activeOpacity={0.7} disabled={isFetching}>
+          <View style={styles.headerActions}>
+            <TouchableOpacity onPress={() => refetch()} style={styles.reloadBtn} activeOpacity={0.7} disabled={isFetching}>
               <Ionicons name="refresh-outline" size={18} color={Colors.primary} style={isFetching ? styles.spinning : undefined} />
               <Text style={styles.reloadText}>{t('common.reload')}</Text>
             </TouchableOpacity>
@@ -107,7 +108,7 @@ export default function EliteDashboardScreen() {
 
         <Text style={styles.sectionTitle}>{t('elite.portfolio_overview')}</Text>
 
-        <View style={[styles.metricsGrid, { flexDirection: rowDirection }]}>
+        <View style={styles.metricsGrid}>
           <MetricCard label={t('elite.total_equity')} value={fmt(data.totalEquity)} accent />
           <MetricCard label={t('elite.free_capital')} value={fmt(data.freeCapitalAmount)} />
           <MetricCard label={t('elite.money_in_market')} value={fmt(data.moneyInMarket)} />
@@ -147,7 +148,7 @@ export default function EliteDashboardScreen() {
           <View style={styles.divider} />
           <QuickLink
             label={t('elite.firm_profit')}
-            onPress={() => Linking.openURL('https://biopharmastock.com/en/elite-group')}
+            onPress={() => router.push('/elite/payments')}
           />
         </Card>
 
@@ -164,8 +165,8 @@ const styles = StyleSheet.create({
   content: { padding: 20, paddingBottom: 16 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-  headerActions: { alignItems: 'center', gap: 10 },
-  reloadBtn: { alignItems: 'center', gap: 4 },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  reloadBtn: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   reloadText: { fontSize: 11, fontWeight: '600', color: Colors.primary },
   spinning: { opacity: 0.4 },
   title: { fontSize: 24, fontWeight: '800', color: Colors.primary },
@@ -199,7 +200,6 @@ const styles = StyleSheet.create({
     marginEnd: 8,
   },
   countText: { color: '#fff', fontSize: 11, fontWeight: '700' },
-  arrow: { fontSize: 20, color: Colors.textMuted },
   divider: { height: 1, backgroundColor: Colors.borderLight },
   errorText: { fontSize: 16, color: Colors.danger },
 });

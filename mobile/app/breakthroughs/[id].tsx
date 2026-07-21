@@ -14,7 +14,7 @@ import { useBreakthrough } from '@/hooks/useContent';
 import { Badge } from '@/components/ui/Badge';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
-import { isRTL, rowDirection } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 
 const categoryVariant = {
   drug: 'info' as const,
@@ -33,6 +33,7 @@ export default function BreakthroughDetailScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const getField = useLocalizedField();
+  const { isRTL } = useRTL();
   const { data: item, isLoading, isError } = useBreakthrough(Number(id));
 
   if (isLoading) {
@@ -56,7 +57,7 @@ export default function BreakthroughDetailScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
         </TouchableOpacity>
@@ -67,7 +68,7 @@ export default function BreakthroughDetailScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={[styles.companyRow, { flexDirection: rowDirection }]}>
+        <View style={styles.companyRow}>
           <Text style={styles.company}>{item.company}</Text>
           <View style={styles.symbolPill}>
             <Text style={styles.symbolText}>{item.symbol}</Text>

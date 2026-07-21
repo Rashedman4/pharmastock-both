@@ -65,5 +65,6 @@ export const API_ROUTES = {
     firmProfitPayments: '/api/mobile/v1/elite/firm-profit-payments',
     firmProfitProof: (id: number) => `/api/mobile/v1/elite/firm-profit-payments/${id}/proof`,
     bankAccounts: '/api/mobile/v1/elite/bank-accounts',
+    paymentHandoff: '/api/mobile/v1/elite/payment-handoff',
   },
 } as const;

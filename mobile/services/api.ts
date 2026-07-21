@@ -3,6 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import { API_BASE_URL, API_ROUTES } from '@/constants/api';
 import { STORAGE_KEYS } from '@/constants/storage-keys';
 import type { RefreshResponse } from '@/types/api';
+import i18n from '@/i18n';
 
 let isRefreshing = false;
 let refreshQueue: Array<(token: string) => void> = [];
@@ -23,6 +24,10 @@ apiClient.interceptors.request.use(async (config: InternalAxiosRequestConfig) =>
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // Reflects the app's current in-memory language on every request, so
+  // server-resolved bilingual content (e.g. notifications) never depends on
+  // the DB's `preferred_language` column staying in sync with in-app toggles.
+  config.headers['X-App-Language'] = i18n.language;
   return config;
 });
 

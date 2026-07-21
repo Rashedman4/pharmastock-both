@@ -16,7 +16,6 @@ import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { signInWithGoogle } from '@/lib/googleSignIn';
 import { signInWithApple, isAppleAuthAvailable } from '@/lib/appleSignIn';
-import { rowDirection } from '@/lib/rtl';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import type { AuthUser } from '@/types/user';
 
@@ -361,7 +360,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   googleBtn: {
-    flexDirection: rowDirection,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
@@ -378,7 +377,7 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
   },
   footer: {
-    flexDirection: rowDirection,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 32,
@@ -459,7 +458,7 @@ const styles = StyleSheet.create({
   },
   modalList: { flexGrow: 0 },
   countryOption: {
-    flexDirection: rowDirection,
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 14,

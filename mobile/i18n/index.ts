@@ -3,7 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import * as Localization from 'expo-localization';
 import * as SecureStore from 'expo-secure-store';
 import * as Updates from 'expo-updates';
-import { I18nManager } from 'react-native';
+import { DevSettings, I18nManager } from 'react-native';
 import en from '@/locales/en.json';
 import ar from '@/locales/ar.json';
 import { STORAGE_KEYS } from '@/constants/storage-keys';
@@ -34,9 +34,23 @@ export async function initI18n() {
 
 /**
  * Switches the app language and persists it. If the RTL/LTR direction
- * changes, I18nManager only fully applies it natively after the JS bundle
- * is reloaded — so this triggers that reload itself (via expo-updates) and
- * resolves to `{ reloaded: true }` without the caller ever seeing the
+ * changes, I18nManager.isRTL will not reflect the new value — and no
+ * RTL-dependent layout will update, no matter how "live" the code reading it
+ * is — until the JS bundle is actually reloaded. This is native RN/Expo
+ * behavior, not something fixable from the JS side: forceRTL() only flips a
+ * native flag for the *next* bundle evaluation.
+ *
+ * There are two ways to trigger that reload, and only one works in a given
+ * environment:
+ * - `Updates.reloadAsync()` — for built/published apps running through
+ *   expo-updates (production, or a dev build with EAS Update configured).
+ * - `DevSettings.reload()` — for a dev session connected live to Metro
+ *   (`expo start` / `npm run android` with the dev client), where
+ *   `Updates.isEnabled` is always false because there's no published update
+ *   to reload from. This reloads the current JS bundle straight from Metro,
+ *   the same thing the dev menu's "Reload" does.
+ *
+ * Both resolve to `{ reloaded: true }` without the caller ever seeing the
  * promise settle (the JS context is torn down). When the direction doesn't
  * change, no reload happens and the promise resolves normally.
  */
@@ -52,17 +66,20 @@ export async function changeLanguage(lang: 'en' | 'ar'): Promise<{ reloaded: boo
 
   I18nManager.forceRTL(willBeRTL);
 
-  if (!Updates.isEnabled) {
-    // Expo Go / dev-client builds without the native expo-updates module
-    // linked in yet (e.g. before the first post-install native rebuild)
-    // can't reload themselves — the direction is still persisted correctly
-    // for next cold start, the caller just can't auto-reload this session.
-    console.warn('[i18n] expo-updates is not enabled; language direction will apply after a manual restart.');
-    return { reloaded: false };
+  if (Updates.isEnabled) {
+    await Updates.reloadAsync();
+    return { reloaded: true };
   }
 
-  await Updates.reloadAsync();
-  return { reloaded: true };
+  if (__DEV__ && typeof DevSettings.reload === 'function') {
+    DevSettings.reload();
+    return { reloaded: true };
+  }
+
+  // Neither reload path is available — the direction is still persisted
+  // correctly for next cold start, the caller just can't auto-reload now.
+  console.warn('[i18n] no reload mechanism available; language direction will apply after a manual restart.');
+  return { reloaded: false };
 }
 
 export default i18n;

@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
-import { isRTL, rowDirection } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 
 interface Props {
   uri: string;
@@ -22,6 +22,7 @@ export function VoiceMessage({ uri, duration, isAdmin }: Props) {
   const [playing, setPlaying] = useState(false);
   const [position, setPosition] = useState(0);
   const [total, setTotal] = useState(duration ?? 0);
+  const { isRTL } = useRTL();
 
   useEffect(() => {
     return () => {
@@ -68,7 +69,7 @@ export function VoiceMessage({ uri, duration, isAdmin }: Props) {
   const bubbleStyle = isAdmin ? styles.adminBar : styles.userBar;
 
   return (
-    <View style={[styles.container, { flexDirection: rowDirection }, isAdmin ? styles.adminContainer : styles.userContainer]}>
+    <View style={[styles.container, isAdmin ? styles.adminContainer : styles.userContainer]}>
       <TouchableOpacity onPress={togglePlay} style={styles.playBtn}>
         <Ionicons
           name={playing ? 'pause' : 'play'}
@@ -79,7 +80,7 @@ export function VoiceMessage({ uri, duration, isAdmin }: Props) {
 
       {/* Waveform bar */}
       <View style={styles.trackContainer}>
-        <View style={[styles.track, bubbleStyle, { flexDirection: rowDirection }]}>
+        <View style={[styles.track, bubbleStyle]}>
           <View style={[styles.progress, bubbleStyle, { flex: progress }]} />
         </View>
       </View>

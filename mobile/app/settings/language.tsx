@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 import { changeLanguage } from '@/i18n';
 import { useUiStore } from '@/stores/ui.store';
 import { apiClient } from '@/services/api';
@@ -63,11 +62,11 @@ export default function LanguageScreen() {
           return (
             <React.Fragment key={lang.code}>
               <TouchableOpacity
-                style={[styles.option, { flexDirection: rowDirection }]}
+                style={styles.option}
                 onPress={() => handleSelect(lang.code)}
                 activeOpacity={0.7}
               >
-                <View style={[styles.optionLeft, { flexDirection: rowDirection }]}>
+                <View style={styles.optionLeft}>
                   <Text style={styles.flag}>{lang.flag}</Text>
                   <View>
                     <Text style={[styles.optionLabel, selected && styles.optionLabelSelected]}>
@@ -104,12 +103,13 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderLight,
   },
   option: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 16,
   },
-  optionLeft: { alignItems: 'center', gap: 14 },
+  optionLeft: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   flag: { fontSize: 28 },
   optionLabel: { fontSize: 16, fontWeight: '600', color: Colors.text },
   optionLabelSelected: { color: Colors.primary },

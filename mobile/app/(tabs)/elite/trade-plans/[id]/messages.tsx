@@ -7,7 +7,6 @@ import { useLocalSearchParams } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 import { formatTime } from '@/lib/format';
 import { useAuthStore } from '@/stores/auth.store';
 import { fetchTradePlanMessages, sendTradePlanMessage } from '@/services/elite.service';
@@ -88,7 +87,7 @@ export default function TradePlanMessagesScreen() {
         />
       )}
 
-      <View style={[styles.inputBar, { flexDirection: rowDirection }]}>
+      <View style={styles.inputBar}>
         <TextInput
           style={styles.input}
           value={text}

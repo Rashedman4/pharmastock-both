@@ -10,9 +10,9 @@ import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Input } from '@/components/ui/Input';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 import { formatDate, formatNumber } from '@/lib/format';
 import { fetchCloseRequests, submitCloseRequest } from '@/services/elite.service';
+import { closeRequestStatusLabel } from '@/lib/eliteStatus';
 import type { CloseRequest } from '@/types/elite';
 
 type BadgeVariant = 'success' | 'danger' | 'warning' | 'info' | 'neutral' | 'primary';
@@ -32,26 +32,26 @@ function CloseRequestCard({ item }: { item: CloseRequest }) {
   const { t } = useTranslation();
   return (
     <Card>
-      <View style={[styles.cardHeader, { flexDirection: rowDirection }]}>
+      <View style={styles.cardHeader}>
         <View>
           <Text style={styles.symbol}>{item.symbol}</Text>
           {item.company_name && <Text style={styles.company}>{item.company_name}</Text>}
         </View>
-        <Badge label={item.status} variant={crStatusVariant(item.status)} />
+        <Badge label={closeRequestStatusLabel(item.status, t)} variant={crStatusVariant(item.status)} />
       </View>
 
-      <View style={[styles.row, { flexDirection: rowDirection }]}>
+      <View style={styles.row}>
         <View style={styles.col}>
-          <Text style={styles.colLabel}>Side</Text>
+          <Text style={styles.colLabel}>{t('elite.side')}</Text>
           <Text style={styles.colValue}>{item.side}</Text>
         </View>
         <View style={styles.col}>
-          <Text style={styles.colLabel}>Requested Qty</Text>
+          <Text style={styles.colLabel}>{t('elite.requested_qty')}</Text>
           <Text style={styles.colValue}>{formatNumber(item.requested_quantity)}</Text>
         </View>
         {item.requested_exit_price && (
           <View style={styles.col}>
-            <Text style={styles.colLabel}>Exit Price</Text>
+            <Text style={styles.colLabel}>{t('elite.exit_price_label')}</Text>
             <Text style={styles.colValue}>${Number(item.requested_exit_price).toFixed(4)}</Text>
           </View>
         )}
@@ -96,13 +96,13 @@ export default function CloseRequestsScreen() {
     },
     onError: (err: any) => {
       const msg = err?.response?.data?.error?.message ?? t('common.error');
-      Alert.alert('Error', msg);
+      Alert.alert(t('common.error_title'), msg);
     },
   });
 
   const handleSubmit = () => {
     if (!positionId || !quantity) {
-      Alert.alert('Error', 'Position ID and quantity are required');
+      Alert.alert(t('common.error_title'), t('elite.position_qty_required_error'));
       return;
     }
     submitMutation.mutate();
@@ -112,9 +112,9 @@ export default function CloseRequestsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.topBar, { flexDirection: rowDirection }]}>
+      <View style={styles.topBar}>
         <Text style={styles.count}>
-          {formatNumber(data?.pagination?.total ?? 0)} Request(s)
+          {t('elite.request_count', { count: data?.pagination?.total ?? 0 })}
         </Text>
         <Button
           title={t('elite.new_close_request')}
@@ -137,16 +137,16 @@ export default function CloseRequestsScreen() {
       )}
 
       <Modal visible={showModal} animationType="slide" presentationStyle="pageSheet">
-        <View style={[styles.modalHeader, { flexDirection: rowDirection }]}>
+        <View style={styles.modalHeader}>
           <Text style={styles.modalTitle}>{t('elite.new_close_request')}</Text>
           <Button title={t('common.cancel')} variant="ghost" onPress={() => setShowModal(false)} containerStyle={{ height: 38 }} />
         </View>
         <ScrollView style={styles.modalBody} keyboardShouldPersistTaps="handled">
           <Input
-            label="Position ID"
+            label={t('elite.position_id_label')}
             value={positionId}
             onChangeText={setPositionId}
-            placeholder="Enter position ID"
+            placeholder={t('elite.position_id_placeholder')}
             keyboardType="numeric"
           />
           <Input

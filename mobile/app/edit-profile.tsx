@@ -21,7 +21,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Colors } from '@/constants/colors';
-import { isRTL, rowDirection } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import type { AuthUser } from '@/types/user';
@@ -43,6 +43,7 @@ export default function EditProfileScreen() {
   const { user, setUser } = useAuthStore();
   const [profileProvider, setProfileProvider] = useState<string | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
+  const { isRTL } = useRTL();
 
   const isSocial = profileProvider === 'google' || profileProvider === 'apple';
 
@@ -140,7 +141,7 @@ export default function EditProfileScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name={isRTL ? 'arrow-forward' : 'arrow-back'} size={24} color={Colors.primary} />
         </TouchableOpacity>
@@ -209,7 +210,7 @@ export default function EditProfileScreen() {
             <Text style={styles.sectionLabel}>{t('profile.password_section')}</Text>
 
             {isSocial ? (
-              <View style={[styles.socialNote, { flexDirection: rowDirection }]}>
+              <View style={styles.socialNote}>
                 <Ionicons
                   name="information-circle-outline"
                   size={18}

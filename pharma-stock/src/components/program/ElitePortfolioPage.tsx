@@ -195,6 +195,7 @@ const translations = {
     admin: "Admin",
     investor: "Investor",
     notAvailable: "—",
+    returnToApp: "Return to the app",
   },
   ar: {
     loading: "جارٍ تحميل المحفظة...",
@@ -292,6 +293,7 @@ const translations = {
     admin: "المدير",
     investor: "المستثمر",
     notAvailable: "—",
+    returnToApp: "العودة إلى التطبيق",
   },
 } satisfies Record<Lang, Record<string, string>>;
 
@@ -331,6 +333,7 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
   const [info, setInfo] = useState<string | null>(null);
   const [state, setState] = useState<Record<string, string>>({});
   const [busyKey, setBusyKey] = useState<string | null>(null);
+  const [cameFromMobileApp, setCameFromMobileApp] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -360,6 +363,11 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
       setInfo(t.stripeCancelled);
     }
   }, [loadData, t.stripeCancelled, t.stripeCompleted]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    setCameFromMobileApp(document.cookie.includes("ps_mobile_handoff=1"));
+  }, []);
 
   async function requestClose(positionId: number) {
     setError(null);
@@ -592,6 +600,21 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
       {info ? (
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
           {info}
+        </div>
+      ) : null}
+
+      {cameFromMobileApp ? (
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
+          <span className="text-sm text-slate-600">{t.returnToApp}</span>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              window.location.href = "pharmastock://elite/payments";
+            }}
+          >
+            {t.returnToApp}
+          </Button>
         </div>
       ) : null}
 

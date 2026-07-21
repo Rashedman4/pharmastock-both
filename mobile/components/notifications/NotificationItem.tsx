@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { Colors } from '@/constants/colors';
-import { isRTL, rowDirection } from '@/lib/rtl';
+import { useRTL } from '@/lib/rtl';
 import type { InAppNotification } from '@/types/content';
 
 function formatRelativeTime(dateStr: string): string {
@@ -21,10 +21,11 @@ interface Props {
 
 export const NotificationItem = React.memo(function NotificationItem({ notification, onPress }: Props) {
   const isUnread = notification.read_at === null;
+  const { isRTL } = useRTL();
 
   return (
     <TouchableOpacity
-      style={[styles.container, { flexDirection: rowDirection }, isUnread && styles.unread]}
+      style={[styles.container, isUnread && styles.unread]}
       onPress={onPress}
       activeOpacity={0.7}
     >

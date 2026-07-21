@@ -34,7 +34,11 @@
       "Bash(echo \"EXIT_CODE=$?\")",
       "Bash(cat src/components/ui/toaster.tsx)",
       "Bash(grep -rn \"container\" src/components/ui/toast.tsx src/components/ui/dialog.tsx)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(echo \"TSC_EXIT=$?\")",
+      "Bash(node -e \"console.log\\(require\\('./locales/ar.json'\\).common.save\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('locales/ar.json','utf8'\\)\\); console.log\\('OK'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('locales/ar.json','utf8'\\)\\); console.log\\('JSON OK'\\)\")"
     ]
   }
 }

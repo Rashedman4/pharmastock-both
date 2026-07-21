@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors } from '@/constants/colors';
-import { rowDirection } from '@/lib/rtl';
 
 interface SectionHeaderProps {
   title: string;
@@ -11,7 +10,7 @@ interface SectionHeaderProps {
 
 export function SectionHeader({ title, actionLabel, onAction }: SectionHeaderProps) {
   return (
-    <View style={[styles.row, { flexDirection: rowDirection }]}>
+    <View style={styles.row}>
       <Text style={styles.title}>{title}</Text>
       {actionLabel && onAction ? (
         <TouchableOpacity onPress={onAction}>

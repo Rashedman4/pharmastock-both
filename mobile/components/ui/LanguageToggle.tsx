@@ -4,8 +4,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
 import { changeLanguage } from '@/i18n';
-import { rowDirection } from '@/lib/rtl';
 import { useUiStore } from '@/stores/ui.store';
+import { apiClient } from '@/services/api';
+import { API_ROUTES } from '@/constants/api';
 import { LoadingScreen } from './LoadingScreen';
 
 interface LanguageToggleProps {
@@ -25,6 +26,10 @@ export function LanguageToggle({ style }: LanguageToggleProps = {}) {
     if (switching) return;
     setSwitching(true);
     try {
+      // Sync preference to backend so offline push notifications (which
+      // can't read a live request header) arrive in the right language.
+      apiClient.patch(API_ROUTES.meLanguage, { language: nextLang }).catch(() => {});
+
       const { reloaded } = await changeLanguage(nextLang);
       setLanguage(nextLang);
       if (!reloaded) setSwitching(false);
@@ -55,7 +60,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   btn: {
-    flexDirection: rowDirection,
+    flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
     backgroundColor: Colors.primary + '15',

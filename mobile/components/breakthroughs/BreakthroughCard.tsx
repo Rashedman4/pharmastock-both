@@ -5,7 +5,6 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
-import { rowDirection } from '@/lib/rtl';
 import { formatDate } from '@/lib/format';
 import type { Breakthrough } from '@/types/content';
 
@@ -34,7 +33,7 @@ export const BreakthroughCard = React.memo(function BreakthroughCard({ item, onP
 
   return (
     <Card onPress={onPress}>
-      <View style={[styles.header, { flexDirection: rowDirection }]}>
+      <View style={styles.header}>
         <Text style={styles.company} numberOfLines={1}>
           {item.company}
         </Text>
@@ -47,7 +46,7 @@ export const BreakthroughCard = React.memo(function BreakthroughCard({ item, onP
         {getField(item, 'title')}
       </Text>
 
-      <View style={[styles.badges, { flexDirection: rowDirection }]}>
+      <View style={styles.badges}>
         <Badge
           label={t(`breakthroughs.${item.category}`)}
           variant={categoryVariant[item.category]}

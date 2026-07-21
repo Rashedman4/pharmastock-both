@@ -6,8 +6,10 @@ import AppleProvider from "next-auth/providers/apple";
 import pool from "@/lib/db";
 import crypto from "crypto";
 import { createRateLimiter, getClientIPFromHeaders } from "@/lib/rate-limit";
+import { hashToken } from "@/lib/mobile/jwt";
 
 const loginLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 10 });
+const handoffLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 20 });
 
 function generateAppleClientSecret(): string {
   const privateKey = (process.env.APPLE_PRIVATE_KEY ?? "").replace(/\\n/g, "\n");
@@ -98,6 +100,57 @@ export const authOptions: NextAuthOptions = {
           }),
         ]
       : []),
+    CredentialsProvider({
+      id: "mobile-handoff",
+      name: "Mobile Handoff",
+      credentials: {
+        token: { label: "Token", type: "text" },
+      },
+      async authorize(credentials, req) {
+        const ip = getClientIPFromHeaders(
+          req?.headers as Record<string, string | string[] | undefined> | undefined
+        );
+        if (!handoffLimiter(`handoff:${ip}`)) {
+          throw new Error("Too many attempts. Please try again later.");
+        }
+
+        const raw = credentials?.token;
+        if (!raw) throw new Error("Missing token");
+        const tokenHash = hashToken(raw);
+
+        const result = await pool.query(
+          `UPDATE mobile_web_handoff_tokens
+           SET consumed_at = NOW()
+           WHERE token_hash = $1 AND consumed_at IS NULL AND expires_at > NOW()
+           RETURNING user_id, redirect_path`,
+          [tokenHash]
+        );
+        const row = result.rows[0];
+        if (!row) throw new Error("Token expired or already used");
+
+        const userResult = await pool.query(
+          `SELECT id, email, role FROM users WHERE id = $1`,
+          [row.user_id]
+        );
+        const user = userResult.rows[0];
+        if (!user) throw new Error("User not found");
+
+        pool
+          .query(
+            `INSERT INTO elite_activity_logs (actor_user_id, entity_type, action, note)
+             VALUES ($1, 'MOBILE_HANDOFF', 'PAYMENT_HANDOFF_CONSUMED', 'Mobile-to-web payment handoff')`,
+            [user.id]
+          )
+          .catch(() => {});
+
+        return {
+          id: user.id,
+          role: user.role,
+          email: user.email,
+          redirectPath: row.redirect_path as string,
+        };
+      },
+    }),
   ],
   session: {
     strategy: "jwt",
@@ -197,16 +250,22 @@ export const authOptions: NextAuthOptions = {
 
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
         token.role = user.role as string;
+      }
+      if (account?.provider === "mobile-handoff" && (user as any)?.redirectPath) {
+        token.handoffRedirect = (user as any).redirectPath as string;
       }
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.id as string;
       session.user.role = token.role as string;
+      if (token.handoffRedirect) {
+        (session as any).handoffRedirect = token.handoffRedirect;
+      }
       return session;
     },
   },
