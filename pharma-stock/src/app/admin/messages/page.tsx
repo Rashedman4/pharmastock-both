@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import useSWR from "swr";
 import { Send, Plus, Users, X, MessageCircle, ChevronDown, Image as ImageIcon, Mic, Square, Check, CheckCheck, Search, Video as VideoIcon } from "lucide-react";
+import { useAdminChatSocket } from "@/lib/adminChatSocket";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -617,6 +618,19 @@ export default function AdminMessagesPage() {
   const convMessages: RawMessage[] = convDetailData?.messages ?? [];
   const convInfo = convDetailData?.conversation as (AdminConversation & { firstname: string; lastname: string }) | undefined;
   const convEndRef = useScrollBottom(convMessages.length);
+
+  // ── Live push ────────────────────────────────────────────────────────────────
+  // Supplements the polling above (refreshInterval on each useSWR call, which
+  // is left unchanged as a fallback): revalidate whichever lists/threads are
+  // active as soon as a new chat message arrives, instead of waiting for the
+  // next poll tick.
+  const handleLiveMessage = useCallback(() => {
+    mutateGroups();
+    mutateGroupMsgs();
+    mutateConvs();
+    mutateConvDetail();
+  }, [mutateGroups, mutateGroupMsgs, mutateConvs, mutateConvDetail]);
+  useAdminChatSocket(handleLiveMessage);
 
   // ── Senders ─────────────────────────────────────────────────────────────────
   const handleGroupSend = async (payload: SendPayload) => {

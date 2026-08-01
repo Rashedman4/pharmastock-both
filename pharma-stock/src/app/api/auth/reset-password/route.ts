@@ -5,9 +5,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { token, password } = body;
-    const client = await pool.connect();
     // Check if the token is valid and has not expired
-    const result = await client.query(
+    const result = await pool.query(
       `SELECT userid FROM resettokens WHERE token = $1 AND expires_at > NOW()`,
       [token]
     );
@@ -24,14 +23,13 @@ export async function POST(req: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Update the user's password
-    await client.query(`UPDATE users SET password = $1 WHERE id = $2`, [
+    await pool.query(`UPDATE users SET password = $1 WHERE id = $2`, [
       hashedPassword,
       parseInt(userId),
     ]);
 
     // Delete the used token
-    await client.query(`DELETE FROM resettokens WHERE token = $1`, [token]);
-    client.release();
+    await pool.query(`DELETE FROM resettokens WHERE token = $1`, [token]);
 
     return NextResponse.json(
       { message: "Password successfully reset" },

@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import { getAuthUser } from "@/modules/program/route-helpers";
 import {
   ALLOWED_EVIDENCE_EXTENSIONS,
+  MAX_EVIDENCE_FILE_SIZE_BYTES,
   assertAllowedEvidenceBytes,
   assertAllowedEvidenceFileMetadata,
   getCloudinaryEvidenceConfig,
@@ -29,6 +30,17 @@ function signCloudinaryParams(params: Record<string, string>, apiSecret: string)
 export async function POST(request: NextRequest) {
   const auth = await getAuthUser(request);
   if ("error" in auth) return auth.error;
+
+  // Early content-length gate: reject oversized uploads before buffering the
+  // whole multipart body into memory (mirrors the same check already used in
+  // the mobile chat upload route).
+  const contentLength = parseInt(request.headers.get("content-length") ?? "0", 10);
+  if (contentLength > MAX_EVIDENCE_FILE_SIZE_BYTES) {
+    return NextResponse.json(
+      { message: "File exceeds maximum allowed size." },
+      { status: 400 },
+    );
+  }
 
   try {
     const formData = await request.formData();

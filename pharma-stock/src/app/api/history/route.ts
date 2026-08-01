@@ -9,11 +9,9 @@ const CACHE_TIME = 60; // 1 minute
 // Cached function
 const getSignalHistory = unstable_cache(
   async () => {
-    const client = await pool.connect();
-    const result = await client.query(
+    const result = await pool.query(
       "SELECT * FROM signal_history ORDER BY closing_date DESC"
     );
-    client.release();
 
     return result.rows;
   },

@@ -4,10 +4,8 @@ import { getToken } from "next-auth/jwt";
 
 export async function GET() {
   try {
-    const client = await pool.connect();
     const query = `SELECT id, url, name_en, name_ar FROM groups ORDER BY numId`;
-    const result = await client.query(query);
-    client.release();
+    const result = await pool.query(query);
 
     return NextResponse.json(result.rows, { status: 200 });
   } catch (error) {
@@ -42,28 +40,24 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const client = await pool.connect();
-
     // Check if group exists
-    const checkResult = await client.query(
+    const checkResult = await pool.query(
       "SELECT * FROM groups WHERE id = $1",
       [id]
     );
 
     if (checkResult.rowCount === 0) {
-      client.release();
       return NextResponse.json({ error: "Group not found" }, { status: 404 });
     }
 
     // Update the URL
     const query = `
-      UPDATE groups 
+      UPDATE groups
       SET url = $1
       WHERE id = $2
       RETURNING *;
     `;
-    const result = await client.query(query, [url, id]);
-    client.release();
+    const result = await pool.query(query, [url, id]);
 
     return NextResponse.json(result.rows[0], { status: 200 });
   } catch (error) {

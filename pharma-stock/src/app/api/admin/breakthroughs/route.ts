@@ -1,19 +1,10 @@
 import pool from "@/lib/db";
 import { NextResponse, NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { requireAdmin } from "@/modules/program/route-helpers";
 
 export async function POST(req: NextRequest) {
-  const token = await getToken({ req });
-
-  if (!token) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // Check authorized emails
-  const authorizedEmails = process.env.AUTHORIZED_EMAILS?.split(",") || [];
-  if (!authorizedEmails.includes(token.email as string)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireAdmin(req);
+  if ("error" in auth) return auth.error;
 
   try {
     const body = await req.json();
@@ -30,7 +21,6 @@ export async function POST(req: NextRequest) {
       stage,
     } = body;
 
-    const client = await pool.connect();
     const query = `
       INSERT INTO breakthroughs (
         title_en, title_ar, company, symbol,
@@ -41,7 +31,7 @@ export async function POST(req: NextRequest) {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *;
     `;
-    const result = await client.query(query, [
+    const result = await pool.query(query, [
       title_en,
       title_ar,
       company,
@@ -53,7 +43,6 @@ export async function POST(req: NextRequest) {
       category,
       stage,
     ]);
-    client.release();
 
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (error) {
@@ -65,37 +54,25 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const token = await getToken({ req });
-
-  if (!token) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // Check authorized emails
-  const authorizedEmails = process.env.AUTHORIZED_EMAILS?.split(",") || [];
-  if (!authorizedEmails.includes(token.email as string)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireAdmin(req);
+  if ("error" in auth) return auth.error;
 
   try {
     const body = await req.json();
     const { id } = body;
-    const client = await pool.connect();
-    const breakthroughResult = await client.query(
+    const breakthroughResult = await pool.query(
       "SELECT * FROM breakthroughs WHERE id = $1",
       [id]
     );
 
     if (breakthroughResult.rowCount === 0) {
-      client.release();
       return NextResponse.json(
         { error: "Breakthrough not found" },
         { status: 404 }
       );
     }
 
-    await client.query("DELETE FROM breakthroughs WHERE id = $1", [id]);
-    client.release();
+    await pool.query("DELETE FROM breakthroughs WHERE id = $1", [id]);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
@@ -106,12 +83,23 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = await requireAdmin(req);
+  if ("error" in auth) return auth.error;
+
   try {
-    const client = await pool.connect();
-    const query = `SELECT * FROM breakthroughs ORDER BY created_at DESC`;
-    const result = await client.query(query);
-    client.release();
+    const url = new URL(req.url);
+    const rawLimit = parseInt(url.searchParams.get("limit") ?? "500", 10);
+    const limit = Number.isFinite(rawLimit) && rawLimit > 0 ? Math.min(rawLimit, 2000) : 500;
+    const rawPage = parseInt(url.searchParams.get("page") ?? "1", 10);
+    const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+    const offset = (page - 1) * limit;
+
+    // Default limit (500) is intentionally generous so a call with no query
+    // params returns effectively the same full result set admins see today
+    // at current data volumes, while still capping the unbounded worst case.
+    const query = `SELECT * FROM breakthroughs ORDER BY created_at DESC LIMIT $1 OFFSET $2`;
+    const result = await pool.query(query, [limit, offset]);
 
     return NextResponse.json(result.rows, { status: 200 });
   } catch (error) {

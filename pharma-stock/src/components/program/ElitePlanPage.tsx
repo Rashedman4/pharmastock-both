@@ -57,21 +57,32 @@ interface PortfolioSummaryResponse {
   };
 }
 
+interface PendingCapitalRequest {
+  requestId: number;
+  requestedCapitalAmount: number;
+  currentCapitalAmount: number;
+  requestNote?: string | null;
+  createdAt: string;
+}
+
 const translations = {
   en: {
     loading: "Loading plans...",
     loadPlansError: "Failed to load plans.",
     loadPortfolioSummaryError: "Failed to load portfolio summary.",
-    updateCapitalError: "Failed to update capital.",
+    updateCapitalError: "Failed to submit capital change request.",
     sendDecisionError: "Failed to send decision.",
     respondPlanError: "Failed to respond to plan.",
     sendMessageError: "Failed to send message.",
     submitExecutionError: "Failed to submit execution.",
     sectionTitle: "Free capital",
     sectionDescription:
-      "This is your available capital. It decreases when you open positions and increases again when positions are closed.",
-    saveCapital: "Update free capital",
-    saving: "Saving...",
+      "This is your available capital. It decreases when you open positions and increases again when positions are closed. Changing it requires admin approval.",
+    saveCapital: "Request capital change",
+    saving: "Submitting...",
+    requestSubmitted: "Your request was submitted and is awaiting admin approval.",
+    pendingRequestNotice: (amount: string, date: string) =>
+      `A request to change your free capital to ${amount} is pending admin approval (submitted ${date}).`,
     freeCapital: "Free capital",
     moneyInMarket: "Money in market",
     totalEquity: "Total equity",
@@ -111,16 +122,19 @@ const translations = {
     loading: "جاري تحميل الخطط...",
     loadPlansError: "فشل في تحميل الخطط.",
     loadPortfolioSummaryError: "فشل في تحميل ملخص المحفظة.",
-    updateCapitalError: "فشل في تحديث رأس المال.",
+    updateCapitalError: "فشل في إرسال طلب تغيير رأس المال.",
     sendDecisionError: "فشل في إرسال القرار.",
     respondPlanError: "فشل في الرد على الخطة.",
     sendMessageError: "فشل في إرسال الملاحظة.",
     submitExecutionError: "فشل في إرسال التنفيذ.",
     sectionTitle: "رأس المال الحر",
     sectionDescription:
-      "هذا هو رأس المال المتاح لديك. ينخفض عند فتح المراكز ويرتفع مجدداً عند إغلاقها.",
-    saveCapital: "تحديث رأس المال الحر",
-    saving: "جاري الحفظ...",
+      "هذا هو رأس المال المتاح لديك. ينخفض عند فتح المراكز ويرتفع مجدداً عند إغلاقها. يتطلب تغييره موافقة المشرف.",
+    saveCapital: "طلب تغيير رأس المال",
+    saving: "جاري الإرسال...",
+    requestSubmitted: "تم إرسال طلبك وهو بانتظار موافقة المشرف.",
+    pendingRequestNotice: (amount: string, date: string) =>
+      `هناك طلب لتغيير رأس مالك الحر إلى ${amount} بانتظار موافقة المشرف (تم الإرسال بتاريخ ${date}).`,
     freeCapital: "رأس المال الحر",
     moneyInMarket: "الأموال داخل السوق",
     totalEquity: "إجمالي حقوق الملكية",
@@ -167,6 +181,8 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
     useState<PortfolioSummaryResponse | null>(null);
   const [capitalInput, setCapitalInput] = useState("");
   const [savingCapital, setSavingCapital] = useState(false);
+  const [capitalInfo, setCapitalInfo] = useState<string | null>(null);
+  const [pendingRequest, setPendingRequest] = useState<PendingCapitalRequest | null>(null);
   const [actionState, setActionState] = useState<Record<string, string>>({});
   const [busyKey, setBusyKey] = useState<string | null>(null);
 
@@ -175,9 +191,10 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
 
   const loadData = useCallback(async () => {
     try {
-      const [planRes, portfolioRes] = await Promise.all([
+      const [planRes, portfolioRes, capitalRequestRes] = await Promise.all([
         fetch("/api/elite/plan", { cache: "no-store" }),
         fetch("/api/elite/portfolio", { cache: "no-store" }),
+        fetch("/api/elite/capital-requests", { cache: "no-store" }),
       ]);
       const plansJson = await planRes.json();
       const portfolioJson = await portfolioRes.json();
@@ -186,6 +203,10 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
       }
       if (!portfolioRes.ok) {
         throw new Error(portfolioJson?.message || t.loadPortfolioSummaryError);
+      }
+      if (capitalRequestRes.ok) {
+        const capitalRequestJson = await capitalRequestRes.json();
+        setPendingRequest(capitalRequestJson?.pending || null);
       }
 
       setPlans(Array.isArray(plansJson) ? plansJson : []);
@@ -217,6 +238,7 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
     event.preventDefault();
     setSavingCapital(true);
     setError(null);
+    setCapitalInfo(null);
     try {
       const res = await fetch("/api/elite/portfolio", {
         method: "PATCH",
@@ -227,8 +249,7 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.message || t.updateCapitalError);
-      setCapital(Number(json.currentCapitalAmount || 0));
-      setCapitalInput(String(Number(json.currentCapitalAmount || 0)));
+      setCapitalInfo(t.requestSubmitted);
       await loadData();
     } catch (err: any) {
       setError(err.message || t.updateCapitalError);
@@ -337,6 +358,19 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
       className={`space-y-6 ${isArabic ? "text-right" : ""}`}
     >
       <SectionCard title={t.sectionTitle} description={t.sectionDescription}>
+        {pendingRequest ? (
+          <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            {t.pendingRequestNotice(
+              money(pendingRequest.requestedCapitalAmount, lang),
+              shortDate(pendingRequest.createdAt),
+            )}
+          </div>
+        ) : null}
+        {capitalInfo ? (
+          <div className="mb-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            {capitalInfo}
+          </div>
+        ) : null}
         <form
           className="grid gap-3 lg:grid-cols-[180px,180px,1fr,auto]"
           onSubmit={updateCapital}
@@ -347,8 +381,9 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
             onChange={(e) => setCapitalInput(e.target.value)}
             min={0}
             dir="ltr"
+            disabled={Boolean(pendingRequest)}
           />
-          <Button type="submit" disabled={savingCapital}>
+          <Button type="submit" disabled={savingCapital || Boolean(pendingRequest)}>
             {savingCapital ? t.saving : t.saveCapital}
           </Button>
           <div className="grid gap-3 md:grid-cols-3">

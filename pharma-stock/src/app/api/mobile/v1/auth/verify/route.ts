@@ -8,7 +8,7 @@ import {
   getAccessTokenTTL,
   getRefreshTokenTTL,
 } from '@/lib/mobile/jwt';
-import { getClientIP } from '@/lib/mobile/rate-limit';
+import { createRateLimiter, getClientIP, rateLimitResponse } from '@/lib/mobile/rate-limit';
 
 const verifySchema = z.object({
   email: z.string().email(),
@@ -17,7 +17,18 @@ const verifySchema = z.object({
   device_name: z.string().optional(),
 });
 
+// Bounds brute-forcing the 6-character verification code: at 10 attempts per
+// 15-minute window (the code's own lifetime, enforced below in the query),
+// guessing the ~16.7M possible codes is infeasible from a single IP.
+const verifyLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  keyFn: getClientIP,
+});
+
 export async function POST(req: NextRequest) {
+  if (!verifyLimiter(req)) return rateLimitResponse();
+
   let body: unknown;
   try {
     body = await req.json();
@@ -41,7 +52,9 @@ export async function POST(req: NextRequest) {
   const client = await pool.connect();
   try {
     const pendingResult = await client.query(
-      'SELECT * FROM pendingusers WHERE email = $1 AND verification_code = $2',
+      `SELECT * FROM pendingusers
+       WHERE email = $1 AND verification_code = $2
+       AND created_at > NOW() - INTERVAL '15 minutes'`,
       [email, code]
     );
 

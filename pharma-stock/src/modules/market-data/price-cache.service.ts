@@ -26,6 +26,7 @@ export class PriceCacheService {
         previousClose: row.previousClose ? Number(row.previousClose) : null,
         change: row.change ? Number(row.change) : null,
         changePercent: row.changePercent ? Number(row.changePercent) : null,
+        asOf: row.as_of ? new Date(row.as_of).toISOString() : null,
       })) as QuoteResult[];
     } finally {
       client.release();

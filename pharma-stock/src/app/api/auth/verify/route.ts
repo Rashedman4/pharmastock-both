@@ -1,23 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/db";
+import { createRateLimiter, getClientIP, rateLimitResponse } from "@/lib/mobile/rate-limit";
+
+// Bounds brute-forcing the 6-character verification code: at 10 attempts per
+// 15-minute window (the code's own lifetime, enforced below in the query),
+// guessing the ~16.7M possible codes is infeasible from a single IP.
+const verifyLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  keyFn: getClientIP,
+});
 
 export async function POST(req: NextRequest) {
+  if (!verifyLimiter(req)) return rateLimitResponse();
+
   try {
     const body = await req.json();
-    console.log(body);
 
     const { email: userEmail, code } = body;
 
-    const client = await pool.connect();
     // Check if the email and verification code match in the pending_users table
-    const result = await client.query(
+    const result = await pool.query(
       `
-        SELECT * FROM pendingusers WHERE email = $1 AND verification_code = $2
+        SELECT * FROM pendingusers
+        WHERE email = $1 AND verification_code = $2
+        AND created_at > NOW() - INTERVAL '15 minutes'
       `,
       [userEmail, code]
     );
-    //AND NOW() - created_at < interval '15 minutes' if you want to ensure that the code is not expired
-    // If the verification code is incorrect or not found, return an error
+    // If the verification code is incorrect, expired, or not found, return an error
     if (result.rows.length === 0) {
       return NextResponse.json(
         { error: "Invalid verification code or email." },
@@ -31,7 +42,7 @@ export async function POST(req: NextRequest) {
 
     // Check for potential issues during the move to the final `users` table
     try {
-      await client.query(
+      await pool.query(
         `
           INSERT INTO users (firstname, lastname, email, password, phonenumber)
           VALUES ($1, $2, $3, $4, $5)
@@ -40,14 +51,13 @@ export async function POST(req: NextRequest) {
       );
 
       // Delete the user from the pending_users table after successful insertion
-      await client.query(
+      await pool.query(
         `
           DELETE FROM pendingusers WHERE email = $1
         `,
         [email]
       );
 
-      client.release();
       return NextResponse.json(
         { message: "Verification successful and registration completed." },
         { status: 200 }

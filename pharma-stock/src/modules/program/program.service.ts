@@ -11,6 +11,10 @@ function toNumber(value: unknown, fallback = 0): number {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+function roundMoney(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
 function normalizeDecision(decision: string) {
   const normalized = String(decision || "")
     .trim()
@@ -19,6 +23,17 @@ function normalizeDecision(decision: string) {
     throw new Error("Invalid decision");
   }
   return normalized as "ACCEPTED" | "REJECTED";
+}
+
+function normalizeCapitalDecision(decision: string) {
+  const normalized = String(decision || "")
+    .trim()
+    .toUpperCase();
+  const mapped = normalized === "APPROVE" ? "APPROVED" : normalized;
+  if (!["APPROVED", "REJECTED"].includes(mapped)) {
+    throw new Error("Invalid decision");
+  }
+  return mapped as "APPROVED" | "REJECTED";
 }
 
 function randomReferralCode(partnerId: number) {
@@ -197,16 +212,22 @@ export class ProgramService {
       phoneNumber: string;
       investmentAmount: number;
       description?: string | null;
+      agreementAccepted?: boolean;
+      agreementVersion?: string | null;
     },
     referralCode?: string | null,
   ) {
     const phoneNumber = String(payload.phoneNumber || "").trim();
     const investmentAmount = toNumber(payload.investmentAmount);
     const description = payload.description?.trim() || null;
+    const agreementVersion = payload.agreementVersion?.trim() || null;
 
     if (!phoneNumber) throw new Error("Phone number is required");
     if (!investmentAmount || investmentAmount < 100000) {
       throw new Error("Minimum required capital is 100000");
+    }
+    if (payload.agreementAccepted !== true || !agreementVersion) {
+      throw new Error("You must accept the Elite Program Agreement to apply");
     }
 
     const activeExisting = await pool.query(
@@ -251,9 +272,11 @@ export class ProgramService {
            partner_account_id,
            referral_code_used,
            applied_from_referral,
+           agreement_accepted_at,
+           agreement_version,
            created_at,
            updated_at
-         ) VALUES ($1, $2, $3, $4, 'PENDING', $5, $6, $7, NOW(), NOW())
+         ) VALUES ($1, $2, $3, $4, 'PENDING', $5, $6, $7, NOW(), $8, NOW(), NOW())
          RETURNING id`,
         [
           userId,
@@ -263,6 +286,7 @@ export class ProgramService {
           partnerAccountId,
           normalizedReferralCode,
           Boolean(partnerAccountId),
+          agreementVersion,
         ],
       );
 
@@ -1427,6 +1451,15 @@ GROUP BY pa.id`,
       return;
     }
 
+    // Locks the portfolio row so this can't interleave with a concurrent
+    // position close (executeApprovedClose locks the same row via its
+    // "FOR UPDATE OF ... eps"), keeping the loss-balance reset below
+    // consistent with whatever fee amounts are being charged right now.
+    await client.query(
+      `SELECT id FROM elite_portfolios_simple WHERE id = $1 FOR UPDATE`,
+      [Number(payment.portfolio_id)],
+    );
+
     const closureRes = await client.query(
       `SELECT pcs.id,
               pcs.firm_profit_share_amount AS "firmShareAmount",
@@ -1467,6 +1500,39 @@ GROUP BY pa.id`,
         [paymentId, Number(row.id), amountApplied],
       );
       remaining -= amountApplied;
+    }
+
+    // "Each time the user pays, we start calculating from now": only once
+    // this payment brings the portfolio's outstanding firm-profit balance
+    // all the way to $0 do we forgive any still-unrecovered carried loss
+    // and start the next cycle clean. A partial payment leaves the loss
+    // balance untouched.
+    const outstandingRes = await client.query(
+      `SELECT COALESCE(SUM(pcs.firm_profit_share_amount), 0)
+                - COALESCE(SUM(alloc.amount_applied), 0) AS "outstanding"
+       FROM position_closures_simple pcs
+       JOIN portfolio_positions_simple pps ON pps.id = pcs.position_id
+       LEFT JOIN (
+         SELECT fppa.closure_id,
+                SUM(fppa.amount_applied) AS amount_applied
+         FROM firm_profit_payment_allocations fppa
+         JOIN firm_profit_payments fpp ON fpp.id = fppa.payment_id
+         WHERE fpp.status = 'PAID'
+         GROUP BY fppa.closure_id
+       ) alloc ON alloc.closure_id = pcs.id
+       WHERE pps.portfolio_id = $1`,
+      [Number(payment.portfolio_id)],
+    );
+    const outstanding = toNumber(outstandingRes.rows[0]?.outstanding);
+    if (outstanding <= 0.005) {
+      await client.query(
+        `UPDATE elite_portfolios_simple
+         SET unrecovered_loss_balance = 0,
+             updated_at = NOW()
+         WHERE id = $1
+           AND unrecovered_loss_balance <> 0`,
+        [Number(payment.portfolio_id)],
+      );
     }
   }
 
@@ -1530,22 +1596,185 @@ GROUP BY pa.id`,
     return nextAmount;
   }
 
-  async updateCurrentCapital(userId: number, capitalAmount: number) {
-    const amount = toNumber(capitalAmount);
+  // Investor-facing: capital changes are no longer applied directly (that
+  // let an investor overwrite their own current_capital_amount to an
+  // arbitrary value, and raced with real trade-execution capital updates —
+  // see PERFORMANCE_AUDIT.md §1A.1 Finding 1). Instead this creates a
+  // PENDING request; only an admin approval via respondCapitalChangeRequest
+  // actually calls setFreeCapital().
+  async requestCapitalChange(
+    userId: number,
+    requestedAmount: number,
+    requestNote?: string | null,
+  ) {
+    const amount = toNumber(requestedAmount);
     if (amount < 0) throw new Error("Capital amount cannot be negative");
 
     const context = await this.getInvestorContext(userId);
+
+    try {
+      const { rows } = await pool.query(
+        `INSERT INTO capital_change_requests (
+           elite_member_id,
+           portfolio_id,
+           investor_user_id,
+           current_capital_amount,
+           requested_capital_amount,
+           request_note,
+           status,
+           created_at,
+           updated_at
+         ) VALUES ($1, $2, $3, $4, $5, $6, 'PENDING', NOW(), NOW())
+         RETURNING id`,
+        [
+          context.memberId,
+          context.portfolioId,
+          userId,
+          context.currentCapitalAmount,
+          amount,
+          requestNote?.trim() || null,
+        ],
+      );
+      return {
+        requestId: Number(rows[0].id),
+        status: "PENDING" as const,
+        requestedCapitalAmount: amount,
+      };
+    } catch (error: any) {
+      // DB-level backstop (ux_capital_change_requests_pending) in case of a
+      // race between two submissions for the same portfolio.
+      if (error?.code === "23505") {
+        throw new Error(
+          "There is already a pending capital change request for this portfolio",
+        );
+      }
+      throw error;
+    }
+  }
+
+  async getPendingCapitalChangeRequest(userId: number) {
+    const context = await this.getInvestorContext(userId);
+    const { rows } = await pool.query(
+      `SELECT id, requested_capital_amount, current_capital_amount, request_note, created_at
+       FROM capital_change_requests
+       WHERE portfolio_id = $1 AND status = 'PENDING'
+       ORDER BY created_at DESC
+       LIMIT 1`,
+      [context.portfolioId],
+    );
+    if (!rows[0]) return null;
+    return {
+      requestId: Number(rows[0].id),
+      requestedCapitalAmount: toNumber(rows[0].requested_capital_amount),
+      currentCapitalAmount: toNumber(rows[0].current_capital_amount),
+      requestNote: rows[0].request_note,
+      createdAt: rows[0].created_at,
+    };
+  }
+
+  // Admin-facing list of capital change requests (defaults to no filter —
+  // caller may pass a status to narrow, e.g. "PENDING").
+  async listCapitalChangeRequests(status?: string | null) {
+    const normalizedStatus = status ? status.toUpperCase() : null;
+    const params: any[] = [];
+    let where = "";
+    if (normalizedStatus && normalizedStatus !== "ALL") {
+      params.push(normalizedStatus);
+      where = `WHERE ccr.status = $1`;
+    }
+    const { rows } = await pool.query(
+      `SELECT ccr.id,
+              ccr.elite_member_id AS "eliteMemberId",
+              ccr.portfolio_id AS "portfolioId",
+              ccr.investor_user_id AS "investorUserId",
+              u.firstname AS "investorFirstName",
+              u.lastname AS "investorLastName",
+              u.email AS "investorEmail",
+              ccr.current_capital_amount AS "currentCapitalAmount",
+              ccr.requested_capital_amount AS "requestedCapitalAmount",
+              ccr.request_note AS "requestNote",
+              ccr.status,
+              ccr.review_note AS "reviewNote",
+              ccr.reviewed_at AS "reviewedAt",
+              ccr.created_at AS "createdAt"
+       FROM capital_change_requests ccr
+       JOIN users u ON u.id = ccr.investor_user_id
+       ${where}
+       ORDER BY ccr.created_at DESC
+       LIMIT 200`,
+      params,
+    );
+    return rows.map((row) => ({
+      id: Number(row.id),
+      eliteMemberId: Number(row.eliteMemberId),
+      portfolioId: Number(row.portfolioId),
+      investorUserId: Number(row.investorUserId),
+      investorName: `${row.investorFirstName || ""} ${row.investorLastName || ""}`.trim(),
+      investorEmail: row.investorEmail,
+      currentCapitalAmount: toNumber(row.currentCapitalAmount),
+      requestedCapitalAmount: toNumber(row.requestedCapitalAmount),
+      requestNote: row.requestNote,
+      status: row.status,
+      reviewNote: row.reviewNote,
+      reviewedAt: row.reviewedAt,
+      createdAt: row.createdAt,
+    }));
+  }
+
+  // Admin-facing: approve or reject a pending capital change request.
+  // Locks the request row so two admins reviewing the same request
+  // concurrently serialize instead of both applying the change.
+  async respondCapitalChangeRequest(
+    adminUserId: number,
+    requestId: number,
+    decision: string,
+    reviewNote?: string | null,
+  ) {
+    const normalizedDecision = normalizeCapitalDecision(decision);
+
     const client = await pool.connect();
     try {
       await client.query("BEGIN");
-      await this.setFreeCapital(
-        client,
-        context.memberId,
-        context.portfolioId,
-        amount,
+      const reqRes = await client.query(
+        `SELECT id, elite_member_id, portfolio_id, investor_user_id, requested_capital_amount, status
+         FROM capital_change_requests
+         WHERE id = $1
+         FOR UPDATE`,
+        [requestId],
       );
+      const request = reqRes.rows[0];
+      if (!request) throw new Error("Capital change request not found");
+      if (request.status !== "PENDING") {
+        throw new Error("This capital change request has already been reviewed");
+      }
+
+      if (normalizedDecision === "APPROVED") {
+        await this.setFreeCapital(
+          client,
+          Number(request.elite_member_id),
+          Number(request.portfolio_id),
+          toNumber(request.requested_capital_amount),
+        );
+      }
+
+      await client.query(
+        `UPDATE capital_change_requests
+         SET status = $2,
+             reviewed_by = $3,
+             reviewed_at = NOW(),
+             review_note = $4,
+             updated_at = NOW()
+         WHERE id = $1`,
+        [requestId, normalizedDecision, adminUserId, reviewNote?.trim() || null],
+      );
+
       await client.query("COMMIT");
-      return { currentCapitalAmount: amount };
+      return {
+        success: true,
+        status: normalizedDecision,
+        investorUserId: Number(request.investor_user_id),
+        requestedCapitalAmount: toNumber(request.requested_capital_amount),
+      };
     } catch (error) {
       await client.query("ROLLBACK");
       throw error;
@@ -2541,49 +2770,68 @@ GROUP BY pa.id`,
     if (exitPrice != null && exitPrice <= 0)
       throw new Error("Invalid exit price");
 
-    const pendingRes = await pool.query(
-      `SELECT id FROM position_close_requests WHERE position_id = $1 AND status = 'PENDING' LIMIT 1`,
-      [position.positionId],
-    );
-    if (pendingRes.rows[0])
-      throw new Error(
-        "There is already a pending close request for this position",
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      // Lock the position row so two concurrent close-request submissions
+      // for the same position serialize instead of racing on the
+      // pending-request check below (previously a plain, unlocked
+      // check-then-insert that let two requests both pass the check).
+      await client.query(
+        `SELECT id FROM portfolio_positions_simple WHERE id = $1 FOR UPDATE`,
+        [position.positionId],
       );
 
-    const { rows } = await pool.query(
-      `INSERT INTO position_close_requests (
-         position_id,
-         initiated_by_user_id,
-         initiated_by_role,
-         requested_quantity,
-         requested_exit_price,
-         request_note,
-         evidence_url,
-         evidence_name,
-         status,
-         created_at,
-         updated_at
-       ) VALUES ($1, $2, 'INVESTOR', $3, $4, $5, $6, $7, 'PENDING', NOW(), NOW())
-       RETURNING id`,
-      [
-        position.positionId,
-        userId,
-        quantity,
-        exitPrice,
-        payload.requestNote?.trim() || null,
-        payload.evidenceUrl || null,
-        payload.evidenceName || null,
-      ],
-    );
+      const pendingRes = await client.query(
+        `SELECT id FROM position_close_requests WHERE position_id = $1 AND status = 'PENDING' LIMIT 1`,
+        [position.positionId],
+      );
+      if (pendingRes.rows[0])
+        throw new Error(
+          "There is already a pending close request for this position",
+        );
 
-    await pool.query(
-      `UPDATE portfolio_positions_simple
-       SET status = 'PENDING_CLOSE', updated_at = NOW()
-       WHERE id = $1 AND status IN ('OPEN', 'PARTIALLY_CLOSED')`,
-      [position.positionId],
-    );
+      const { rows } = await client.query(
+        `INSERT INTO position_close_requests (
+           position_id,
+           initiated_by_user_id,
+           initiated_by_role,
+           requested_quantity,
+           requested_exit_price,
+           request_note,
+           evidence_url,
+           evidence_name,
+           status,
+           created_at,
+           updated_at
+         ) VALUES ($1, $2, 'INVESTOR', $3, $4, $5, $6, $7, 'PENDING', NOW(), NOW())
+         RETURNING id`,
+        [
+          position.positionId,
+          userId,
+          quantity,
+          exitPrice,
+          payload.requestNote?.trim() || null,
+          payload.evidenceUrl || null,
+          payload.evidenceName || null,
+        ],
+      );
 
-    return { closeRequestId: Number(rows[0].id) };
+      await client.query(
+        `UPDATE portfolio_positions_simple
+         SET status = 'PENDING_CLOSE', updated_at = NOW()
+         WHERE id = $1 AND status IN ('OPEN', 'PARTIALLY_CLOSED')`,
+        [position.positionId],
+      );
+
+      await client.query("COMMIT");
+      return { closeRequestId: Number(rows[0].id) };
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   private async executeApprovedClose(
@@ -2607,7 +2855,8 @@ GROUP BY pa.id`,
               pps.status,
               em.id AS member_id,
               em.user_id AS investor_user_id,
-              pil.partner_account_id
+              pil.partner_account_id,
+              eps.unrecovered_loss_balance AS "unrecoveredLossBalance"
        FROM position_close_requests pcr
        JOIN portfolio_positions_simple pps ON pps.id = pcr.position_id
        JOIN elite_portfolios_simple eps ON eps.id = pps.portfolio_id
@@ -2617,7 +2866,7 @@ GROUP BY pa.id`,
         AND pil.status = 'ACTIVE'
        WHERE pcr.id = $1
          AND pcr.status = 'PENDING'
-       FOR UPDATE OF pcr, pps`,
+       FOR UPDATE OF pcr, pps, eps`,
       [requestId],
     );
 
@@ -2650,9 +2899,40 @@ GROUP BY pa.id`,
     const grossExit = exitPrice * requestedQuantity;
 
     const feeSettings = await getActiveFeeSettings();
-    const positiveProfit = Math.max(realizedProfit, 0);
-    const firmShare = positiveProfit * (feeSettings.firmPercent / 100);
-    const partnerShare = positiveProfit * (feeSettings.partnerPercent / 100);
+
+    // Loss carry-forward: a losing trade adds to the portfolio's carried
+    // loss balance; a profitable trade first pays that balance down, and
+    // the firm/partner fee is only charged on whatever profit remains
+    // after that offset. Row-locked above (FOR UPDATE OF ... eps), so
+    // concurrent closes on the same portfolio serialize instead of racing
+    // on this balance.
+    const priorLossBalance = roundMoney(
+      toNumber(request.unrecoveredLossBalance),
+    );
+    let lossOffsetApplied = 0;
+    let chargeableProfit = 0;
+    let newLossBalance = priorLossBalance;
+
+    if (realizedProfit < 0) {
+      newLossBalance = roundMoney(priorLossBalance + Math.abs(realizedProfit));
+    } else if (realizedProfit > 0) {
+      lossOffsetApplied = roundMoney(Math.min(realizedProfit, priorLossBalance));
+      chargeableProfit = roundMoney(realizedProfit - lossOffsetApplied);
+      newLossBalance = roundMoney(priorLossBalance - lossOffsetApplied);
+    }
+
+    const firmShare = roundMoney(chargeableProfit * (feeSettings.firmPercent / 100));
+    const partnerShare = roundMoney(
+      chargeableProfit * (feeSettings.partnerPercent / 100),
+    );
+
+    await client.query(
+      `UPDATE elite_portfolios_simple
+       SET unrecovered_loss_balance = $2,
+           updated_at = NOW()
+       WHERE id = $1`,
+      [Number(request.portfolio_id), newLossBalance],
+    );
 
     await client.query(
       `UPDATE position_close_requests
@@ -2681,9 +2961,11 @@ GROUP BY pa.id`,
          partner_account_id,
          evidence_url,
          evidence_name,
+         loss_offset_applied,
+         portfolio_loss_balance_after,
          closed_at,
          created_at
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW(), NOW())`,
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW(), NOW())`,
       [
         Number(request.position_id),
         requestId,
@@ -2699,6 +2981,8 @@ GROUP BY pa.id`,
         request.partner_account_id ? Number(request.partner_account_id) : null,
         request.evidence_url || null,
         request.evidence_name || null,
+        lossOffsetApplied,
+        newLossBalance,
       ],
     );
 
@@ -2727,6 +3011,8 @@ GROUP BY pa.id`,
       realizedProfit,
       firmShare,
       partnerShare,
+      lossOffsetApplied,
+      unrecoveredLossBalance: newLossBalance,
       currentCapitalAmount: nextFreeCapital,
     };
   }
@@ -2962,60 +3248,74 @@ GROUP BY pa.id`,
       requestNote?: string | null;
     },
   ) {
-    const posRes = await pool.query(
-      `SELECT id, quantity_open FROM portfolio_positions_simple WHERE id = $1 LIMIT 1`,
-      [payload.positionId],
-    );
-    const position = posRes.rows[0];
-    if (!position) throw new Error("Position not found");
-    const quantity = toNumber(payload.requestedQuantity);
-    if (quantity <= 0 || quantity > toNumber(position.quantity_open)) {
-      throw new Error("Invalid close quantity");
-    }
-    const exitPrice =
-      payload.requestedExitPrice == null
-        ? null
-        : toNumber(payload.requestedExitPrice);
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      // Lock the position row so two concurrent close-request submissions
+      // for the same position serialize instead of racing on the
+      // pending-request check below (previously a plain, unlocked
+      // check-then-insert that let two requests both pass the check).
+      const posRes = await client.query(
+        `SELECT id, quantity_open FROM portfolio_positions_simple WHERE id = $1 LIMIT 1 FOR UPDATE`,
+        [payload.positionId],
+      );
+      const position = posRes.rows[0];
+      if (!position) throw new Error("Position not found");
+      const quantity = toNumber(payload.requestedQuantity);
+      if (quantity <= 0 || quantity > toNumber(position.quantity_open)) {
+        throw new Error("Invalid close quantity");
+      }
+      const exitPrice =
+        payload.requestedExitPrice == null
+          ? null
+          : toNumber(payload.requestedExitPrice);
 
-    const pendingRes = await pool.query(
-      `SELECT id FROM position_close_requests WHERE position_id = $1 AND status = 'PENDING' LIMIT 1`,
-      [payload.positionId],
-    );
-    if (pendingRes.rows[0])
-      throw new Error(
-        "There is already a pending close request for this position",
+      const pendingRes = await client.query(
+        `SELECT id FROM position_close_requests WHERE position_id = $1 AND status = 'PENDING' LIMIT 1`,
+        [payload.positionId],
+      );
+      if (pendingRes.rows[0])
+        throw new Error(
+          "There is already a pending close request for this position",
+        );
+
+      const { rows } = await client.query(
+        `INSERT INTO position_close_requests (
+           position_id,
+           initiated_by_user_id,
+           initiated_by_role,
+           requested_quantity,
+           requested_exit_price,
+           request_note,
+           status,
+           created_at,
+           updated_at
+         ) VALUES ($1, $2, 'ADMIN', $3, $4, $5, 'PENDING', NOW(), NOW())
+         RETURNING id`,
+        [
+          payload.positionId,
+          adminUserId,
+          quantity,
+          exitPrice,
+          payload.requestNote?.trim() || null,
+        ],
       );
 
-    const { rows } = await pool.query(
-      `INSERT INTO position_close_requests (
-         position_id,
-         initiated_by_user_id,
-         initiated_by_role,
-         requested_quantity,
-         requested_exit_price,
-         request_note,
-         status,
-         created_at,
-         updated_at
-       ) VALUES ($1, $2, 'ADMIN', $3, $4, $5, 'PENDING', NOW(), NOW())
-       RETURNING id`,
-      [
-        payload.positionId,
-        adminUserId,
-        quantity,
-        exitPrice,
-        payload.requestNote?.trim() || null,
-      ],
-    );
+      await client.query(
+        `UPDATE portfolio_positions_simple
+         SET status = 'PENDING_CLOSE', updated_at = NOW()
+         WHERE id = $1 AND status IN ('OPEN', 'PARTIALLY_CLOSED')`,
+        [payload.positionId],
+      );
 
-    await pool.query(
-      `UPDATE portfolio_positions_simple
-       SET status = 'PENDING_CLOSE', updated_at = NOW()
-       WHERE id = $1 AND status IN ('OPEN', 'PARTIALLY_CLOSED')`,
-      [payload.positionId],
-    );
-
-    return { closeRequestId: Number(rows[0].id) };
+      await client.query("COMMIT");
+      return { closeRequestId: Number(rows[0].id) };
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   async respondAdminCloseRequest(

@@ -1,26 +1,29 @@
 {
-"schemaVersion": 2,
-"dockerfileLines": [
-"FROM node:24-alpine",
-"WORKDIR /usr/src/app",
-
-"# Copy package files",
-"COPY package*.json ./",
-
-"# Install ALL dependencies (including devDependencies like TypeScript)",
-"RUN npm install",
-
-"# Copy the rest of the application code",
-"COPY . .",
-
-"# Build the Next.js project",
-"RUN npm run build",
-
-"# Set environment to production and expose port",
-"ENV NODE_ENV production",
-"ENV PORT 3000",
-"EXPOSE 3000",
-
-"CMD [\"npm\", \"start\"]"
-]
+  "schemaVersion": 2,
+  "dockerfileLines": [
+    "FROM node:24-alpine",
+    "WORKDIR /usr/src/app",
+    "# Copy package files",
+    "COPY package*.json ./",
+    "# Install ALL dependencies (including devDependencies like TypeScript)",
+    "RUN npm install",
+    "# Copy the rest of the application code",
+    "COPY . .",
+    "# NEXT_PUBLIC_* vars are inlined into the client bundle at build time,",
+    "# so they must exist during 'npm run build', not just at runtime.",
+    "# CapRover passes App Configs env vars in as build args when declared via ARG.",
+    "ARG NEXT_PUBLIC_APPLE_SIGN_IN_ENABLED=${NEXT_PUBLIC_APPLE_SIGN_IN_ENABLED}",
+    "ENV NEXT_PUBLIC_APPLE_SIGN_IN_ENABLED=${NEXT_PUBLIC_APPLE_SIGN_IN_ENABLED}",
+    "ARG NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}",
+    "ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}",
+    "ARG NEXT_PUBLIC_STRIPE_PUBLIC_KEY=${NEXT_PUBLIC_STRIPE_PUBLIC_KEY}",
+    "ENV NEXT_PUBLIC_STRIPE_PUBLIC_KEY=${NEXT_PUBLIC_STRIPE_PUBLIC_KEY}",
+    "# Build the Next.js project",
+    "RUN npm run build",
+    "# Set environment to production and expose port",
+    "ENV NODE_ENV production",
+    "ENV PORT 3000",
+    "EXPOSE 3000",
+    "CMD [\"npm\", \"start\"]"
+  ]
 }

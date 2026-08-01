@@ -18,6 +18,8 @@ export async function POST(request: NextRequest) {
         phoneNumber: String(body?.phoneNumber || ""),
         investmentAmount: Number(body?.investmentAmount || 0),
         description: body?.description ? String(body.description) : null,
+        agreementAccepted: body?.agreementAccepted === true,
+        agreementVersion: body?.agreementVersion ? String(body.agreementVersion) : null,
       },
       referralCode,
     );

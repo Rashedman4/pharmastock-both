@@ -18,16 +18,24 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// Submits a request to change free capital — an admin must approve it before
+// it takes effect. See src/app/api/elite/capital-requests/route.ts for
+// checking the pending request's status, and
+// src/app/api/admin/capital-requests/** for the admin review side.
 export async function PATCH(request: NextRequest) {
   const auth = await getAuthUser(request);
   if ("error" in auth) return auth.error;
 
   try {
     const body = await request.json();
-    const result = await service.updateCurrentCapital(auth.userId, Number(body?.currentCapitalAmount || 0));
+    const result = await service.requestCapitalChange(
+      auth.userId,
+      Number(body?.currentCapitalAmount || 0),
+      typeof body?.requestNote === "string" ? body.requestNote : null,
+    );
     return NextResponse.json(result, { status: 200 });
   } catch (error: any) {
-    console.error("Failed to update capital:", error);
-    return NextResponse.json({ message: error?.message || "Failed to update capital." }, { status: 400 });
+    console.error("Failed to request capital change:", error);
+    return NextResponse.json({ message: error?.message || "Failed to request capital change." }, { status: 400 });
   }
 }

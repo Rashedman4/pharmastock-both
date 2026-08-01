@@ -14,8 +14,28 @@ enum Route {
   DailyVideo = "/daily-video",
   EliteApplications = "/elite-group",
   //Pricing = "/subscription",
+  // Partner (agent) routes and elite dashboards (introduced in the
+  // Affiliate/Agent specification). The landing pages under
+  // `/partners` and `/elite-group` remain public and therefore are not
+  // included in PROTECTED_ROUTES below. Only the dashboard and
+  // management pages require authentication.
+  Partners = "/partners",
+  PartnerDashboard = "/partners/dashboard",
+  PartnerClients = "/partners/clients",
+  PartnerEarnings = "/partners/earnings",
+  PartnerProfile = "/partners/profile",
+  EliteDashboard = "/elite-group/dashboard",
+  ElitePortfolio = "/elite-group/portfolio",
+  EliteExecutions = "/elite-group/executions",
+  ElitePlan = "/elite-group/plan",
+  EliteClosures = "/elite-group/closures",
 }
 
+// PROTECTED_ROUTES lists route prefixes that require the user to be
+// authenticated. Public landing pages such as `/elite-group` and
+// `/partners` are intentionally excluded so guests can view program
+// information and referral codes. Admin routes are handled separately
+// further below.
 const PROTECTED_ROUTES = [
   Route.Signals,
   Route.AskAboutStock,
@@ -23,6 +43,17 @@ const PROTECTED_ROUTES = [
   Route.SignalsApi,
   Route.DailyVideo,
   Route.EliteApplications,
+  // Elite dashboards and investor pages
+  Route.EliteDashboard,
+  Route.ElitePortfolio,
+  Route.EliteExecutions,
+  Route.ElitePlan,
+  Route.EliteClosures,
+  // Partner (agent) dashboards
+  Route.PartnerDashboard,
+  Route.PartnerClients,
+  Route.PartnerEarnings,
+  Route.PartnerProfile,
 ];
 
 //const SUBSCRIBED_ROUTES = [Route.Signals, Route.SignalsApi, Route.DailyVideo];
@@ -51,6 +82,13 @@ export default withAuth(
         if (!isAuth || userRole !== "admin") {
           return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
+        return NextResponse.next();
+      }
+
+      // Mobile web-handoff landing page: intentionally public/unauthenticated and must stay
+      // at this exact unprefixed path — the language-redirect below rebuilds the URL from
+      // scratch and does not preserve the `?token=` query string.
+      if (pathname === "/handoff") {
         return NextResponse.next();
       }
 

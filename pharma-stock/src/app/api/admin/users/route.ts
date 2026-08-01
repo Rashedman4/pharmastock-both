@@ -1,27 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/db";
-import { getToken } from "next-auth/jwt";
+import { requireAdmin } from "@/modules/program/route-helpers";
 
 export async function GET(request: NextRequest) {
-  const token = await getToken({ req: request });
-  if (!token) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+  const auth = await requireAdmin(request);
+  if ("error" in auth) return auth.error;
 
   try {
-    const client = await pool.connect();
-    const totalResult = await client.query("SELECT COUNT(*) FROM users");
-    const result = await client.query(`
-      SELECT id, email, provider_email, phonenumber, created_at 
-      FROM users 
-      ORDER BY created_at DESC 
-      LIMIT 10
-    `);
-    client.release();
+    const url = new URL(request.url);
+    const rawPage = parseInt(url.searchParams.get("page") ?? "1", 10);
+    const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+    const offset = (page - 1) * 10;
+
+    const [totalResult, result] = await Promise.all([
+      pool.query("SELECT COUNT(*) FROM users"),
+      pool.query(
+        `
+      SELECT id, email, provider_email, phonenumber, created_at
+      FROM users
+      ORDER BY created_at DESC
+      LIMIT 10 OFFSET $1
+    `,
+        [offset]
+      ),
+    ]);
 
     return NextResponse.json({
       users: result.rows,
       total: parseInt(totalResult.rows[0].count),
+      page,
     });
   } catch (error) {
     console.log(error);

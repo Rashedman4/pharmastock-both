@@ -4,6 +4,11 @@ export interface QuoteResult {
   previousClose?: number | null;
   change?: number | null;
   changePercent?: number | null;
+  // When present (only populated by PriceCacheService.getCachedPrices),
+  // the timestamp this quote was last fetched from the provider — used by
+  // QuotesService to decide whether a cached entry is still fresh enough
+  // to skip a new provider call.
+  asOf?: string | null;
 }
 
 /**

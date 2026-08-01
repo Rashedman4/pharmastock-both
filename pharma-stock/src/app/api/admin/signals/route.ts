@@ -17,6 +17,36 @@ async function fetchCurrentPrice(symbol: string) {
     throw error;
   }
 }
+
+// Shared close-and-archive logic used by both DELETE (admin manually closing a
+// signal) and the auto-close path below (a signal whose target was hit while
+// refreshing prices). Uses pool.query directly (auto-acquire/release per call)
+// rather than a manually-managed client, so it can never operate on a client
+// that's already been returned to the pool.
+async function closeSignalAndArchive(id: number) {
+  const signalResult = await pool.query("SELECT * FROM signals WHERE id = $1", [id]);
+  if (signalResult.rowCount === 0) return null;
+
+  const signal = signalResult.rows[0];
+  const success = signal.enter_price < signal.price_now;
+  const historyQuery = `
+    INSERT INTO signal_history (symbol, entrance_date, closing_date, in_price, out_price, success, reason_en, reason_ar)
+    VALUES ($1, $2, CURRENT_DATE, $3, $4, $5, $6, $7)
+  `;
+  await pool.query(historyQuery, [
+    signal.symbol,
+    signal.date_opened,
+    signal.enter_price,
+    signal.price_now,
+    success,
+    signal.reason_en,
+    signal.reason_ar,
+  ]);
+
+  await pool.query("DELETE FROM signals WHERE id = $1", [id]);
+
+  return { signal, success };
+}
 export async function POST(req: NextRequest) {
   const token = await getToken({ req });
 
@@ -200,44 +230,18 @@ export async function DELETE(req: NextRequest) {
   try {
     const body = await req.json();
     const { id, closeSignal } = body;
-    const client = await pool.connect();
-    const signalResult = await client.query(
-      "SELECT * FROM signals WHERE id = $1",
-      [id]
-    );
-
-    if (signalResult.rowCount === 0) {
-      client.release();
-      return NextResponse.json({ error: "Signal not found" }, { status: 404 });
-    }
-
-    const signal = signalResult.rows[0];
 
     if (closeSignal === "yes") {
-      const success = signal.enter_price < signal.price_now;
-      const historyQuery = `
-        INSERT INTO signal_history (symbol, entrance_date, closing_date, in_price, out_price, success, reason_en, reason_ar)
-        VALUES ($1, $2, CURRENT_DATE, $3, $4, $5, $6, $7)
-      `;
-      await client.query(historyQuery, [
-        signal.symbol,
-        signal.date_opened,
-        signal.enter_price,
-        signal.price_now,
-        success,
-        signal.reason_en,
-        signal.reason_ar,
-      ]);
-    }
+      const closed = await closeSignalAndArchive(id);
+      if (!closed) {
+        return NextResponse.json({ error: "Signal not found" }, { status: 404 });
+      }
 
-    await client.query("DELETE FROM signals WHERE id = $1", [id]);
-    client.release();
-    revalidatePath("/api/signals");
-    revalidatePath("/api/signalHistory");
+      revalidatePath("/api/signals");
+      revalidatePath("/api/signalHistory");
 
-    if (closeSignal === "yes") {
+      const { signal, success } = closed;
       try {
-        const success = signal.enter_price < signal.price_now;
         await createNotificationForAll({
           type: "signal_close",
           title_en: `Idea Closed: ${signal.symbol}`,
@@ -255,7 +259,21 @@ export async function DELETE(req: NextRequest) {
       } catch (notifErr) {
         console.error("[Notification] Failed to send signal_close notification:", notifErr);
       }
+
+      return NextResponse.json({ success: true }, { status: 200 });
     }
+
+    const signalResult = await pool.query(
+      "SELECT id FROM signals WHERE id = $1",
+      [id]
+    );
+    if (signalResult.rowCount === 0) {
+      return NextResponse.json({ error: "Signal not found" }, { status: 404 });
+    }
+
+    await pool.query("DELETE FROM signals WHERE id = $1", [id]);
+    revalidatePath("/api/signals");
+    revalidatePath("/api/signalHistory");
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
@@ -279,35 +297,46 @@ export async function GET(request: NextRequest) {
   const isAdmin = authorizedEmails.includes(email || "");
 
   try {
-    const client = await pool.connect();
-    const query = `SELECT * FROM signals`;
-    const result = await client.query(query);
-    client.release();
+    const result = await pool.query(`SELECT * FROM signals`);
 
     if (isAdmin) {
       // Update prices and check targets for each signal
       const updatedSignals = await Promise.all(
         result.rows.map(async (signal) => {
           const currentPrice = await fetchCurrentPrice(signal.symbol);
-          // Update the price
-          const updateQuery = `
-                      UPDATE signals
-                      SET price_now = $1
-                      WHERE id = $2
-                      RETURNING *;
-                    `;
-          const updateResult = await client.query(updateQuery, [
-            currentPrice,
-            signal.id,
-          ]);
+          // Update the price first (same as before), so that if this signal
+          // is about to be archived, the archived record reflects the fresh
+          // price rather than the stale pre-refresh one.
+          const updateResult = await pool.query(
+            `UPDATE signals SET price_now = $1 WHERE id = $2 RETURNING *;`,
+            [currentPrice, signal.id]
+          );
+
           if (currentPrice >= signal.first_target) {
-            // Close the signal if first target is reached
-            await DELETE(
-              new NextRequest(`${process.env.NEXTAUTH_URL}`, {
-                method: "DELETE",
-                body: JSON.stringify({ id: signal.id, closeSignal: "yes" }),
-              })
-            );
+            // Target reached — archive to signal_history and remove from
+            // signals, same as an admin manually closing it via DELETE.
+            const closed = await closeSignalAndArchive(signal.id);
+            if (closed) {
+              const { signal: closedSignal, success } = closed;
+              try {
+                await createNotificationForAll({
+                  type: "signal_close",
+                  title_en: `Idea Closed: ${closedSignal.symbol}`,
+                  title_ar: `إغلاق فكرة: ${closedSignal.symbol}`,
+                  body_en: `${closedSignal.symbol} idea closed ${success ? "successfully" : "with a loss"}`,
+                  body_ar: `تم إغلاق فكرة ${closedSignal.symbol} ${success ? "بنجاح" : "بخسارة"}`,
+                  data: {
+                    symbol: closedSignal.symbol,
+                    success,
+                    in_price: closedSignal.enter_price,
+                    out_price: closedSignal.price_now,
+                    screen: "signals",
+                  },
+                });
+              } catch (notifErr) {
+                console.error("[Notification] Failed to send signal_close notification:", notifErr);
+              }
+            }
             return null; // Signal closed, don't include in the response
           } else {
             return updateResult.rows[0];

@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/db";
-import { getToken } from "next-auth/jwt";
+import { requireAdmin } from "@/modules/program/route-helpers";
 
 export async function GET(request: NextRequest) {
-  const token = await getToken({ req: request });
-  if (!token) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+  const auth = await requireAdmin(request);
+  if ("error" in auth) return auth.error;
 
   try {
-    const client = await pool.connect();
-    const result = await client.query(`
+    const result = await pool.query(`
       SELECT s.id, u.email, p.name as package_name, p.price, s.end_date
       FROM subscriptions s
       JOIN users u ON s.user_id = u.id
@@ -18,7 +15,6 @@ export async function GET(request: NextRequest) {
       WHERE s.status = 'active'
       ORDER BY s.end_date ASC
     `);
-    client.release();
 
     return NextResponse.json(result.rows);
   } catch (error) {

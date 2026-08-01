@@ -1,18 +1,10 @@
 import pool from "@/lib/db";
-import { getToken } from "next-auth/jwt";
+import { requireAdmin } from "@/modules/program/route-helpers";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const token = await getToken({ req });
-  if (!token) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // Check authorized emails
-  const authorizedEmails = process.env.AUTHORIZED_EMAILS?.split(",") || [];
-  if (!authorizedEmails.includes(token.email as string)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireAdmin(req);
+  if ("error" in auth) return auth.error;
 
   try {
     const updateItems = await req.json();
@@ -43,7 +35,7 @@ export async function POST(req: NextRequest) {
           item.subtitle?.ar || null,
           item.description.en,
           item.description.ar,
-          token.sub ? Number(token.sub) : null,
+          auth.userId,
           publishedDate,
         ]);
         results.push(result.rows[0]);

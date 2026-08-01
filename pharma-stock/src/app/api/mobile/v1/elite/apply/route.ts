@@ -32,6 +32,8 @@ export async function POST(req: NextRequest) {
     const description = body?.description ? String(body.description).trim() : null;
     // Mobile: referral_code entered manually by user, not from cookie
     const referralCode = body?.referral_code ? String(body.referral_code).trim() : null;
+    const agreementAccepted = body?.agreement_accepted === true;
+    const agreementVersion = body?.agreement_version ? String(body.agreement_version) : null;
 
     if (!phoneNumber) {
       return NextResponse.json(
@@ -39,10 +41,16 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+    if (!agreementAccepted || !agreementVersion) {
+      return NextResponse.json(
+        { error: { code: 'VALIDATION_ERROR', message: 'You must accept the Elite Program Agreement', field: 'agreement_accepted' } },
+        { status: 400 }
+      );
+    }
 
     const result = await service.submitEliteApplication(
       auth.userId,
-      { phoneNumber, investmentAmount, description },
+      { phoneNumber, investmentAmount, description, agreementAccepted, agreementVersion },
       referralCode || null,
     );
 

@@ -7,9 +7,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { email } = body;
-    const client = await pool.connect();
     // Check if the email exists in the pending_users table
-    const pendingUser = await client.query(
+    const pendingUser = await pool.query(
       `SELECT * FROM pendingusers WHERE email = $1`,
       [email]
     );
@@ -25,13 +24,12 @@ export async function POST(req: NextRequest) {
     const verificationCode = uuidv4().slice(0, 6).toUpperCase();
 
     // Update the verification code for the pending user
-    await client.query(
+    await pool.query(
       `
         UPDATE pendingusers SET verification_code = $1, created_at = NOW() WHERE email = $2
       `,
       [verificationCode, email]
     );
-    client.release();
 
     // Send the email with the new verification code
     await sendEmail(

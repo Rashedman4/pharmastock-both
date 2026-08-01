@@ -7,9 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   PhoneNumberField,
   buildPhoneNumber,
 } from "@/components/program/PhoneNumberField";
+import { ELITE_AGREEMENT, ELITE_AGREEMENT_VERSION } from "@/content/eliteAgreement";
 import {
   HeroPanel,
   LoadingBlock,
@@ -125,6 +132,7 @@ const translations = {
     failedSubmit: "Failed to submit application.",
     phoneCountryPlaceholder: "Select country code",
     phoneRequired: "Phone number is required.",
+    agreementCheckboxRequired: "You must read and agree to the Elite Program Agreement before applying.",
   },
 
   ar: {
@@ -213,6 +221,7 @@ const translations = {
     failedSubmit: "فشل في إرسال الطلب.",
     phoneCountryPlaceholder: "اختر رمز الدولة",
     phoneRequired: "رقم الهاتف مطلوب.",
+    agreementCheckboxRequired: "يجب عليك قراءة اتفاقية برنامج النخبة والموافقة عليها قبل التقديم.",
   },
 } as const;
 
@@ -235,8 +244,11 @@ export default function PublicElitePage({
     investmentAmount: "100000",
     description: "",
   });
+  const [agreementAccepted, setAgreementAccepted] = useState(false);
+  const [showAgreementModal, setShowAgreementModal] = useState(false);
   const benefitIcons = [Shield, DollarSign, Clock3, Users, TrendingUp, Eye];
   const t = translations[lang];
+  const agreement = ELITE_AGREEMENT[lang];
   const isArabic = lang === "ar";
 
   useEffect(() => {
@@ -278,6 +290,11 @@ export default function PublicElitePage({
       setSaving(false);
       return;
     }
+    if (!agreementAccepted) {
+      setError(t.agreementCheckboxRequired);
+      setSaving(false);
+      return;
+    }
 
     try {
       const res = await fetch("/api/elite/apply", {
@@ -290,6 +307,8 @@ export default function PublicElitePage({
           ),
           investmentAmount: Number(form.investmentAmount),
           description: form.description,
+          agreementAccepted: true,
+          agreementVersion: ELITE_AGREEMENT_VERSION,
         }),
       });
 
@@ -305,6 +324,7 @@ export default function PublicElitePage({
         investmentAmount: "100000",
         description: "",
       }));
+      setAgreementAccepted(false);
     } catch (err: any) {
       setError(err.message || t.failedSubmit);
     } finally {
@@ -469,6 +489,26 @@ export default function PublicElitePage({
               />
             </div>
 
+            <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-sm text-slate-600">{agreement.summary}</p>
+              <button
+                type="button"
+                onClick={() => setShowAgreementModal(true)}
+                className="text-sm font-semibold text-teal-700 underline underline-offset-2 hover:text-teal-800"
+              >
+                {agreement.readFullLinkLabel}
+              </button>
+              <label className="flex items-start gap-2 text-sm text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={agreementAccepted}
+                  onChange={(e) => setAgreementAccepted(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                />
+                <span>{agreement.checkboxLabel}</span>
+              </label>
+            </div>
+
             {message ? (
               <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
                 {message}
@@ -487,6 +527,45 @@ export default function PublicElitePage({
           </form>
         </SectionCard>
       ) : null}
+
+      <Dialog open={showAgreementModal} onOpenChange={setShowAgreementModal}>
+        <DialogContent
+          className={`max-h-[85vh] max-w-2xl overflow-y-auto ${isArabic ? "text-right" : ""}`}
+          dir={isArabic ? "rtl" : "ltr"}
+        >
+          <DialogHeader>
+            <DialogTitle>{agreement.title}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm font-medium text-slate-500">{agreement.subtitle}</p>
+          <p className="text-xs text-slate-400">{agreement.lastUpdated}</p>
+          <p className="text-sm leading-6 text-slate-700">{agreement.preamble}</p>
+          <div className="space-y-5">
+            {agreement.sections.map((section, index) => (
+              <div key={index} className="space-y-2">
+                <h3 className="text-base font-semibold text-slate-900">
+                  {section.heading}
+                </h3>
+                {section.paragraphs?.map((paragraph, pIndex) => (
+                  <p key={pIndex} className="text-sm leading-6 text-slate-700">
+                    {paragraph}
+                  </p>
+                ))}
+                {section.list ? (
+                  <ul
+                    className={`list-disc space-y-1 text-sm leading-6 text-slate-700 ${
+                      isArabic ? "pr-5" : "pl-5"
+                    }`}
+                  >
+                    {section.list.map((item, itemIndex) => (
+                      <li key={itemIndex}>{item}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

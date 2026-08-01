@@ -54,13 +54,13 @@ export async function POST(req: NextRequest) {
     await pool.query(
       `INSERT INTO mobile_web_handoff_tokens
          (user_id, token_hash, redirect_path, ip_address, expires_at)
-       VALUES ($1, $2, $3, $4, NOW() + INTERVAL '2 minutes')`,
+       VALUES ($1, $2, $3, $4, NOW() + INTERVAL '30 minutes')`,
       [auth.userId, tokenHash, redirectPath, getClientIP(req)]
     );
 
     const url = `${getWebAppOrigin(req)}/handoff?token=${rawToken}`;
 
-    return NextResponse.json({ url, expires_in: 120 });
+    return NextResponse.json({ url, expires_in: 1800 });
   } catch (err) {
     console.error('[elite/payment-handoff] POST error', err);
     return NextResponse.json(

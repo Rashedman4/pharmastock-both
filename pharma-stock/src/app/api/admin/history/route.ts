@@ -19,15 +19,13 @@ export async function GET(req: NextRequest) {
   try {
     const { page, limit, offset } = parsePaginationParams(req);
 
-    const client = await pool.connect();
     const [countResult, dataResult] = await Promise.all([
-      client.query("SELECT COUNT(*) FROM signal_history"),
-      client.query(
+      pool.query("SELECT COUNT(*) FROM signal_history"),
+      pool.query(
         `SELECT * FROM signal_history ORDER BY id DESC LIMIT $1 OFFSET $2`,
         [limit, offset]
       ),
     ]);
-    client.release();
 
     const total = parseInt(countResult.rows[0].count, 10);
 
@@ -71,7 +69,6 @@ export async function POST(req: NextRequest) {
       reason_ar,
     } = body;
 
-    const client = await pool.connect();
     const query = `
       INSERT INTO signal_history
         (symbol, entrance_date, closing_date, in_price, out_price, success, reason_en, reason_ar)
@@ -79,7 +76,7 @@ export async function POST(req: NextRequest) {
       RETURNING *;
     `;
 
-    const result = await client.query(query, [
+    const result = await pool.query(query, [
       symbol,
       entrance_date,
       closing_date,
@@ -89,7 +86,6 @@ export async function POST(req: NextRequest) {
       reason_en,
       reason_ar,
     ]);
-    client.release();
 
     revalidatePath("/api/admin/signalHistory");
 
@@ -127,7 +123,6 @@ export async function PUT(req: NextRequest) {
       reason_ar,
     } = await req.json();
 
-    const client = await pool.connect();
     const query = `
       UPDATE signal_history
       SET symbol = $1,
@@ -141,7 +136,7 @@ export async function PUT(req: NextRequest) {
       WHERE id = $9
       RETURNING *;
     `;
-    const result = await client.query(query, [
+    const result = await pool.query(query, [
       symbol,
       entrance_date,
       closing_date,
@@ -152,7 +147,6 @@ export async function PUT(req: NextRequest) {
       reason_ar,
       id,
     ]);
-    client.release();
 
     revalidatePath("/api/admin/signalHistory");
     return NextResponse.json(result.rows[0], { status: 200 });
@@ -179,10 +173,8 @@ export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json();
 
-    const client = await pool.connect();
     const query = `DELETE FROM signal_history WHERE id = $1`;
-    await client.query(query, [id]);
-    client.release();
+    await pool.query(query, [id]);
 
     revalidatePath("/api/admin/signalHistory");
 

@@ -10,19 +10,17 @@ export async function GET(request: Request) {
   const offset = (page - 1) * NEWS_PER_PAGE;
 
   try {
-    const client = await pool.connect();
-
     // Get total count with optional partial symbol filter
     let totalNews = 0;
     if (symbol) {
       const like = `%${symbol}%`;
-      const countFiltered = await client.query(
+      const countFiltered = await pool.query(
         "SELECT COUNT(*) FROM news WHERE symbol ILIKE $1",
         [like]
       );
       totalNews = parseInt(countFiltered.rows[0].count);
     } else {
-      const countResult = await client.query("SELECT COUNT(*) FROM news");
+      const countResult = await pool.query("SELECT COUNT(*) FROM news");
       totalNews = parseInt(countResult.rows[0].count);
     }
     const totalPages = Math.ceil(totalNews / NEWS_PER_PAGE);
@@ -38,7 +36,7 @@ export async function GET(request: Request) {
         ORDER BY published_date DESC
         LIMIT $2 OFFSET $3
       `;
-      result = await client.query(query, [like, NEWS_PER_PAGE, offset]);
+      result = await pool.query(query, [like, NEWS_PER_PAGE, offset]);
     } else {
       const query = `
         SELECT *
@@ -46,9 +44,8 @@ export async function GET(request: Request) {
         ORDER BY published_date DESC
         LIMIT $1 OFFSET $2
       `;
-      result = await client.query(query, [NEWS_PER_PAGE, offset]);
+      result = await pool.query(query, [NEWS_PER_PAGE, offset]);
     }
-    client.release();
 
     return NextResponse.json(
       {

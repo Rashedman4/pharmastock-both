@@ -7,6 +7,7 @@ const links = [
   { href: "/admin/elite-applications", label: "Investor Applications" },
   { href: "/admin/elite-portfolios", label: "Investor Management" },
   { href: "/admin/firm-profit-payments", label: "Firm Payments" },
+  { href: "/admin/capital-requests", label: "Capital Requests" },
   { href: "/admin/bank-settings", label: "Bank Settings" },
   { href: "/admin/referrals", label: "Attribution Links" },
   { href: "/admin/signals", label: "Signals" },

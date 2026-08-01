@@ -10,19 +10,17 @@ export async function GET(request: Request) {
   const offset = (page - 1) * UPDATES_PER_PAGE;
 
   try {
-    const client = await pool.connect();
-
     // Get total count with optional partial symbol filter, limited to the last 24 hours
     let totalUpdates = 0;
     if (symbol) {
       const like = `%${symbol}%`;
-      const countFiltered = await client.query(
+      const countFiltered = await pool.query(
         "SELECT COUNT(*) FROM daily_updates WHERE symbol ILIKE $1 AND published_date >= NOW() - INTERVAL '24 hours'",
         [like]
       );
       totalUpdates = parseInt(countFiltered.rows[0].count);
     } else {
-      const countResult = await client.query(
+      const countResult = await pool.query(
         "SELECT COUNT(*) FROM daily_updates WHERE published_date >= NOW() - INTERVAL '24 hours'"
       );
       totalUpdates = parseInt(countResult.rows[0].count);
@@ -40,7 +38,7 @@ export async function GET(request: Request) {
         ORDER BY published_date DESC
         LIMIT $2 OFFSET $3
       `;
-      result = await client.query(query, [like, UPDATES_PER_PAGE, offset]);
+      result = await pool.query(query, [like, UPDATES_PER_PAGE, offset]);
     } else {
       const query = `
         SELECT *
@@ -49,9 +47,8 @@ export async function GET(request: Request) {
         ORDER BY published_date DESC
         LIMIT $1 OFFSET $2
       `;
-      result = await client.query(query, [UPDATES_PER_PAGE, offset]);
+      result = await pool.query(query, [UPDATES_PER_PAGE, offset]);
     }
-    client.release();
 
     return NextResponse.json(
       {

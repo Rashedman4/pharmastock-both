@@ -359,6 +359,18 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
     if (paymentStatus === "success") {
       setInfo(t.stripeCompleted);
       loadData();
+
+      // Android's in-app browser has no equivalent to iOS's dismissBrowser() —
+      // the mobile app can't force-close this tab from its side. Once payment
+      // is confirmed, proactively hand control back to the app ourselves after
+      // a short delay so the user sees the confirmation, instead of leaving
+      // them to notice and tap "Return to App" manually.
+      if (document.cookie.includes("ps_mobile_handoff=1")) {
+        const timer = setTimeout(() => {
+          window.location.href = "pharmastock://elite/payments";
+        }, 1800);
+        return () => clearTimeout(timer);
+      }
     } else if (paymentStatus === "cancelled") {
       setInfo(t.stripeCancelled);
     }

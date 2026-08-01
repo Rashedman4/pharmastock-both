@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import {
   EmptyState,
@@ -26,6 +26,15 @@ interface DashboardData {
   executedPlans: number;
   openPositions: number;
   closedPositions: number;
+}
+
+async function fetchDashboard(url: string): Promise<DashboardData> {
+  const res = await fetch(url, { cache: "no-store" });
+  const json = await res.json().catch(() => null);
+  if (!res.ok) {
+    throw new Error(json?.message || "Failed to load dashboard.");
+  }
+  return json as DashboardData;
 }
 
 const translations = {
@@ -90,27 +99,20 @@ export default function EliteDashboardPage({
 }: {
   lang?: "en" | "ar";
 }) {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
   const t = translations[lang];
   const isArabic = lang === "ar";
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/elite/dashboard", { cache: "no-store" });
-        const json = await res.json();
-        if (!res.ok) throw new Error(json?.message || t.fallbackLoadError);
-        setData(json);
-      } catch (err: any) {
-        setError(err.message || t.fallbackLoadError);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [t.fallbackLoadError]);
+  const {
+    data,
+    error: swrError,
+    isLoading: loading,
+  } = useSWR<DashboardData>("/api/elite/dashboard", fetchDashboard, {
+    // Elite capital/positions can change from admin/investor actions elsewhere;
+    // 20s keeps this reasonably fresh without polling aggressively.
+    refreshInterval: 20000,
+  });
+
+  const error = swrError ? swrError.message || t.fallbackLoadError : null;
 
   if (loading) return <LoadingBlock label={t.loading} />;
 
