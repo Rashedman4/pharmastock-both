@@ -64,27 +64,6 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="home"
-        options={{
-          title: t('tabs.home'),
-          tabBarIcon: ({ focused }) => (
-            <TabIcon name={focused ? 'home' : 'home-outline'} focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="signals"
-        options={{
-          title: t('tabs.signals'),
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              name={focused ? 'trending-up' : 'trending-up-outline'}
-              focused={focused}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="news"
         options={{
           title: t('tabs.news'),
@@ -97,22 +76,12 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="breakthroughs"
         options={{
-          title: t('tabs.profile'),
+          title: t('breakthroughs.title'),
           tabBarIcon: ({ focused }) => (
-            <TabIcon
-              name={focused ? 'person-circle' : 'person-circle-outline'}
-              focused={focused}
-            />
+            <TabIcon name={focused ? 'flask' : 'flask-outline'} focused={focused} />
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="notifications"
-        options={{
-          title: t('tabs.notifications'),
-          tabBarIcon: ({ focused }) => <BellIcon focused={focused} />,
         }}
       />
       <Tabs.Screen
@@ -127,8 +96,25 @@ export default function TabsLayout() {
           ),
         }}
       />
-      {/* Elite section — inside tabs so the tab bar stays visible, hidden from the tab bar itself */}
-      <Tabs.Screen name="elite" options={{ href: null }} />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: t('tabs.notifications'),
+          tabBarIcon: ({ focused }) => <BellIcon focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: t('tabs.profile'),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              name={focused ? 'person-circle' : 'person-circle-outline'}
+              focused={focused}
+            />
+          ),
+        }}
+      />
       {/* Daily update details — reachable from the News tab's nested switcher, hidden from the tab bar */}
       <Tabs.Screen name="daily-updates" options={{ href: null }} />
     </Tabs>
