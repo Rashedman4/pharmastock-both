@@ -121,7 +121,7 @@ export default function RegisterScreen() {
       });
       await setTokens(data.access_token, data.refresh_token);
       await setUser(data.user as AuthUser);
-      router.replace('/(tabs)/news');
+      router.replace('/(tabs)/home');
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       if (code === 'ERR_REQUEST_CANCELED') return;
@@ -138,7 +138,7 @@ export default function RegisterScreen() {
       const data = await authService.googleLogin({ idToken });
       await setTokens(data.access_token, data.refresh_token);
       await setUser(data.user as AuthUser);
-      router.replace('/(tabs)/news');
+      router.replace('/(tabs)/home');
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       if (code === 'SIGN_IN_CANCELLED' || code === '12501') return;

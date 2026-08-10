@@ -52,7 +52,7 @@ export default function VerifyScreen() {
     onSuccess: async (data) => {
       await setTokens(data.access_token, data.refresh_token);
       await setUser(data.user as AuthUser);
-      router.replace('/(tabs)/news');
+      router.replace('/(tabs)/home');
     },
     onError: (err: unknown) => {
       const apiErr = (err as { response?: { data?: { error?: { message?: string } } } })

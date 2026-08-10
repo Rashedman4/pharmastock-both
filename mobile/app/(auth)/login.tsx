@@ -60,7 +60,7 @@ export default function LoginScreen() {
     onSuccess: async (data) => {
       await setTokens(data.access_token, data.refresh_token);
       await setUser(data.user as AuthUser);
-      router.replace('/(tabs)/news');
+      router.replace('/(tabs)/home');
     },
     onError: (err: unknown) => {
       const apiErr = (err as { response?: { data?: { error?: { message?: string } } } })
@@ -85,7 +85,7 @@ export default function LoginScreen() {
       });
       await setTokens(data.access_token, data.refresh_token);
       await setUser(data.user as AuthUser);
-      router.replace('/(tabs)/news');
+      router.replace('/(tabs)/home');
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       if (code === 'ERR_REQUEST_CANCELED') return;
@@ -102,7 +102,7 @@ export default function LoginScreen() {
       const data = await authService.googleLogin({ idToken });
       await setTokens(data.access_token, data.refresh_token);
       await setUser(data.user as AuthUser);
-      router.replace('/(tabs)/news');
+      router.replace('/(tabs)/home');
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       if (__DEV__) console.log('[Google] error code:', code, 'full:', JSON.stringify(err));
