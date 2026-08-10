@@ -91,6 +91,7 @@
     "unknownError": "حدث خطأ غير متوقع"
   },
   "tabs": {
+    "home": "الرئيسية",
     "news": "الأخبار",
     "profile": "الملف الشخصي",
     "notifications": "التنبيهات",
@@ -178,6 +179,17 @@
     "load_older": "تحميل رسائل أقدم",
     "connecting": "جارٍ الاتصال...",
     "tap_send": "اضغط إرسال للتسليم"
+  },
+  "home": {
+    "welcome": "مرحبًا بعودتك",
+    "welcome_name": "مرحبًا، {{name}}",
+    "tagline": "حيث يلتقي العلم بالاستثمار",
+    "hero_subtitle": "تابع الأبحاث والتجارب السريرية والابتكارات التي تصنع أسواق الغد.",
+    "latest_news": "الأخبار",
+    "breakthroughs": "الابتكارات",
+    "view_all": "عرض الكل",
+    "explore_news": "الأخبار",
+    "explore_science": "العلوم"
   },
   "profile": {
     "title": "الملف الشخصي",

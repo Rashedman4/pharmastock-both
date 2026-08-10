@@ -91,6 +91,7 @@
     "unknownError": "An unexpected error occurred"
   },
   "tabs": {
+    "home": "Home",
     "news": "News",
     "profile": "Profile",
     "notifications": "Alerts",
@@ -178,6 +179,17 @@
     "load_older": "Load older messages",
     "connecting": "Connecting...",
     "tap_send": "Tap send to deliver"
+  },
+  "home": {
+    "welcome": "Welcome back",
+    "welcome_name": "Welcome, {{name}}",
+    "tagline": "Where Science Meets Investing",
+    "hero_subtitle": "Follow the research, the trials, and the breakthroughs shaping tomorrow's markets.",
+    "latest_news": "Latest News",
+    "breakthroughs": "Breakthroughs",
+    "view_all": "View All",
+    "explore_news": "News",
+    "explore_science": "Science"
   },
   "profile": {
     "title": "Profile",
