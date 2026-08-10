@@ -92,15 +92,8 @@ export function handleNotificationTap(
   const screen = data?.screen as string | undefined;
 
   switch (screen) {
-    case 'signals':
-      if (data.signalId) router.push(`/signals/${data.signalId}`);
-      else router.push('/(tabs)/signals');
-      break;
     case 'chat':
       router.push('/chat');
-      break;
-    case 'elite':
-      router.push('/elite/status');
       break;
     default:
       router.push('/notifications');
