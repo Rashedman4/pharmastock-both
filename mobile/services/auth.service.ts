@@ -53,6 +53,7 @@ export const authService = {
 
   async appleLogin(payload: {
     identityToken: string;
+    authorizationCode?: string | null;
     fullName?: { firstName?: string | null; lastName?: string | null } | null;
     deviceId?: string;
     deviceName?: string;

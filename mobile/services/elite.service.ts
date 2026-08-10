@@ -23,6 +23,8 @@ export async function applyForElite(payload: {
   investment_amount: number;
   description?: string;
   referral_code?: string;
+  agreement_accepted: boolean;
+  agreement_version: string;
 }): Promise<{ id: number }> {
   const { data } = await apiClient.post(API_ROUTES.elite.apply, payload);
   return data;

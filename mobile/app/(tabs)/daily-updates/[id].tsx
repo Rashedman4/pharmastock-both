@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useDailyUpdateItem } from '@/hooks/useContent';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
@@ -18,6 +19,7 @@ import { formatDate } from '@/lib/format';
 export default function DailyUpdateDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { t } = useTranslation();
   const getField = useLocalizedField();
   const { isRTL } = useRTL();
   const { data: item, isLoading, isError } = useDailyUpdateItem(Number(id));
@@ -33,9 +35,9 @@ export default function DailyUpdateDetailScreen() {
   if (isError || !item) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorText}>Something went wrong</Text>
+        <Text style={styles.errorText}>{t('common.error')}</Text>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.backLink}>Go back</Text>
+          <Text style={styles.backLink}>{t('common.back')}</Text>
         </TouchableOpacity>
       </View>
     );

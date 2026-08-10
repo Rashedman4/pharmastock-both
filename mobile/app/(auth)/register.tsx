@@ -114,6 +114,7 @@ export default function RegisterScreen() {
       if (!credential.identityToken) throw new Error('No identity token');
       const data = await authService.appleLogin({
         identityToken: credential.identityToken,
+        authorizationCode: credential.authorizationCode,
         fullName: credential.fullName
           ? { firstName: credential.fullName.givenName, lastName: credential.fullName.familyName }
           : null,

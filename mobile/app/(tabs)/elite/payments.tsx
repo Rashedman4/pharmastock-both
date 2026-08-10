@@ -85,7 +85,7 @@ export default function PaymentsScreen() {
     }, [qc])
   );
 
-  const handlePayNow = async () => {
+  const openHandoffBrowser = async () => {
     try {
       const { url } = await requestPaymentHandoff();
       await WebBrowser.openBrowserAsync(url);
@@ -94,6 +94,17 @@ export default function PaymentsScreen() {
       const msg = err?.response?.data?.error?.message ?? t('common.error');
       Alert.alert(t('common.error_title'), msg);
     }
+  };
+
+  const handlePayNow = () => {
+    Alert.alert(
+      t('elite.pay_now_confirm_title'),
+      t('elite.pay_now_confirm_message'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('elite.pay_now_confirm_action'), onPress: openHandoffBrowser },
+      ]
+    );
   };
 
   if (isLoading) return <ActivityIndicator style={{ marginTop: 60 }} color={Colors.primary} />;

@@ -1,7 +1,8 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { apiClient } from '@/services/api';
+import i18n from '@/i18n';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,7 +24,20 @@ export async function registerForPushNotifications(): Promise<string | null> {
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
 
-  if (existingStatus !== 'granted') {
+  if (existingStatus === 'undetermined') {
+    // Show a one-time explainer before the native permission prompt, since
+    // that prompt only ever appears once per install on both platforms.
+    await new Promise<void>((resolve) => {
+      Alert.alert(
+        i18n.t('notifications.permission_title'),
+        i18n.t('notifications.permission_body'),
+        [{ text: i18n.t('common.ok'), onPress: () => resolve() }],
+        { cancelable: false }
+      );
+    });
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  } else if (existingStatus !== 'granted') {
     const { status } = await Notifications.requestPermissionsAsync();
     finalStatus = status;
   }
@@ -47,7 +61,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
       projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
     });
     token = tokenData.data;
-    console.log('[Push] Got Expo push token:', token);
+    if (__DEV__) console.log('[Push] Got Expo push token:', token);
   } catch (err) {
     console.error('[Push] getExpoPushTokenAsync failed. Common causes:', err);
     console.error('[Push] - Android emulator needs "Google Play" system image (not just "Google APIs")');

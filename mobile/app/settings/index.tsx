@@ -15,15 +15,21 @@ const PRIVACY_POLICY_URL: Record<string, string> = {
   ar: 'https://biopharmastock.com/ar/privacy-policy',
 };
 
+const TERMS_OF_SERVICE_URL: Record<string, string> = {
+  en: 'https://biopharmastock.com/en/terms-of-service',
+  ar: 'https://biopharmastock.com/ar/terms-of-service',
+};
+
 interface SettingsRowProps {
   icon: React.ComponentProps<typeof Ionicons>['name'];
   label: string;
+  subtitle?: string;
   value?: string;
   onPress: () => void;
   danger?: boolean;
 }
 
-function SettingsRow({ icon, label, value, onPress, danger }: SettingsRowProps) {
+function SettingsRow({ icon, label, subtitle, value, onPress, danger }: SettingsRowProps) {
   const { isRTL } = useRTL();
   const tint = danger ? Colors.danger : Colors.primary;
   return (
@@ -36,7 +42,10 @@ function SettingsRow({ icon, label, value, onPress, danger }: SettingsRowProps) 
         <View style={[styles.iconBox, danger && { backgroundColor: Colors.danger + '15' }]}>
           <Ionicons name={icon} size={20} color={tint} />
         </View>
-        <Text style={[styles.rowLabel, danger && { color: Colors.danger }]}>{label}</Text>
+        <View>
+          <Text style={[styles.rowLabel, danger && { color: Colors.danger }]}>{label}</Text>
+          {subtitle ? <Text style={styles.rowSubtitle}>{subtitle}</Text> : null}
+        </View>
       </View>
       <View style={styles.rowRight}>
         {value ? <Text style={styles.rowValue}>{value}</Text> : null}
@@ -82,6 +91,11 @@ export default function SettingsScreen() {
     Linking.openURL(url).catch(() => {});
   };
 
+  const openTermsOfService = () => {
+    const url = TERMS_OF_SERVICE_URL[i18n.language] ?? TERMS_OF_SERVICE_URL.en;
+    Linking.openURL(url).catch(() => {});
+  };
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.section}>
@@ -110,6 +124,12 @@ export default function SettingsScreen() {
             label={t('settings.privacy_policy')}
             onPress={openPrivacyPolicy}
           />
+          <View style={styles.divider} />
+          <SettingsRow
+            icon="document-outline"
+            label={t('settings.terms_of_service')}
+            onPress={openTermsOfService}
+          />
         </View>
       </View>
 
@@ -119,6 +139,7 @@ export default function SettingsScreen() {
           <SettingsRow
             icon="trash-outline"
             label={t('settings.delete_account')}
+            subtitle={t('settings.delete_account_subtitle')}
             onPress={confirmDeleteAccount}
             danger
           />
@@ -172,6 +193,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowLabel: { fontSize: 15, fontWeight: '500', color: Colors.text },
+  rowSubtitle: { fontSize: 12, color: Colors.textMuted, marginTop: 2 },
   rowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   rowValue: { fontSize: 14, color: Colors.textSecondary },
   divider: { height: 1, backgroundColor: Colors.borderLight, marginHorizontal: 16 },

@@ -6,10 +6,18 @@ import type { RefreshResponse } from '@/types/api';
 import i18n from '@/i18n';
 
 let isRefreshing = false;
-let refreshQueue: Array<(token: string) => void> = [];
+let refreshQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}> = [];
 
 function onRefreshed(token: string) {
-  refreshQueue.forEach((cb) => cb(token));
+  refreshQueue.forEach(({ resolve }) => resolve(token));
+  refreshQueue = [];
+}
+
+function onRefreshFailed(error: unknown) {
+  refreshQueue.forEach(({ reject }) => reject(error));
   refreshQueue = [];
 }
 
@@ -41,11 +49,14 @@ apiClient.interceptors.response.use(
     }
 
     if (isRefreshing) {
-      return new Promise((resolve) => {
-        refreshQueue.push((token) => {
-          original.headers.Authorization = `Bearer ${token}`;
-          original._retry = true;
-          resolve(apiClient(original));
+      return new Promise((resolve, reject) => {
+        refreshQueue.push({
+          resolve: (token: string) => {
+            original.headers.Authorization = `Bearer ${token}`;
+            original._retry = true;
+            resolve(apiClient(original));
+          },
+          reject,
         });
       });
     }
@@ -62,12 +73,16 @@ apiClient.interceptors.response.use(
         { refresh_token: storedRefresh }
       );
 
+      // The server rotates the refresh token on every use (old one is
+      // invalidated server-side), so the newly issued one must be persisted
+      // here or the next refresh attempt will be rejected.
       await SecureStore.setItemAsync(STORAGE_KEYS.ACCESS_TOKEN, data.access_token);
+      await SecureStore.setItemAsync(STORAGE_KEYS.REFRESH_TOKEN, data.refresh_token);
       onRefreshed(data.access_token);
       original.headers.Authorization = `Bearer ${data.access_token}`;
       return apiClient(original);
-    } catch {
-      refreshQueue = [];
+    } catch (refreshError) {
+      onRefreshFailed(refreshError);
       await SecureStore.deleteItemAsync(STORAGE_KEYS.ACCESS_TOKEN);
       await SecureStore.deleteItemAsync(STORAGE_KEYS.REFRESH_TOKEN);
       await SecureStore.deleteItemAsync(STORAGE_KEYS.USER);

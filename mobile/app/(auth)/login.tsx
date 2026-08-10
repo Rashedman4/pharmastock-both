@@ -78,6 +78,7 @@ export default function LoginScreen() {
       if (!credential.identityToken) throw new Error('No identity token');
       const data = await authService.appleLogin({
         identityToken: credential.identityToken,
+        authorizationCode: credential.authorizationCode,
         fullName: credential.fullName
           ? { firstName: credential.fullName.givenName, lastName: credential.fullName.familyName }
           : null,
@@ -104,7 +105,7 @@ export default function LoginScreen() {
       router.replace('/(tabs)/home');
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
-      console.log('[Google] error code:', code, 'full:', JSON.stringify(err));
+      if (__DEV__) console.log('[Google] error code:', code, 'full:', JSON.stringify(err));
       if (code === 'SIGN_IN_CANCELLED' || code === '12501') return; // user cancelled
       const apiErr = (err as { response?: { data?: { error?: { message?: string } } } })
         ?.response?.data?.error;

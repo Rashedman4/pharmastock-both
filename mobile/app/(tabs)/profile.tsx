@@ -30,7 +30,7 @@ function EliteSection() {
         <Text style={styles.sectionLabel}>{t('profile.elite_section')}</Text>
         <View style={[styles.eliteRow, { opacity: 0.6 }]}>
           <View style={styles.eliteRowLeft}>
-            <Text style={styles.eliteIcon}>⭐</Text>
+            <Ionicons name="star" size={22} color={Colors.primary} />
             <ActivityIndicator size="small" color={Colors.primary} />
           </View>
         </View>
@@ -61,7 +61,7 @@ function EliteSection() {
       <Text style={styles.sectionLabel}>{t('profile.elite_section')}</Text>
       <TouchableOpacity style={styles.eliteRow} onPress={navigateElite} activeOpacity={0.7}>
         <View style={styles.eliteRowLeft}>
-          <Text style={styles.eliteIcon}>⭐</Text>
+          <Ionicons name="star" size={22} color={Colors.primary} />
           <View>
             <Text style={styles.eliteRowTitle}>{label}</Text>
             {isElite && (
@@ -152,7 +152,7 @@ export default function ProfileScreen() {
           activeOpacity={0.7}
         >
           <View style={styles.eliteRowLeft}>
-            <Text style={styles.eliteIcon}>⚙️</Text>
+            <Ionicons name="settings-outline" size={22} color={Colors.primary} />
             <View>
               <Text style={styles.eliteRowTitle}>{t('profile.settings')}</Text>
               <Text style={styles.eliteRowSub}>{t('profile.settings_subtitle')}</Text>
@@ -224,7 +224,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderLight,
   },
   eliteRowLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  eliteIcon: { fontSize: 24 },
   eliteRowTitle: { fontSize: 15, fontWeight: '700', color: Colors.primary },
   eliteRowSub: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
   logoutBtn: { width: '100%', marginTop: 'auto' },
