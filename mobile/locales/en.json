@@ -89,7 +89,6 @@
     "unknownError": "An unexpected error occurred"
   },
   "tabs": {
-    "home": "Home",
     "news": "News",
     "profile": "Profile",
     "notifications": "Alerts",
@@ -177,15 +176,6 @@
     "load_older": "Load older messages",
     "connecting": "Connecting...",
     "tap_send": "Tap send to deliver"
-  },
-  "home": {
-    "welcome": "Welcome back",
-    "welcome_name": "Welcome, {{name}}",
-    "tagline": "Where Science Meets Investing.",
-    "open_signals": "Open Ideas",
-    "latest_news": "Latest News",
-    "breakthroughs": "Breakthroughs",
-    "view_all": "View All"
   },
   "profile": {
     "title": "Profile",

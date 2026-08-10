@@ -89,7 +89,6 @@
     "unknownError": "حدث خطأ غير متوقع"
   },
   "tabs": {
-    "home": "الرئيسية",
     "news": "الأخبار",
     "profile": "الملف الشخصي",
     "notifications": "التنبيهات",
@@ -177,15 +176,6 @@
     "load_older": "تحميل رسائل أقدم",
     "connecting": "جارٍ الاتصال...",
     "tap_send": "اضغط إرسال للتسليم"
-  },
-  "home": {
-    "welcome": "مرحبًا بعودتك",
-    "welcome_name": "مرحبًا، {{name}}",
-    "tagline": "حيث يلتقي العلم بالاستثمار",
-    "open_signals": "الأفكار المفتوحة",
-    "latest_news": "الأخبار",
-    "breakthroughs": "الأبتكارات",
-    "view_all": "عرض الكل"
   },
   "profile": {
     "title": "الملف الشخصي",
