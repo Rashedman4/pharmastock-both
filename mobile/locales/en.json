@@ -28,7 +28,9 @@
     "image_upload_error": "Could not upload image. Please try again.",
     "voice_upload_error": "Could not upload voice message. Please try again.",
     "reload": "Reload",
-    "partner": "Partner"
+    "partner": "Partner",
+    "visit_website": "Visit our website",
+    "visit_website_subtitle": "Open biopharmastock.com"
   },
   "auth": {
     "welcomeBack": "Welcome Back",

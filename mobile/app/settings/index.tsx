@@ -9,6 +9,7 @@ import { useRTL } from '@/lib/rtl';
 import Constants from 'expo-constants';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
+import { openWebApp } from '@/components/ui/WebAppLink';
 
 const PRIVACY_POLICY_URL: Record<string, string> = {
   en: 'https://biopharmastock.com/en/privacy-policy',
@@ -123,6 +124,12 @@ export default function SettingsScreen() {
             icon="document-text-outline"
             label={t('settings.privacy_policy')}
             onPress={openPrivacyPolicy}
+          />
+          <View style={styles.divider} />
+          <SettingsRow
+            icon="globe-outline"
+            label={t('common.visit_website')}
+            onPress={openWebApp}
           />
           <View style={styles.divider} />
           <SettingsRow

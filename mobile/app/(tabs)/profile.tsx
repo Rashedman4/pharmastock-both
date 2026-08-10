@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/ui/Button';
+import { WebAppLink } from '@/components/ui/WebAppLink';
 import { Colors } from '@/constants/colors';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
@@ -70,6 +71,15 @@ export default function ProfileScreen() {
           </View>
           <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={Colors.textMuted} />
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.section}>
+        <WebAppLink
+          style={styles.menuRow}
+          rowLeftStyle={styles.menuRowLeft}
+          titleStyle={styles.menuRowTitle}
+          subtitleStyle={styles.menuRowSub}
+        />
       </View>
 
       <View style={styles.section}>

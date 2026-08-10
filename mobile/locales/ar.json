@@ -28,7 +28,9 @@
     "image_upload_error": "تعذر رفع الصورة. يرجى المحاولة مجددًا.",
     "voice_upload_error": "تعذر رفع الرسالة الصوتية. يرجى المحاولة مجددًا.",
     "reload": "تحديث",
-    "partner": "شريك"
+    "partner": "شريك",
+    "visit_website": "زيارة موقعنا",
+    "visit_website_subtitle": "افتح biopharmastock.com"
   },
   "auth": {
     "welcomeBack": "مرحبًا بعودتك",
