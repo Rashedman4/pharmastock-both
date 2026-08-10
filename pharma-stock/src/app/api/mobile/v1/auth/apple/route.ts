@@ -9,6 +9,8 @@ import {
   getRefreshTokenTTL,
 } from '@/lib/mobile/jwt';
 import { getClientIP } from '@/lib/mobile/rate-limit';
+import { exchangeAppleAuthorizationCode } from '@/lib/mobile/appleTokens';
+import { encryptAppleToken } from '@/lib/mobile/appleTokenCrypto';
 
 const APPLE_KEYS_URL = 'https://appleid.apple.com/auth/keys';
 const APPLE_ISSUER = 'https://appleid.apple.com';
@@ -90,6 +92,7 @@ async function verifyAppleIdentityToken(identityToken: string): Promise<AppleTok
 export async function POST(req: NextRequest) {
   let body: {
     identityToken?: string;
+    authorizationCode?: string;
     fullName?: { firstName?: string | null; lastName?: string | null } | null;
     deviceId?: string;
     deviceName?: string;
@@ -103,7 +106,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { identityToken, fullName, deviceId, deviceName } = body;
+  const { identityToken, authorizationCode, fullName, deviceId, deviceName } = body;
 
   if (!identityToken || typeof identityToken !== 'string') {
     return NextResponse.json(
@@ -171,6 +174,19 @@ export async function POST(req: NextRequest) {
           [firstName || null, lastName || null, email, appleId, email]
         )
       ).rows[0];
+    }
+  }
+
+  // Best-effort: exchange the one-time authorizationCode for a refresh_token
+  // and store it (encrypted) so we can revoke the Apple association later if
+  // this user deletes their account. Never blocks login on failure.
+  if (authorizationCode) {
+    const appleRefreshToken = await exchangeAppleAuthorizationCode(authorizationCode);
+    if (appleRefreshToken) {
+      await pool.query('UPDATE users SET apple_refresh_token_enc = $1 WHERE id = $2', [
+        encryptAppleToken(appleRefreshToken),
+        user.id,
+      ]);
     }
   }
 

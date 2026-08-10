@@ -4,33 +4,12 @@ import bcrypt from "bcryptjs";
 import GoogleProvider from "next-auth/providers/google";
 import AppleProvider from "next-auth/providers/apple";
 import pool from "@/lib/db";
-import crypto from "crypto";
 import { createRateLimiter, getClientIPFromHeaders } from "@/lib/rate-limit";
 import { hashToken } from "@/lib/mobile/jwt";
+import { generateAppleClientSecret } from "@/lib/mobile/appleClientSecret";
 
 const loginLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 10 });
 const handoffLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 20 });
-
-function generateAppleClientSecret(): string {
-  const privateKey = (process.env.APPLE_PRIVATE_KEY ?? "").replace(/\\n/g, "\n");
-  const keyId = process.env.APPLE_KEY_ID ?? "";
-  const teamId = process.env.APPLE_TEAM_ID ?? "";
-  const serviceId = process.env.APPLE_WEB_SERVICE_ID ?? "";
-
-  const now = Math.floor(Date.now() / 1000);
-  const header = Buffer.from(JSON.stringify({ alg: "ES256", kid: keyId })).toString("base64url");
-  const payload = Buffer.from(
-    JSON.stringify({ iss: teamId, iat: now, exp: now + 15777000, aud: "https://appleid.apple.com", sub: serviceId })
-  ).toString("base64url");
-
-  const signingInput = `${header}.${payload}`;
-  const sign = crypto.createSign("SHA256");
-  sign.update(signingInput);
-  const signature = sign
-    .sign({ key: privateKey, dsaEncoding: "ieee-p1363" })
-    .toString("base64url");
-  return `${signingInput}.${signature}`;
-}
 
 const appleWebEnabled = !!(
   process.env.APPLE_WEB_SERVICE_ID &&
@@ -96,7 +75,7 @@ export const authOptions: NextAuthOptions = {
       ? [
           AppleProvider({
             clientId: process.env.APPLE_WEB_SERVICE_ID as string,
-            clientSecret: generateAppleClientSecret(),
+            clientSecret: generateAppleClientSecret(process.env.APPLE_WEB_SERVICE_ID as string),
           }),
         ]
       : []),

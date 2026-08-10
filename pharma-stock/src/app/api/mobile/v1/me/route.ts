@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { z } from 'zod';
 import { getMobileAuthPayload } from '@/lib/mobile/auth-middleware';
+import { revokeAppleRefreshToken } from '@/lib/mobile/appleTokens';
+import { decryptAppleToken } from '@/lib/mobile/appleTokenCrypto';
 
 const FULL_USER_QUERY = `
   SELECT
@@ -191,7 +193,7 @@ export async function DELETE(req: NextRequest) {
     await client.query('BEGIN');
 
     const { rows } = await client.query(
-      `SELECT email, firstname, lastname, phonenumber, provider, created_at
+      `SELECT email, firstname, lastname, phonenumber, provider, created_at, apple_refresh_token_enc
        FROM users WHERE id = $1 FOR UPDATE`,
       [auth.userId]
     );
@@ -203,6 +205,16 @@ export async function DELETE(req: NextRequest) {
       );
     }
     const user = rows[0];
+
+    // Disconnect Sign in with Apple (App Review guideline 5.1.1(v)) before
+    // anonymizing. Best-effort — deletion must proceed either way.
+    if (user.provider === 'apple' && user.apple_refresh_token_enc) {
+      try {
+        await revokeAppleRefreshToken(decryptAppleToken(user.apple_refresh_token_enc));
+      } catch (error) {
+        console.error('Failed to revoke Apple token during account deletion:', error);
+      }
+    }
 
     await client.query(
       `INSERT INTO deleted_accounts
@@ -221,7 +233,8 @@ export async function DELETE(req: NextRequest) {
     await client.query(
       `UPDATE users
        SET email = $1, password = $2, firstname = NULL, lastname = NULL,
-           phonenumber = NULL, provider = NULL, provider_id = NULL, provider_email = NULL
+           phonenumber = NULL, provider = NULL, provider_id = NULL, provider_email = NULL,
+           apple_refresh_token_enc = NULL
        WHERE id = $3`,
       [anonymizedEmail, unusablePasswordHash, auth.userId]
     );
