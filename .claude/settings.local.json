@@ -38,7 +38,15 @@
       "Bash(echo \"TSC_EXIT=$?\")",
       "Bash(node -e \"console.log\\(require\\('./locales/ar.json'\\).common.save\\)\")",
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('locales/ar.json','utf8'\\)\\); console.log\\('OK'\\)\")",
-      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('locales/ar.json','utf8'\\)\\); console.log\\('JSON OK'\\)\")"
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('locales/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('locales/ar.json','utf8'\\)\\); console.log\\('JSON OK'\\)\")",
+      "Read(//c/Users/LENOVO/**)",
+      "Bash(git check-ignore *)",
+      "Bash(echo \"exit:$?\")",
+      "Bash(xargs -I{} echo {})",
+      "Bash(git add *)",
+      "Bash(git commit -m 'checkpoint: web app Apple Sign-In refresh token support *)",
+      "Bash(git commit -m 'checkpoint: mobile WIP prior to store-trim \\(elite agreement/payments, chat video, auth rate-limit UI, notifications, translations\\) *)",
+      "Bash(git commit -m 'checkpoint: audit reports and local settings *)"
     ]
   }
 }
