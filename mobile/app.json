@@ -12,9 +12,8 @@
       "bundleIdentifier": "com.biopharmastock.app",
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
-        "NSCameraUsageDescription": "Used to capture trade evidence photos and share images in chat.",
-        "NSPhotoLibraryUsageDescription": "Used to upload trade evidence and share images in chat.",
-        "NSMicrophoneUsageDescription": "Used for voice messages in community chat.",
+        "NSPhotoLibraryUsageDescription": "Used to share images in community chat and set your profile photo.",
+        "NSMicrophoneUsageDescription": "Used to record voice messages in community chat.",
         "UIBackgroundModes": [
           "remote-notification",
           "fetch"
@@ -54,7 +53,6 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "permissions": [
-        "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.VIBRATE",
         "android.permission.RECORD_AUDIO",
@@ -84,7 +82,12 @@
           "mode": "production"
         }
       ],
-      "expo-image-picker",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Used to upload profile photos and share images in chat."
+        }
+      ],
       "expo-font",
       [
         "expo-splash-screen",
