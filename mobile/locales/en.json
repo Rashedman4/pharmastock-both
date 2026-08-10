@@ -106,7 +106,14 @@
     "just_now": "Just now",
     "minutes_ago": "{{count}}m",
     "hours_ago": "{{count}}h",
-    "days_ago": "{{count}}d"
+    "days_ago": "{{count}}d",
+    "types": {
+      "signal_open": "New Idea",
+      "signal_close": "Idea Closed",
+      "message": "New Message",
+      "elite_update": "Elite Update",
+      "payout_update": "Payout Update"
+    }
   },
   "news": {
     "title": "News",
