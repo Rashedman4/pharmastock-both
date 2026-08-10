@@ -1,27 +1,3 @@
-export interface Signal {
-  id: number;
-  symbol: string;
-  type: string;
-  enter_price: string;
-  price_now: string | null;
-  first_target: string | null;
-  second_target: string | null;
-  date_opened: string;
-  reason_en: string | null;
-  reason_ar: string | null;
-}
-
-export interface SignalHistoryItem {
-  id: number;
-  symbol: string;
-  entrance_date: string | null;
-  closing_date: string | null;
-  in_price: string | null;
-  out_price: string | null;
-  success: boolean;
-  created_at: string;
-}
-
 export interface NewsItem {
   id: number;
   title_en: string;

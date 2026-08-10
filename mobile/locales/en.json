@@ -90,7 +90,6 @@
   },
   "tabs": {
     "home": "Home",
-    "signals": "Ideas",
     "news": "News",
     "profile": "Profile",
     "notifications": "Alerts",
@@ -114,24 +113,6 @@
       "elite_update": "Elite Update",
       "payout_update": "Payout Update"
     }
-  },
-  "signals": {
-    "title": "Ideas",
-    "history": "Idea History",
-    "open_signals": "Open Ideas",
-    "entry": "Entry",
-    "target_1": "Target 1",
-    "target_2": "Target 2",
-    "price_now": "Current",
-    "opened": "Opened",
-    "closed": "Closed",
-    "success": "Success",
-    "reason": "Analysis",
-    "empty": "No open ideas at the moment",
-    "history_empty": "No idea history yet",
-    "buy": "BUY",
-    "sell": "SELL",
-    "view_history": "View History"
   },
   "news": {
     "title": "News",

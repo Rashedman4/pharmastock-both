@@ -90,7 +90,6 @@
   },
   "tabs": {
     "home": "الرئيسية",
-    "signals": "الأفكار",
     "news": "الأخبار",
     "profile": "الملف الشخصي",
     "notifications": "التنبيهات",
@@ -114,24 +113,6 @@
       "elite_update": "تحديث النخبة",
       "payout_update": "تحديث المدفوعات"
     }
-  },
-  "signals": {
-    "title": "الأفكار",
-    "history": "السجل",
-    "open_signals": "الأفكار",
-    "entry": "سعر الدخول",
-    "target_1": "الهدف 1",
-    "target_2": "الهدف 2",
-    "price_now": "السعر الحالي",
-    "opened": "فُتح",
-    "closed": "مغلق",
-    "success": "ناجح",
-    "reason": "التحليل",
-    "empty": "لا توجد أفكار مفتوحة حاليًا",
-    "history_empty": "لا يوجد سجل أفكار بعد",
-    "buy": "شراء",
-    "sell": "بيع",
-    "view_history": "عرض السجل"
   },
   "news": {
     "title": "الأخبار",

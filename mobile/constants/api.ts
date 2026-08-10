@@ -15,11 +15,6 @@ export const API_ROUTES = {
   },
   me: '/api/mobile/v1/me',
   meLanguage: '/api/mobile/v1/me/language',
-  signals: {
-    list: '/api/mobile/v1/signals',
-    detail: (id: number) => `/api/mobile/v1/signals/${id}`,
-    history: '/api/mobile/v1/signals/history',
-  },
   news: {
     list: '/api/mobile/v1/news',
     detail: (id: number) => `/api/mobile/v1/news/${id}`,

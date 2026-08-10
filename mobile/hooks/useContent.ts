@@ -10,7 +10,6 @@ import {
 import {
   fetchBreakthroughs,
   fetchBreakthrough,
-  fetchMarketPrice,
   type BreakthroughFilters,
 } from '@/services/breakthroughs.service';
 
@@ -72,15 +71,5 @@ export function useBreakthrough(id: number) {
     queryFn: () => fetchBreakthrough(id),
     enabled: !!id,
     staleTime: 120_000,
-  });
-}
-
-export function useMarketPrice(symbol: string | undefined) {
-  return useQuery({
-    queryKey: ['market', symbol],
-    queryFn: () => fetchMarketPrice(symbol!),
-    enabled: !!symbol,
-    staleTime: 30_000,
-    retry: false,
   });
 }
