@@ -106,14 +106,7 @@
     "just_now": "الآن",
     "minutes_ago": "{{count}} د",
     "hours_ago": "{{count}} س",
-    "days_ago": "{{count}} ي",
-    "types": {
-      "signal_open": "فكرة جديدة",
-      "signal_close": "إغلاق فكرة",
-      "message": "رسالة جديدة",
-      "elite_update": "تحديث النخبة",
-      "payout_update": "تحديث المدفوعات"
-    }
+    "days_ago": "{{count}} ي"
   },
   "news": {
     "title": "الأخبار",
