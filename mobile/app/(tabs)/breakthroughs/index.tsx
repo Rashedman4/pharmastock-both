@@ -14,8 +14,8 @@ import { useTranslation } from 'react-i18next';
 import { useBreakthroughs } from '@/hooks/useContent';
 import { BreakthroughCard } from '@/components/breakthroughs/BreakthroughCard';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { Colors } from '@/constants/colors';
-import { useRTL } from '@/lib/rtl';
 import type { Breakthrough } from '@/types/content';
 
 type CategoryFilter = 'all' | 'drug' | 'therapy' | 'device';
@@ -26,7 +26,6 @@ export default function BreakthroughsScreen() {
   const router = useRouter();
   const [category, setCategory] = useState<CategoryFilter>('all');
   const [stage, setStage] = useState<StageFilter>('all');
-  const { isRTL } = useRTL();
 
   const filters = {
     ...(category !== 'all' ? { category } : {}),
@@ -56,11 +55,8 @@ export default function BreakthroughsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('breakthroughs.title')}</Text>
-        <View style={{ width: 40 }} />
+        <LanguageToggle style={styles.languageToggle} />
       </View>
 
       <View style={styles.filters}>
@@ -115,7 +111,7 @@ export default function BreakthroughsScreen() {
           renderItem={({ item }: { item: Breakthrough }) => (
             <BreakthroughCard
               item={item}
-              onPress={() => router.push(`/breakthroughs/${item.id}` as never)}
+              onPress={() => router.push(`/(tabs)/breakthroughs/${item.id}` as never)}
             />
           )}
           contentContainerStyle={allItems.length === 0 ? styles.emptyContent : styles.listContent}
@@ -148,9 +144,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderLight,
   },
-  backBtn: { width: 40, justifyContent: 'center' },
-  backArrow: { fontSize: 28, color: Colors.primary },
-  headerTitle: { fontSize: 20, fontWeight: '800', color: Colors.primary },
+  headerTitle: { fontSize: 20, fontWeight: '800', color: Colors.primary, flex: 1, textAlign: 'center' },
+  languageToggle: { marginBottom: 0 },
   filters: {
     backgroundColor: Colors.white,
     paddingHorizontal: 16,
