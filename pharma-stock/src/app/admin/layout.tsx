@@ -15,6 +15,7 @@ const links = [
   { href: "/admin/daily-updates", label: "Daily Updates" },
   { href: "/admin/history", label: "History" },
   { href: "/admin/messages", label: "Messages" },
+  { href: "/admin/breakthroughs", label: "Breakthroughs" },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -22,10 +23,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-slate-100">
       <nav className="border-b border-slate-800 bg-slate-950 text-white">
         <div className="container mx-auto flex flex-col gap-4 px-4 py-5 lg:flex-row lg:items-center lg:justify-between">
-          <Link href="/admin" className="text-2xl font-bold tracking-tight">BioPharmaStock Admin</Link>
+          <Link href="/admin" className="text-2xl font-bold tracking-tight">
+            BioPharmaStock Admin
+          </Link>
           <div className="flex flex-wrap gap-3 text-sm text-slate-300">
             {links.map((link) => (
-              <Link key={link.href} href={link.href} className="rounded-full border border-white/10 px-4 py-2 hover:bg-white/10">
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded-full border border-white/10 px-4 py-2 hover:bg-white/10"
+              >
                 {link.label}
               </Link>
             ))}

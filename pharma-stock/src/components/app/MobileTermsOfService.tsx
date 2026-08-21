@@ -16,31 +16,32 @@ type Translations = {
 
 const translations: Record<"en" | "ar", Translations> = {
   en: {
-    title: "Terms of Service — BioPharmaStock Mobile App",
-    lastUpdated: "Last updated: July 26, 2026",
+    title: "Terms of Service — Bio Pharma Stock Mobile App",
+    lastUpdated: "Last updated: August 16, 2026",
     sections: [
       {
         title: "Acceptance of Terms",
         paragraphs: [
-          "By creating an account or using the BioPharmaStock mobile app, you agree to these Terms of Service. If you do not agree, please do not use the app.",
+          "By creating an account or using the Bio Pharma Stock mobile app, you agree to these Terms of Service. If you do not agree, please do not use the app.",
         ],
       },
       {
         title: "Eligibility",
         paragraphs: [
-          "You must be at least 18 years old to create an account and use BioPharmaStock. By using the app, you confirm that you meet this requirement.",
+          "You must be at least 18 years old to create an account and use Bio Pharma Stock. By using the app, you confirm that you meet this requirement.",
         ],
       },
       {
         title: "Description of Service",
         paragraphs: [
-          "BioPharmaStock provides biopharmaceutical research, trading ideas, news, breakthroughs coverage, and an Elite managed-portfolio program to registered users. Content is provided for informational and educational purposes only.",
+          "The Bio Pharma Stock mobile app provides biopharmaceutical news, breakthrough coverage (FDA designations, clinical trial milestones, and market catalysts), and community/support chat to registered users, for informational and educational purposes only.",
+          "Our full research platform — including in-depth research ideas and the Elite managed-portfolio program — is available on our website, biopharmastock.com, which you can reach from within the app via the \"Visit our website\" link. Those services are not part of the mobile app itself and are governed by the terms published on the website.",
         ],
       },
       {
         title: "Not Investment Advice",
         paragraphs: [
-          "Nothing in the app — including ideas, research, daily updates, or Elite program communications — constitutes personalized financial or investment advice. Past performance does not guarantee future results. All investment decisions, and any resulting gains or losses, are your sole responsibility.",
+          "Nothing in the app — including news, breakthroughs coverage, or support chat — constitutes personalized financial or investment advice. Past performance does not guarantee future results. All investment decisions, and any resulting gains or losses, are your sole responsibility.",
         ],
       },
       {
@@ -50,15 +51,15 @@ const translations: Record<"en" | "ar", Translations> = {
         ],
       },
       {
-        title: "Elite Program & Payments",
+        title: "Elite Program & Payments (Website Only)",
         paragraphs: [
-          "The Elite program is a managed-portfolio investment service subject to a separate application and approval process. Firm profit-sharing payments owed under the Elite program are real-world financial settlements, not digital purchases. The mobile app does not process any payment in-app; you are securely redirected to our website to complete any such payment.",
+          "The Elite Program is a managed-portfolio investment service offered on our website, subject to a separate application and approval process. It is not available within the mobile app. Firm profit-sharing payments owed under the Elite Program are real-world financial settlements, not digital purchases, and are completed entirely on our website. The mobile app does not display Elite portfolio data or process any Elite-related payment.",
         ],
       },
       {
         title: "Subscriptions",
         paragraphs: [
-          "Any paid subscription plans are managed through our website and billed independently of the mobile app. The mobile app itself does not currently offer in-app purchases or subscription checkout.",
+          "Any paid subscription plans, including access to our full research platform, are managed through our website and billed independently of the mobile app. The mobile app itself does not offer in-app purchases or subscription checkout.",
         ],
       },
       {
@@ -72,7 +73,7 @@ const translations: Record<"en" | "ar", Translations> = {
       {
         title: "Intellectual Property",
         paragraphs: [
-          "All content, branding, and materials provided through the app are owned by or licensed to BioPharmaStock and may not be copied, redistributed, or used commercially without our written permission.",
+          "All content, branding, and materials provided through the app are owned by or licensed to Bio Pharma Stock and may not be copied, redistributed, or used commercially without our written permission.",
         ],
       },
       {
@@ -84,7 +85,7 @@ const translations: Record<"en" | "ar", Translations> = {
       {
         title: "Disclaimer of Warranties & Limitation of Liability",
         paragraphs: [
-          "The app and its content are provided \"as is\" without warranties of any kind. To the fullest extent permitted by law, BioPharmaStock is not liable for any investment losses, trading decisions, or damages arising from your use of the app.",
+          "The app and its content are provided \"as is\" without warranties of any kind. To the fullest extent permitted by law, Bio Pharma Stock is not liable for any investment losses, trading decisions, or damages arising from your use of the app.",
         ],
       },
       {
@@ -102,31 +103,32 @@ const translations: Record<"en" | "ar", Translations> = {
     ],
   },
   ar: {
-    title: "شروط الخدمة — تطبيق BioPharmaStock",
-    lastUpdated: "آخر تحديث: 26 يوليو 2026",
+    title: "شروط الخدمة — تطبيق Bio Pharma Stock",
+    lastUpdated: "آخر تحديث: 16 أغسطس 2026",
     sections: [
       {
         title: "قبول الشروط",
         paragraphs: [
-          "بإنشائك حسابًا أو استخدامك لتطبيق BioPharmaStock، فإنك توافق على شروط الخدمة هذه. إذا كنت لا توافق، يرجى عدم استخدام التطبيق.",
+          "بإنشائك حسابًا أو استخدامك لتطبيق Bio Pharma Stock، فإنك توافق على شروط الخدمة هذه. إذا كنت لا توافق، يرجى عدم استخدام التطبيق.",
         ],
       },
       {
         title: "الأهلية",
         paragraphs: [
-          "يجب أن يكون عمرك 18 عامًا على الأقل لإنشاء حساب واستخدام BioPharmaStock. باستخدامك للتطبيق، فإنك تؤكد استيفاءك لهذا الشرط.",
+          "يجب أن يكون عمرك 18 عامًا على الأقل لإنشاء حساب واستخدام Bio Pharma Stock. باستخدامك للتطبيق، فإنك تؤكد استيفاءك لهذا الشرط.",
         ],
       },
       {
         title: "وصف الخدمة",
         paragraphs: [
-          "يقدّم BioPharmaStock أبحاثًا في مجال الأدوية الحيوية، وأفكارًا استثمارية، وأخبارًا، وتغطية للابتكارات، وبرنامج محفظة مُدارة (النخبة) للمستخدمين المسجّلين. يُقدَّم المحتوى لأغراض إعلامية وتعليمية فقط.",
+          "يقدّم تطبيق Bio Pharma Stock للجوال أخبارًا في مجال الأدوية الحيوية، وتغطية للابتكارات (كالتصنيفات التنظيمية لإدارة الغذاء والدواء الأمريكية، ومحطات التجارب السريرية، ومحفزات السوق)، ومحادثة مجتمع ودعم للمستخدمين المسجّلين، وذلك لأغراض إعلامية وتعليمية فقط.",
+          "تتوفر منصتنا البحثية الكاملة — بما في ذلك الأفكار البحثية المتعمّقة وبرنامج النخبة للمحفظة المُدارة — على موقعنا الإلكتروني biopharmastock.com، ويمكن الوصول إليه من داخل التطبيق عبر رابط \"زيارة موقعنا\". هذه الخدمات ليست جزءًا من تطبيق الجوال نفسه وتخضع للشروط المنشورة على الموقع الإلكتروني.",
         ],
       },
       {
         title: "ليست استشارة استثمارية",
         paragraphs: [
-          "لا يُشكّل أي محتوى داخل التطبيق — بما في ذلك الأفكار والأبحاث والتحديثات اليومية أو مراسلات برنامج النخبة — استشارة مالية أو استثمارية شخصية. الأداء السابق لا يضمن نتائج مستقبلية. جميع قرارات الاستثمار، وأي أرباح أو خسائر ناتجة عنها، هي مسؤوليتك وحدك.",
+          "لا يُشكّل أي محتوى داخل التطبيق — بما في ذلك الأخبار أو تغطية الابتكارات أو محادثة الدعم — استشارة مالية أو استثمارية شخصية. الأداء السابق لا يضمن نتائج مستقبلية. جميع قرارات الاستثمار، وأي أرباح أو خسائر ناتجة عنها، هي مسؤوليتك وحدك.",
         ],
       },
       {
@@ -136,15 +138,15 @@ const translations: Record<"en" | "ar", Translations> = {
         ],
       },
       {
-        title: "برنامج النخبة والمدفوعات",
+        title: "برنامج النخبة والمدفوعات (عبر الموقع الإلكتروني فقط)",
         paragraphs: [
-          "برنامج النخبة هو خدمة استثمار بمحفظة مُدارة، ويخضع لعملية تقديم وموافقة منفصلة. مدفوعات حصة أرباح الشركة المستحقة بموجب برنامج النخبة هي تسويات مالية حقيقية، وليست عمليات شراء رقمية. لا يقوم تطبيق الجوال بمعالجة أي دفعة داخل التطبيق؛ بل يتم توجيهك بأمان إلى موقعنا الإلكتروني لإتمام أي دفعة من هذا النوع.",
+          "برنامج النخبة هو خدمة استثمار بمحفظة مُدارة تُقدَّم عبر موقعنا الإلكتروني، وتخضع لعملية تقديم وموافقة منفصلة. وهو غير متاح داخل تطبيق الجوال. مدفوعات حصة أرباح الشركة المستحقة بموجب برنامج النخبة هي تسويات مالية حقيقية، وليست عمليات شراء رقمية، وتتم بالكامل عبر موقعنا الإلكتروني. لا يعرض تطبيق الجوال بيانات محفظة النخبة ولا يعالج أي دفعة متعلقة بها.",
         ],
       },
       {
         title: "الاشتراكات",
         paragraphs: [
-          "تُدار أي خطط اشتراك مدفوعة عبر موقعنا الإلكتروني ويتم إصدار فواتيرها بشكل مستقل عن تطبيق الجوال. لا يوفر تطبيق الجوال حاليًا عمليات شراء داخل التطبيق أو إتمام اشتراك من داخله.",
+          "تُدار أي خطط اشتراك مدفوعة، بما في ذلك الوصول إلى منصتنا البحثية الكاملة، عبر موقعنا الإلكتروني ويتم إصدار فواتيرها بشكل مستقل عن تطبيق الجوال. لا يوفر تطبيق الجوال حاليًا عمليات شراء داخل التطبيق أو إتمام اشتراك من داخله.",
         ],
       },
       {
@@ -158,7 +160,7 @@ const translations: Record<"en" | "ar", Translations> = {
       {
         title: "الملكية الفكرية",
         paragraphs: [
-          "جميع المحتويات والعلامات والمواد المقدَّمة عبر التطبيق مملوكة لـ BioPharmaStock أو مرخّصة لها، ولا يجوز نسخها أو إعادة توزيعها أو استخدامها تجاريًا دون إذن كتابي منا.",
+          "جميع المحتويات والعلامات والمواد المقدَّمة عبر التطبيق مملوكة لـ Bio Pharma Stock أو مرخّصة لها، ولا يجوز نسخها أو إعادة توزيعها أو استخدامها تجاريًا دون إذن كتابي منا.",
         ],
       },
       {
@@ -170,7 +172,7 @@ const translations: Record<"en" | "ar", Translations> = {
       {
         title: "إخلاء المسؤولية عن الضمانات وتحديد المسؤولية",
         paragraphs: [
-          "يُقدَّم التطبيق ومحتواه \"كما هو\" دون أي ضمانات من أي نوع. وإلى أقصى حد يسمح به القانون، لا يتحمل BioPharmaStock المسؤولية عن أي خسائر استثمارية أو قرارات تداول أو أضرار ناتجة عن استخدامك للتطبيق.",
+          "يُقدَّم التطبيق ومحتواه \"كما هو\" دون أي ضمانات من أي نوع. وإلى أقصى حد يسمح به القانون، لا يتحمل Bio Pharma Stock المسؤولية عن أي خسائر استثمارية أو قرارات تداول أو أضرار ناتجة عن استخدامك للتطبيق.",
         ],
       },
       {

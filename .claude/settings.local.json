@@ -46,7 +46,10 @@
       "Bash(git add *)",
       "Bash(git commit -m 'checkpoint: web app Apple Sign-In refresh token support *)",
       "Bash(git commit -m 'checkpoint: mobile WIP prior to store-trim \\(elite agreement/payments, chat video, auth rate-limit UI, notifications, translations\\) *)",
-      "Bash(git commit -m 'checkpoint: audit reports and local settings *)"
+      "Bash(git commit -m 'checkpoint: audit reports and local settings *)",
+      "Bash(git checkout *)",
+      "Bash(git push *)",
+      "Bash(git rm *)"
     ]
   }
 }

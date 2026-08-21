@@ -16,23 +16,23 @@ type Translations = {
 
 const translations: Record<"en" | "ar", Translations> = {
   en: {
-    title: "Privacy Policy — BioPharmaStock Mobile App",
-    lastUpdated: "Last updated: July 18, 2026",
+    title: "Privacy Policy — Bio Pharma Stock Mobile App",
+    lastUpdated: "Last updated: August 16, 2026",
     sections: [
       {
         title: "Introduction",
         paragraphs: [
-          "This Privacy Policy describes how BioPharmaStock (\"we\", \"us\") collects, uses, and protects your information when you use the BioPharmaStock mobile app on iOS and Android.",
+          "This Privacy Policy describes how Bio Pharma Stock (\"we\", \"us\") collects, uses, and protects your information when you use the Bio Pharma Stock mobile app on iOS and Android.",
+          "This policy covers the mobile app specifically, which provides biopharmaceutical news, breakthroughs coverage, and community/support chat. Our website, biopharmastock.com, offers additional services — including research ideas and the Elite managed-portfolio program — which are not part of the mobile app and are governed by the policies published there.",
         ],
       },
       {
         title: "Information We Collect",
         bullets: [
           "Account information: your email address, first and last name, and phone number when you create an account.",
-          "Camera: used to capture trade evidence photos for the Elite investment program and to share images in community chat. We do not use the camera for any other purpose.",
-          "Photo library: used to upload existing photos as trade evidence or in chat.",
+          "Photo library: used to upload photos to share in community chat and set your profile photo.",
           "Microphone: used to record and send voice messages in community chat.",
-          "Push notification data: a device push token is stored so we can deliver notifications about your ideas/signals, chat messages, and account updates.",
+          "Push notification data: a device push token is stored so we can deliver notifications about breakthroughs, chat messages, and account updates.",
           "Usage data: we log which screens you visit within the app to understand usage and improve the product. This data is used internally only and is not shared with third parties.",
         ],
       },
@@ -51,24 +51,24 @@ const translations: Record<"en" | "ar", Translations> = {
       {
         title: "Data Retention & Account Deletion",
         paragraphs: [
-          "You can permanently delete your account at any time from Settings → Account → Delete Account within the app. When you delete your account:",
+          "You can permanently delete your account at any time from Settings → Account → Delete Account within the app (steps are also described at biopharmastock.com/en/delete-account). When you delete your account:",
         ],
         bullets: [
           "Your personal information (name, phone number, sign-in credentials) is removed from our active systems.",
           "A minimal record that an account existed and was deleted, and when, is kept internally for record-keeping purposes.",
-          "Content tied to services you used (such as subscription or Elite program transaction history) may be retained as required for accounting and legal purposes, but is no longer linked to your identifying information.",
+          "Content tied to services you used on our website (such as subscription or Elite program transaction history) may be retained as required for accounting and legal purposes, but is no longer linked to your identifying information.",
         ],
       },
       {
         title: "Children's Privacy",
         paragraphs: [
-          "BioPharmaStock is intended for users who are 18 years of age or older. Our app provides financial and investment-related content and is not directed at children. We do not knowingly collect personal information from anyone under 18. If you believe a child has provided us with personal information, please contact us and we will delete it.",
+          "Bio Pharma Stock is intended for users who are 18 years of age or older. Our app provides biopharmaceutical research and market-related content and is not directed at children. We do not knowingly collect personal information from anyone under 18. If you believe a child has provided us with personal information, please contact us and we will delete it.",
         ],
       },
       {
         title: "Investment Disclaimer",
         paragraphs: [
-          "BioPharmaStock provides research, signals, and insights for educational and informational purposes. We do not provide personalized financial advice. All investment decisions are your own responsibility, and we do not guarantee any specific outcomes.",
+          "The mobile app provides biopharmaceutical news and breakthroughs coverage for educational and informational purposes only, and does not provide personalized financial advice or trading recommendations. Our website offers additional research services, including the Elite managed-portfolio program, which is not part of the mobile app and is governed by separate program terms. All investment decisions are your own responsibility, and we do not guarantee any specific outcomes.",
         ],
       },
       {
@@ -86,23 +86,23 @@ const translations: Record<"en" | "ar", Translations> = {
     ],
   },
   ar: {
-    title: "سياسة الخصوصية — تطبيق BioPharmaStock",
-    lastUpdated: "آخر تحديث: 18 يوليو 2026",
+    title: "سياسة الخصوصية — تطبيق Bio Pharma Stock",
+    lastUpdated: "آخر تحديث: 16 أغسطس 2026",
     sections: [
       {
         title: "مقدمة",
         paragraphs: [
-          "توضح سياسة الخصوصية هذه كيفية قيام BioPharmaStock (\"نحن\") بجمع معلوماتك واستخدامها وحمايتها عند استخدامك لتطبيق BioPharmaStock على أنظمة iOS وAndroid.",
+          "توضح سياسة الخصوصية هذه كيفية قيام Bio Pharma Stock (\"نحن\") بجمع معلوماتك واستخدامها وحمايتها عند استخدامك لتطبيق Bio Pharma Stock على أنظمة iOS وAndroid.",
+          "تغطي هذه السياسة تطبيق الجوال تحديدًا، والذي يقدّم أخبارًا في مجال الأدوية الحيوية، وتغطية للابتكارات، ومحادثة مجتمع ودعم. يقدّم موقعنا الإلكتروني biopharmastock.com خدمات إضافية — بما في ذلك الأفكار البحثية وبرنامج النخبة للمحفظة المُدارة — وهي ليست جزءًا من تطبيق الجوال وتخضع للسياسات المنشورة هناك.",
         ],
       },
       {
         title: "المعلومات التي نجمعها",
         bullets: [
           "معلومات الحساب: بريدك الإلكتروني، اسمك الأول واسم العائلة، ورقم هاتفك عند إنشاء حسابك.",
-          "الكاميرا: تُستخدم لالتقاط صور إثبات الصفقات لبرنامج إيليت الاستثماري ولمشاركة الصور في محادثات المجتمع. لا نستخدم الكاميرا لأي غرض آخر.",
-          "مكتبة الصور: تُستخدم لرفع صور موجودة مسبقًا كإثبات للصفقات أو في المحادثة.",
+          "مكتبة الصور: تُستخدم لرفع الصور ومشاركتها في محادثة المجتمع وتعيين صورة ملفك الشخصي.",
           "الميكروفون: يُستخدم لتسجيل وإرسال الرسائل الصوتية في محادثات المجتمع.",
-          "بيانات الإشعارات: يتم تخزين رمز إشعارات الجهاز لتمكيننا من إرسال الإشعارات المتعلقة بالأفكار والرسائل وتحديثات الحساب.",
+          "بيانات الإشعارات: يتم تخزين رمز إشعارات الجهاز لتمكيننا من إرسال الإشعارات المتعلقة بالابتكارات والرسائل وتحديثات الحساب.",
           "بيانات الاستخدام: نسجّل الشاشات التي تزورها داخل التطبيق لفهم أنماط الاستخدام وتحسين المنتج. تُستخدم هذه البيانات داخليًا فقط ولا تتم مشاركتها مع أي طرف ثالث.",
         ],
       },
@@ -121,24 +121,24 @@ const translations: Record<"en" | "ar", Translations> = {
       {
         title: "الاحتفاظ بالبيانات وحذف الحساب",
         paragraphs: [
-          "يمكنك حذف حسابك بشكل نهائي في أي وقت من الإعدادات ← الحساب ← حذف الحساب داخل التطبيق. عند حذف حسابك:",
+          "يمكنك حذف حسابك بشكل نهائي في أي وقت من الإعدادات ← الحساب ← حذف الحساب داخل التطبيق (كما تُشرح الخطوات في biopharmastock.com/ar/delete-account). عند حذف حسابك:",
         ],
         bullets: [
           "تتم إزالة معلوماتك الشخصية (الاسم، رقم الهاتف، بيانات تسجيل الدخول) من أنظمتنا الفعّالة.",
           "يتم الاحتفاظ بسجل محدود يفيد بوجود حساب وأنه تم حذفه ووقت الحذف، لأغراض الأرشفة الداخلية فقط.",
-          "قد يتم الاحتفاظ بأي محتوى مرتبط بالخدمات التي استخدمتها (مثل سجل معاملات الاشتراك أو برنامج إيليت) وفقًا لمتطلبات المحاسبة والالتزامات القانونية، دون أن يبقى مرتبطًا بمعلوماتك الشخصية المحدِّدة لهويتك.",
+          "قد يتم الاحتفاظ بأي محتوى مرتبط بالخدمات التي استخدمتها على موقعنا الإلكتروني (مثل سجل معاملات الاشتراك أو برنامج النخبة) وفقًا لمتطلبات المحاسبة والالتزامات القانونية، دون أن يبقى مرتبطًا بمعلوماتك الشخصية المحدِّدة لهويتك.",
         ],
       },
       {
         title: "خصوصية الأطفال",
         paragraphs: [
-          "تطبيق BioPharmaStock مخصص للمستخدمين البالغين 18 عامًا فأكثر. يقدّم تطبيقنا محتوى ماليًا واستثماريًا وهو غير موجّه للأطفال. نحن لا نجمع عن قصد أي معلومات شخصية من أي شخص دون سن 18 عامًا. إذا كنت تعتقد أن طفلاً قد زوّدنا بمعلومات شخصية، يُرجى التواصل معنا وسنقوم بحذفها.",
+          "تطبيق Bio Pharma Stock مخصص للمستخدمين البالغين 18 عامًا فأكثر. يقدّم تطبيقنا محتوى بحثيًا في مجال الأدوية الحيوية ومحتوى متعلقًا بالسوق وهو غير موجّه للأطفال. نحن لا نجمع عن قصد أي معلومات شخصية من أي شخص دون سن 18 عامًا. إذا كنت تعتقد أن طفلاً قد زوّدنا بمعلومات شخصية، يُرجى التواصل معنا وسنقوم بحذفها.",
         ],
       },
       {
         title: "إخلاء المسؤولية الاستثمارية",
         paragraphs: [
-          "يقدّم BioPharmaStock أبحاثًا وإشارات ورؤى لأغراض تعليمية وإعلامية. نحن لا نقدّم استشارات مالية شخصية. جميع قرارات الاستثمار هي مسؤوليتك الخاصة، ولا نضمن تحقيق أي نتائج محددة.",
+          "يقدّم تطبيق الجوال أخبارًا في مجال الأدوية الحيوية وتغطية للابتكارات لأغراض تعليمية وإعلامية فقط، ولا يقدّم استشارات مالية شخصية أو توصيات تداول. يقدّم موقعنا الإلكتروني خدمات بحثية إضافية، بما في ذلك برنامج النخبة للمحفظة المُدارة، وهو ليس جزءًا من تطبيق الجوال ويخضع لشروط برنامج منفصلة. جميع قرارات الاستثمار هي مسؤوليتك الخاصة، ولا نضمن تحقيق أي نتائج محددة.",
         ],
       },
       {

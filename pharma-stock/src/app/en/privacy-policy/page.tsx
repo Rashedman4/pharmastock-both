@@ -2,9 +2,9 @@ import MobilePrivacyPolicy from "@/components/app/MobilePrivacyPolicy";
 import { buildAlternates } from "@/lib/seo";
 
 export const metadata = {
-  title: "Privacy Policy | BioPharmaStock",
+  title: "Privacy Policy | Bio Pharma Stock",
   description:
-    "How the BioPharmaStock mobile app collects, uses, and protects your information, including data retention and account deletion.",
+    "How the Bio Pharma Stock mobile app collects, uses, and protects your information, including data retention and account deletion.",
   alternates: buildAlternates("/privacy-policy", "en"),
 };
 

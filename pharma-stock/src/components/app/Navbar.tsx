@@ -4,7 +4,15 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Menu, X, Globe, LogOut, UserCircle, ChevronDown, Pencil } from "lucide-react";
+import {
+  Menu,
+  X,
+  Globe,
+  LogOut,
+  UserCircle,
+  ChevronDown,
+  Pencil,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -28,7 +36,10 @@ export default function Navbar() {
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     }
@@ -64,7 +75,10 @@ export default function Navbar() {
 
   const navItems = isArabic
     ? [
-        { href: "/ar/fda-designation", label: "تصنيفات هيئة الغذاء والدواء (FDA)" },
+        {
+          href: "/ar/fda-designation",
+          label: "تصنيفات هيئة الغذاء والدواء (FDA)",
+        },
         { href: "/ar/elite-group", label: "برنامج إيليت" },
         { href: "/ar/history", label: "النتائج" },
         { href: "/ar/signals", label: "الأفكار" },
@@ -102,8 +116,11 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center justify-between flex-1 ml-10">
-            <div className="flex space-x-6">
+          <div
+            className={`hidden lg:flex items-center justify-between flex-1 ${isArabic ? "mr-10" : "ml-10"}`}
+          >
+            {" "}
+            <div className="flex gap-6">
               {navItems.map((item) => (
                 <Link
                   key={item.label}
@@ -118,13 +135,16 @@ export default function Navbar() {
                       className="absolute bottom-0 left-0 h-1 bg-brightTeal"
                       layoutId="underline"
                       initial={false}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 30,
+                      }}
                     />
                   )}
                 </Link>
               ))}
             </div>
-
             <div className="flex items-center space-x-4">
               {status === "authenticated" ? (
                 <div className="relative" ref={dropdownRef}>
@@ -208,7 +228,10 @@ export default function Navbar() {
         >
           <div className="flex flex-col h-full p-4">
             <div className="flex justify-between items-center mb-8">
-              <Link href="/" className="flex items-center gap-2 text-2xl font-bold">
+              <Link
+                href="/"
+                className="flex items-center gap-2 text-2xl font-bold"
+              >
                 <span className="tracking-tight font-extrabold text-xl">
                   Bio<span className="text-brightTeal">Pharma</span>Stock
                 </span>
