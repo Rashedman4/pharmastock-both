@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { goBackOr } from '@/lib/navigation';
 import { useTranslation } from 'react-i18next';
 import { useDailyUpdateItem } from '@/hooks/useContent';
 import { Colors } from '@/constants/colors';
@@ -36,7 +37,7 @@ export default function DailyUpdateDetailScreen() {
     return (
       <View style={styles.centered}>
         <Text style={styles.errorText}>{t('common.error')}</Text>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => goBackOr('/(tabs)/home')}>
           <Text style={styles.backLink}>{t('common.back')}</Text>
         </TouchableOpacity>
       </View>
@@ -48,7 +49,7 @@ export default function DailyUpdateDetailScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+        <TouchableOpacity onPress={() => goBackOr('/(tabs)/home')} style={styles.backBtn}>
           <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle} numberOfLines={1}>

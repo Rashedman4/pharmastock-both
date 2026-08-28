@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { goBackOr } from '@/lib/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -96,7 +97,7 @@ export default function EditProfileScreen() {
     onSuccess: async (updated: UserProfile) => {
       await setUser(updated as unknown as AuthUser);
       Alert.alert(t('common.success'), t('profile.profile_updated'));
-      router.back();
+      goBackOr('/(tabs)/profile');
     },
     onError: (err: unknown) => {
       const apiErr = (
@@ -142,7 +143,7 @@ export default function EditProfileScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+        <TouchableOpacity onPress={() => goBackOr('/(tabs)/profile')} style={styles.backBtn}>
           <Ionicons name={isRTL ? 'arrow-forward' : 'arrow-back'} size={24} color={Colors.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('profile.edit_profile')}</Text>

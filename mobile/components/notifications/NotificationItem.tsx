@@ -1,17 +1,18 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
 import { useRTL } from '@/lib/rtl';
 import type { InAppNotification } from '@/types/content';
 
-function formatRelativeTime(dateStr: string): string {
+function formatRelativeTime(dateStr: string, t: (key: string, opts?: Record<string, unknown>) => string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const minutes = Math.floor(diff / 60_000);
-  if (minutes < 1) return 'now';
-  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 1) return t('notifications.just_now');
+  if (minutes < 60) return t('notifications.minutes_ago', { count: minutes });
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h`;
-  return `${Math.floor(hours / 24)}d`;
+  if (hours < 24) return t('notifications.hours_ago', { count: hours });
+  return t('notifications.days_ago', { count: Math.floor(hours / 24) });
 }
 
 interface Props {
@@ -22,6 +23,13 @@ interface Props {
 export const NotificationItem = React.memo(function NotificationItem({ notification, onPress }: Props) {
   const isUnread = notification.read_at === null;
   const { isRTL } = useRTL();
+  const { t } = useTranslation();
+  // Title/body come straight from the server and often lead with a Latin
+  // ticker symbol (e.g. "AAPL: ..."). Unicode bidi "auto" detection keys off
+  // the first strong character, so a ticker-prefixed string gets misdetected
+  // as an LTR paragraph and left-aligns even in an RTL screen — pin the
+  // alignment explicitly instead of relying on auto-detection.
+  const bidiTextStyle = { textAlign: isRTL ? ('right' as const) : ('left' as const), writingDirection: isRTL ? ('rtl' as const) : ('ltr' as const) };
 
   return (
     <TouchableOpacity
@@ -33,15 +41,15 @@ export const NotificationItem = React.memo(function NotificationItem({ notificat
         <View style={[styles.dot, isUnread ? styles.dotUnread : styles.dotRead]} />
       </View>
       <View style={[styles.content, isRTL && styles.contentRTL]}>
-        <Text style={[styles.title, isUnread && styles.titleUnread]} numberOfLines={1}>
+        <Text style={[styles.title, bidiTextStyle, isUnread && styles.titleUnread]} numberOfLines={1}>
           {notification.title}
         </Text>
-        <Text style={styles.body} numberOfLines={2}>
+        <Text style={[styles.body, bidiTextStyle]} numberOfLines={2}>
           {notification.body}
         </Text>
       </View>
       <Text style={[styles.time, { textAlign: isRTL ? 'left' : 'right' }]}>
-        {formatRelativeTime(notification.created_at)}
+        {formatRelativeTime(notification.created_at, t)}
       </Text>
     </TouchableOpacity>
   );

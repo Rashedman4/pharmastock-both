@@ -312,6 +312,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
     alignItems: 'flex-end',
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -351,6 +352,7 @@ const styles = StyleSheet.create({
 
   // Voice recording bar
   recordingBar: {
+    flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -389,6 +391,7 @@ const styles = StyleSheet.create({
 
   // Pending attachment preview bar
   previewBar: {
+    flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 10,

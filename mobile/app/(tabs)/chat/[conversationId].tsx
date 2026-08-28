@@ -11,6 +11,7 @@ import {
 import { FlashList, FlashListRef } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { goBackOr } from '@/lib/navigation';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
 import { useRTL } from '@/lib/rtl';
@@ -88,7 +89,7 @@ export default function ChatThreadScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+        <TouchableOpacity onPress={() => goBackOr('/(tabs)/chat')} style={styles.backBtn}>
           <Ionicons name={isRTL ? 'chevron-forward' : 'chevron-back'} size={26} color={Colors.primary} />
         </TouchableOpacity>
         <View style={[styles.headerInfo, isRTL && styles.headerInfoRTL]}>

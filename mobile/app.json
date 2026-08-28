@@ -12,6 +12,7 @@
       "bundleIdentifier": "com.biopharmastock.app",
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "Used to share images in community chat and set your profile photo.",
         "NSMicrophoneUsageDescription": "Used to record voice messages in community chat.",
         "UIBackgroundModes": [
@@ -27,7 +28,6 @@
         ]
       },
       "entitlements": {
-        "aps-environment": "production",
         "com.apple.developer.applesignin": [
           "Default"
         ]

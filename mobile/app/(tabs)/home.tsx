@@ -47,6 +47,15 @@ export default function HomeScreen() {
   const welcomeKey = user?.firstName ? 'home.welcome_name' : 'home.welcome';
   const welcomeName = user?.firstName ?? '';
 
+  // The greeting mixes Arabic with a Latin first name (e.g. "مرحبًا، RASHED").
+  // Text's default "auto" alignment picks a direction from the first strong
+  // character, which is normally fine here, but pin it explicitly rather
+  // than lean on that heuristic — see the same fix in NotificationItem.
+  const heroTextStyle = {
+    textAlign: isRTL ? ('right' as const) : ('left' as const),
+    writingDirection: isRTL ? ('rtl' as const) : ('ltr' as const),
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.appBar}>
@@ -82,11 +91,11 @@ export default function HomeScreen() {
             />
             <View style={[styles.heroFlourish, isRTL && styles.heroFlourishRTL]} />
             <View style={styles.heroContent}>
-              <Text style={styles.heroGreeting}>
+              <Text style={[styles.heroGreeting, heroTextStyle]}>
                 {t(welcomeKey, { name: welcomeName })}
               </Text>
-              <Text style={styles.heroTagline}>{t('home.tagline')}</Text>
-              <Text style={styles.heroSubtitle} numberOfLines={2}>
+              <Text style={[styles.heroTagline, heroTextStyle]}>{t('home.tagline')}</Text>
+              <Text style={[styles.heroSubtitle, heroTextStyle]} numberOfLines={2}>
                 {t('home.hero_subtitle')}
               </Text>
             </View>

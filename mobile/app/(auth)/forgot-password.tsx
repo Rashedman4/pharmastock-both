@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { router } from 'expo-router';
+import { goBackOr } from '@/lib/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -40,7 +41,7 @@ export default function ForgotPasswordScreen() {
         <Button
           title={t('common.back')}
           variant="outline"
-          onPress={() => router.back()}
+          onPress={() => goBackOr('/(auth)/login')}
           containerStyle={styles.backBtn}
         />
       </View>
@@ -79,7 +80,7 @@ export default function ForgotPasswordScreen() {
       <Button
         title={t('common.back')}
         variant="ghost"
-        onPress={() => router.back()}
+        onPress={() => goBackOr('/(auth)/login')}
         containerStyle={styles.backBtn}
       />
     </KeyboardAvoidingContainer>
