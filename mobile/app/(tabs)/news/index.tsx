@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,9 +10,11 @@ import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { useNews, useDailyUpdates } from '@/hooks/useContent';
+import { useNews, useDailyUpdates, useAvailableDates } from '@/hooks/useContent';
 import { NewsCard } from '@/components/news/NewsCard';
 import { DailyUpdateCard } from '@/components/dailyUpdates/DailyUpdateCard';
+import { DaySelector } from '@/components/dailyUpdates/DaySelector';
+import { addDays, todayKey, MAX_HISTORY_DAYS } from '@/lib/day';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import { Colors } from '@/constants/colors';
@@ -24,9 +26,19 @@ export default function NewsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>('news');
+  // Selected day for the Daily Updates segment; defaults to today so the tab
+  // opens on today's items with no extra tap.
+  const [selectedDay, setSelectedDay] = useState<string>(() => todayKey());
 
   const newsQuery = useNews();
-  const dailyUpdatesQuery = useDailyUpdates();
+  const dailyUpdatesQuery = useDailyUpdates(selectedDay);
+
+  const historyStart = useMemo(() => addDays(todayKey(), -(MAX_HISTORY_DAYS - 1)), []);
+  const availableDatesQuery = useAvailableDates(historyStart, todayKey());
+  const availableDates = useMemo(
+    () => (availableDatesQuery.data ? new Set(availableDatesQuery.data.map((d) => d.date)) : undefined),
+    [availableDatesQuery.data]
+  );
 
   const query = activeTab === 'news' ? newsQuery : dailyUpdatesQuery;
 
@@ -66,6 +78,14 @@ export default function NewsScreen() {
         </TouchableOpacity>
       </View>
 
+      {activeTab === 'daily-updates' && (
+        <DaySelector
+          value={selectedDay}
+          onChange={setSelectedDay}
+          availableDates={availableDates}
+        />
+      )}
+
       {query.isLoading ? (
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={Colors.primary} />
@@ -73,37 +93,44 @@ export default function NewsScreen() {
       ) : query.isError ? (
         <EmptyState title={t('common.error')} actionLabel={t('common.retry')} onAction={() => query.refetch()} />
       ) : (
-        <FlashList
-          key={activeTab}
-          data={allItems}
-          keyExtractor={(item: NewsItem | DailyUpdateItem) => String(item.id)}
-          renderItem={({ item }: { item: NewsItem | DailyUpdateItem }) =>
-            activeTab === 'news' ? (
-              <NewsCard
-                item={item as NewsItem}
-                onPress={() => router.push(`/(tabs)/news/${item.id}` as never)}
-              />
-            ) : (
-              <DailyUpdateCard
-                item={item as DailyUpdateItem}
-                onPress={() => router.push(`/(tabs)/daily-updates/${item.id}` as never)}
-              />
-            )
-          }
-          contentContainerStyle={allItems.length === 0 ? styles.emptyContent : styles.listContent}
-          ListEmptyComponent={
-            <EmptyState title={activeTab === 'news' ? t('news.empty') : t('dailyUpdates.empty')} />
-          }
-          ListFooterComponent={
-            query.isFetchingNextPage ? (
-              <ActivityIndicator color={Colors.primary} style={{ marginVertical: 16 }} />
-            ) : null
-          }
-          onEndReached={onEndReached}
-          onEndReachedThreshold={0.3}
-          refreshing={query.isRefetching}
-          onRefresh={() => query.refetch()}
-        />
+        <View style={styles.listWrapper}>
+          <FlashList
+            key={activeTab === 'daily-updates' ? `daily-updates-${selectedDay}` : 'news'}
+            data={allItems}
+            keyExtractor={(item: NewsItem | DailyUpdateItem) => String(item.id)}
+            renderItem={({ item }: { item: NewsItem | DailyUpdateItem }) =>
+              activeTab === 'news' ? (
+                <NewsCard
+                  item={item as NewsItem}
+                  onPress={() => router.push(`/(tabs)/news/${item.id}` as never)}
+                />
+              ) : (
+                <DailyUpdateCard
+                  item={item as DailyUpdateItem}
+                  onPress={() => router.push(`/(tabs)/daily-updates/${item.id}` as never)}
+                />
+              )
+            }
+            contentContainerStyle={allItems.length === 0 ? styles.emptyContent : styles.listContent}
+            ListEmptyComponent={
+              <EmptyState title={activeTab === 'news' ? t('news.empty') : t('dailyUpdates.empty_for_day')} />
+            }
+            ListFooterComponent={
+              query.isFetchingNextPage ? (
+                <ActivityIndicator color={Colors.primary} style={{ marginVertical: 16 }} />
+              ) : null
+            }
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.3}
+            refreshing={query.isRefetching}
+            onRefresh={() => query.refetch()}
+          />
+          {activeTab === 'daily-updates' && dailyUpdatesQuery.isPlaceholderData ? (
+            <View style={styles.loadingOverlay} pointerEvents="none">
+              <ActivityIndicator color={Colors.primary} />
+            </View>
+          ) : null}
+        </View>
       )}
     </SafeAreaView>
   );
@@ -159,4 +186,11 @@ const styles = StyleSheet.create({
 
   listContent: { padding: 16 },
   emptyContent: { flex: 1, padding: 16 },
+  listWrapper: { flex: 1 },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.backgroundSecondary + 'B3',
+  },
 });

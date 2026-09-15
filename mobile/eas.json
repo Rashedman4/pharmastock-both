@@ -45,7 +45,9 @@
         "appleTeamId": "ZQXFBJUMCV"
       },
       "android": {
-        "serviceAccountKeyPath": "./google-play-service-account.json"
+        "serviceAccountKeyPath": "./google-play-service-account.json",
+        "track": "production",
+        "releaseStatus": "draft"
       }
     }
   }

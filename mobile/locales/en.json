@@ -95,7 +95,8 @@
     "news": "News",
     "profile": "Profile",
     "notifications": "Alerts",
-    "chat": "Messages"
+    "chat": "Messages",
+    "breakthroughs": "Breakthroughs"
   },
   "notifications": {
     "title": "Notifications",
@@ -142,7 +143,51 @@
     "one_day_ago": "1 day ago",
     "days_ago": "{{count}} days ago",
     "one_month_ago": "1 month ago",
-    "months_ago": "{{count}} months ago"
+    "months_ago": "{{count}} months ago",
+    "empty_for_day": "No updates for this day",
+    "yesterday": "Yesterday",
+    "day_month": "{{month}} {{day}}",
+    "pick_date": "Pick a date",
+    "select_day": "Select day",
+    "no_updates_marker": "No updates",
+    "months_short": {
+      "1": "Jan",
+      "2": "Feb",
+      "3": "Mar",
+      "4": "Apr",
+      "5": "May",
+      "6": "Jun",
+      "7": "Jul",
+      "8": "Aug",
+      "9": "Sep",
+      "10": "Oct",
+      "11": "Nov",
+      "12": "Dec"
+    },
+    "months_long": {
+      "1": "January",
+      "2": "February",
+      "3": "March",
+      "4": "April",
+      "5": "May",
+      "6": "June",
+      "7": "July",
+      "8": "August",
+      "9": "September",
+      "10": "October",
+      "11": "November",
+      "12": "December"
+    },
+    "weekdays_short": {
+      "0": "Sun",
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat"
+    },
+    "month_year": "{{month}} {{year}}"
   },
   "breakthroughs": {
     "title": "Breakthroughs",
@@ -236,7 +281,9 @@
     "delete_account_confirm_message": "This will permanently delete your account and personal data. This cannot be undone.",
     "delete_account_button": "Delete My Account",
     "delete_account_success": "Your account has been deleted.",
-    "delete_account_error": "Failed to delete account. Please try again."
+    "delete_account_error": "Failed to delete account. Please try again.",
+    "restart_required_title": "Restart Required",
+    "restart_required_message": "Your language has been saved. Please close the app completely and open it again to apply the new layout direction."
   },
   "about": {
     "title": "About Us",

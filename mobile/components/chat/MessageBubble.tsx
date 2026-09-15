@@ -5,6 +5,7 @@ import { ImageMessage } from './ImageMessage';
 import { VoiceMessage } from './VoiceMessage';
 import { VideoMessage } from './VideoMessage';
 import { formatTime } from '@/lib/format';
+import { AutoText } from '@/components/ui/AutoText';
 import type { ChatMessage } from '@/types/content';
 
 interface Props {
@@ -26,9 +27,9 @@ export const MessageBubble = React.memo(function MessageBubble({ message, myUser
         ]}
       >
         {message.messageType === 'text' && (
-          <Text style={fromAdmin ? styles.adminText : styles.userText}>
+          <AutoText style={fromAdmin ? styles.adminText : styles.userText}>
             {message.content}
-          </Text>
+          </AutoText>
         )}
 
         {message.messageType === 'image' && message.attachmentUrl && (

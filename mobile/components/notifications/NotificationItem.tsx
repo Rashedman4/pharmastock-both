@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/colors';
-import { useRTL } from '@/lib/rtl';
+import { AutoText } from '@/components/ui/AutoText';
 import type { InAppNotification } from '@/types/content';
 
 function formatRelativeTime(dateStr: string, t: (key: string, opts?: Record<string, unknown>) => string): string {
@@ -22,14 +22,7 @@ interface Props {
 
 export const NotificationItem = React.memo(function NotificationItem({ notification, onPress }: Props) {
   const isUnread = notification.read_at === null;
-  const { isRTL } = useRTL();
   const { t } = useTranslation();
-  // Title/body come straight from the server and often lead with a Latin
-  // ticker symbol (e.g. "AAPL: ..."). Unicode bidi "auto" detection keys off
-  // the first strong character, so a ticker-prefixed string gets misdetected
-  // as an LTR paragraph and left-aligns even in an RTL screen — pin the
-  // alignment explicitly instead of relying on auto-detection.
-  const bidiTextStyle = { textAlign: isRTL ? ('right' as const) : ('left' as const), writingDirection: isRTL ? ('rtl' as const) : ('ltr' as const) };
 
   return (
     <TouchableOpacity
@@ -37,18 +30,18 @@ export const NotificationItem = React.memo(function NotificationItem({ notificat
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <View style={[styles.dotColumn, isRTL && styles.dotColumnRTL]}>
+      <View style={styles.dotColumn}>
         <View style={[styles.dot, isUnread ? styles.dotUnread : styles.dotRead]} />
       </View>
-      <View style={[styles.content, isRTL && styles.contentRTL]}>
-        <Text style={[styles.title, bidiTextStyle, isUnread && styles.titleUnread]} numberOfLines={1}>
+      <View style={styles.content}>
+        <AutoText style={[styles.title, isUnread && styles.titleUnread]} numberOfLines={1}>
           {notification.title}
-        </Text>
-        <Text style={[styles.body, bidiTextStyle]} numberOfLines={2}>
+        </AutoText>
+        <AutoText style={styles.body} numberOfLines={2}>
           {notification.body}
-        </Text>
+        </AutoText>
       </View>
-      <Text style={[styles.time, { textAlign: isRTL ? 'left' : 'right' }]}>
+      <Text style={styles.time}>
         {formatRelativeTime(notification.created_at, t)}
       </Text>
     </TouchableOpacity>
@@ -72,11 +65,7 @@ const styles = StyleSheet.create({
     width: 20,
     alignItems: 'center',
     paddingTop: 5,
-    marginRight: 10,
-  },
-  dotColumnRTL: {
-    marginRight: 0,
-    marginLeft: 10,
+    marginEnd: 10,
   },
   dot: {
     width: 8,
@@ -91,11 +80,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginRight: 8,
-  },
-  contentRTL: {
-    marginRight: 0,
-    marginLeft: 8,
+    marginEnd: 8,
   },
   title: {
     fontSize: 14,

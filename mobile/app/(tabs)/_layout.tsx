@@ -1,6 +1,7 @@
 import { Tabs, Redirect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '@/stores/auth.store';
 import { Colors } from '@/constants/colors';
@@ -47,10 +48,29 @@ function BellIcon({ focused }: { focused: boolean }) {
 export default function TabsLayout() {
   const { isAuthenticated } = useAuthStore();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
 
   if (!isAuthenticated) {
     return <Redirect href="/(auth)/login" />;
   }
+
+  // iOS-only tab bar corrections. On an iPhone with rounded display corners the
+  // outermost of the six tabs is clipped by the corner radius, and its label
+  // truncates. Android is unaffected and must stay byte-identical, so every
+  // value below is null on Android and merges over nothing.
+  const iosTabBar =
+    Platform.OS === 'ios'
+      ? {
+          // Clear the corner radius. insets.left/right are non-zero on notched
+          // devices in landscape; the floor covers portrait, where they are 0
+          // but the corner still cuts in.
+          paddingHorizontal: Math.max(insets.left, insets.right, 8) + 4,
+          // Slightly more clearance than the raw inset so labels don't sit on
+          // the home indicator; devices without one keep the original 8.
+          paddingBottom: insets.bottom > 0 ? insets.bottom + 2 : 8,
+          height: 56 + (insets.bottom > 0 ? insets.bottom + 2 : 0),
+        }
+      : null;
 
   return (
     <Tabs
@@ -58,8 +78,16 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: Colors.textMuted,
-        tabBarStyle: styles.tabBar,
-        tabBarLabelStyle: styles.tabLabel,
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            height: 56 + insets.bottom,
+            paddingBottom: Math.max(insets.bottom, 8),
+          },
+          iosTabBar,
+        ],
+        tabBarItemStyle: Platform.OS === 'ios' ? styles.tabItemIOS : undefined,
+        tabBarLabelStyle: [styles.tabLabel, Platform.OS === 'ios' ? styles.tabLabelIOS : null],
         tabBarShowLabel: true,
       }}
     >
@@ -87,7 +115,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="breakthroughs"
         options={{
-          title: t('breakthroughs.title'),
+          title: t('tabs.breakthroughs'),
           tabBarIcon: ({ focused }) => (
             <TabIcon name={focused ? 'flask' : 'flask-outline'} focused={focused} />
           ),
@@ -135,8 +163,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderTopWidth: 1,
     borderTopColor: Colors.borderLight,
-    height: 64,
-    paddingBottom: 8,
     paddingTop: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
@@ -148,6 +174,14 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     marginTop: 2,
+  },
+  // Six labels on a 320pt iPhone SE leave ~53pt per tab; trimming the label a
+  // point and reclaiming the item's default horizontal padding buys the room.
+  tabLabelIOS: {
+    fontSize: 10,
+  },
+  tabItemIOS: {
+    paddingHorizontal: 2,
   },
   iconWrapper: {
     width: 38,

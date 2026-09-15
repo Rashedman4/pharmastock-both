@@ -16,6 +16,8 @@ import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
 import { useRTL } from '@/lib/rtl';
 import { formatDate } from '@/lib/format';
+import { AutoText } from '@/components/ui/AutoText';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function DailyUpdateDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -50,7 +52,11 @@ export default function DailyUpdateDetailScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => goBackOr('/(tabs)/home')} style={styles.backBtn}>
-          <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
+          <Ionicons
+            name={isRTL ? 'chevron-forward' : 'chevron-back'}
+            size={26}
+            color={Colors.primary}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle} numberOfLines={1}>
           {item.symbol}
@@ -65,9 +71,9 @@ export default function DailyUpdateDetailScreen() {
           </View>
         </View>
 
-        {subtitle ? <Text style={styles.title}>{subtitle}</Text> : null}
+        {subtitle ? <AutoText style={styles.title}>{subtitle}</AutoText> : null}
 
-        <Text style={styles.description}>{getField(item, 'description')}</Text>
+        <AutoText style={styles.description}>{getField(item, 'description')}</AutoText>
 
         <Text style={styles.date}>{formatDate(item.published_date, { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
       </ScrollView>
@@ -89,7 +95,6 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.borderLight,
   },
   backBtn: { width: 40, justifyContent: 'center' },
-  backArrow: { fontSize: 28, color: Colors.primary },
   headerTitle: { fontSize: 16, fontWeight: '700', color: Colors.primary, flex: 1, textAlign: 'center' },
   content: { padding: 16 },
   symbolRow: {

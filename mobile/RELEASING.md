@@ -1,0 +1,192 @@
+# Releasing the mobile app
+
+Everything needed to ship a new version of **Bio Pharma Stock** to the App Store
+and Google Play.
+
+---
+
+## 1. The three numbers
+
+They live in `mobile/app.json` and are edited **by hand** before every release.
+`autoIncrement` is deliberately off in `eas.json`, so whatever is written in
+`app.json` is exactly what ships — no surprises, nothing rewritten behind you.
+
+| Field | Where | What it is | Rule |
+|---|---|---|---|
+| `expo.version` | app.json | The version users see: `1.0.1` | Must change for every new **public App Store release** |
+| `expo.ios.buildNumber` | app.json | Internal iOS upload counter | Unique **within one `version`**. Reset to `"1"` when `version` changes |
+| `expo.android.versionCode` | app.json | Internal Play upload counter, an integer | Must **strictly increase forever**. Never reuse a number, not even for a rejected build |
+
+### The one thing that trips people up
+
+`versionCode` is global to the app and only ever climbs. `buildNumber` resets
+every time `version` changes. So the two numbers drift apart over time, and that
+is correct — don't try to keep them in sync.
+
+```
+version 1.0.1  buildNumber 1   versionCode 4    <- where you are now
+version 1.0.1  buildNumber 2   versionCode 5    <- rejected build, resubmitted
+version 1.0.2  buildNumber 1   versionCode 6    <- version changed, buildNumber reset
+version 1.1.0  buildNumber 1   versionCode 7
+```
+
+### Which to bump
+
+- **Normal new release** -> bump `version` (e.g. `1.0.1` -> `1.0.2`), set
+  `buildNumber` to `"1"`, bump `versionCode` by 1.
+- **Re-uploading the same release** (previous build was rejected, or you fixed
+  something before going live) -> leave `version` alone, bump `buildNumber` by 1,
+  bump `versionCode` by 1.
+- Version numbering is your call: `1.0.x` for fixes, `1.x.0` when there's a
+  noticeable new feature.
+
+### If a `versionCode` is ever rejected as too low
+
+Play Console -> **Release -> App bundle explorer** shows every versionCode ever
+uploaded. Set `app.json` above the highest one.
+
+This happened on the 1.0.1 release: versionCode 3 was already live, the Android
+submission was rejected after the build had finished, and only Android had to be
+rebuilt. Checking first is cheaper than a wasted 20-minute build.
+
+---
+
+## 2. Release checklist
+
+### Step 0 — Deploy the backend FIRST
+
+Not optional, and the failure mode is silent. The app sends
+`GET /api/mobile/v1/daily-updates?date=YYYY-MM-DD`. An older backend **ignores
+the `date` param** and returns a rolling 24 hours instead — so picking "10 Jul"
+would quietly show today's items under the wrong date rather than erroring.
+
+Deploy `pharma-stock` and confirm the new endpoints answer:
+
+- `GET /api/mobile/v1/daily-updates?date=2026-09-14`
+- `GET /api/mobile/v1/daily-updates/available-dates?from=...&to=...`
+
+No database migration is needed — `idx_daily_updates_published_date` already
+covers the new queries.
+
+### Step 1 — Bump the numbers
+
+Edit `mobile/app.json` per the table above.
+
+### Step 2 — Sanity check
+
+```bash
+cd mobile
+npm run typecheck
+npm run lint
+```
+
+### Step 3 — Build and upload
+
+```bash
+npx eas whoami     # confirm you are logged in; `npx eas login` if not
+npx eas build --platform all --profile production --auto-submit
+```
+
+Takes roughly 15-30 minutes for both platforms. EAS prints a URL to watch.
+
+`--auto-submit` uploads each build to its store as soon as it finishes, using
+the `submit.production` profile in `eas.json`. To inspect the artifacts first,
+drop the flag and run afterwards:
+
+```bash
+npx eas submit --platform android --profile production --latest
+npx eas submit --platform ios     --profile production --latest
+```
+
+### Step 4 — Google Play (finish in the Console)
+
+`eas.json` is set to `track: production`, `releaseStatus: draft`, so the upload
+lands as a **draft production release**. Nothing is public until you say so.
+
+1. Play Console -> **Production** -> the draft release -> **Edit**
+2. Paste the **What's new** text, once per language (English and Arabic)
+3. **Start rollout to Production**
+
+Google review for production is usually hours, occasionally a few days.
+
+### Step 5 — App Store (finish in App Store Connect)
+
+`eas submit` uploads the build to App Store Connect, where it appears in
+**TestFlight**. It is *not* submitted for review automatically.
+
+1. App Store Connect -> the app -> **+ Version** -> enter `1.0.1`
+2. **What's New in This Version**, once per localization (English and Arabic)
+3. Under **Build**, attach the build that just arrived (allow ~10-30 min for
+   Apple to finish processing it)
+4. **Add for Review** -> **Submit**
+
+Apple review is typically 24-48 hours.
+
+---
+
+## 3. Store listing vs. the app
+
+Two separate things, often confused:
+
+- **App icons / splash / notification icon** live in `mobile/assets/` and are
+  baked into the binary. Changing them needs a **new build**.
+  Never edit `android/app/src/main/res/` — `/android` and `/ios` are gitignored
+  and regenerated by prebuild, so edits there are wiped.
+- **Screenshots, feature graphic, description, app title** are **store listing
+  metadata** — no new build needed, but the two stores treat them differently:
+  - **Google Play:** edit any time (Grow users -> Store presence -> Store
+    listings). Changes go through a short listing review, no new release needed.
+  - **App Store:** description, keywords and screenshots belong to a *version*
+    and are **locked once that version is live**. Changing them later means
+    creating a new version, which needs a new build. Only **Promotional Text**
+    can be edited at any time. So update screenshots/description *while* a
+    version is still in "Prepare for Submission".
+
+Copy for every field, in English and Arabic, is in `STORE_LISTING.md`.
+
+Keep an Arabic localization on both store listings. Without one, Arabic users
+see the English description.
+
+---
+
+## 4. Over-the-air (OTA) updates
+
+`app.json` sets `runtimeVersion: { policy: "appVersion" }`, which means the OTA
+channel is tied to `expo.version`.
+
+```bash
+npx eas update --branch production --message "what changed"
+```
+
+- Only ships **JavaScript**. Anything touching native code, new dependencies, or
+  `app.json` native config needs a real build.
+- An update published for `1.0.1` reaches **only** `1.0.1` installs. Bump
+  `version` and the previous OTA channel is orphaned.
+- Not used for the 1.0.1 release — there was no meaningful install base yet.
+
+---
+
+## 5. Local testing before a release
+
+`mobile/.env` points at production. To test against your own machine, create
+`mobile/.env.local` (gitignored, overrides `.env`):
+
+```bash
+EXPO_PUBLIC_API_URL=http://<your-lan-ip>:3000
+EXPO_PUBLIC_SOCKET_URL=http://<your-lan-ip>:3000
+```
+
+```bash
+cd pharma-stock && npm run dev          # server.ts, not `next dev` — Socket.IO
+cd mobile        && npx expo start --dev-client -c
+```
+
+Gotchas:
+
+- Allow Node through **Windows Firewall** on Private networks, or the phone
+  cannot reach port 3000.
+- Don't use the `local` EAS profile for LAN testing: it builds a release APK,
+  and cleartext HTTP is only permitted in debug builds. Use the dev client.
+- **RTL changes need a cold start, not a reload.** Switching to Arabic on iOS
+  shows a "Restart Required" alert — force-quit the app and reopen. That is the
+  fix working as designed, not a bug.

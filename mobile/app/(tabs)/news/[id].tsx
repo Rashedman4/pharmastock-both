@@ -15,6 +15,8 @@ import { Colors } from "@/constants/colors";
 import { useLocalizedField } from "@/lib/i18n-content";
 import { useRTL } from "@/lib/rtl";
 import { formatDate } from "@/lib/format";
+import { AutoText } from "@/components/ui/AutoText";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function NewsDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -49,7 +51,11 @@ export default function NewsDetailScreen() {
           onPress={() => goBackOr("/(tabs)/news")}
           style={styles.backBtn}
         >
-          <Text style={styles.backArrow}>{isRTL ? "›" : "‹"}</Text>
+          <Ionicons
+            name={isRTL ? "chevron-forward" : "chevron-back"}
+            size={26}
+            color={Colors.primary}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle} numberOfLines={1}>
           {item.symbol}
@@ -64,7 +70,7 @@ export default function NewsDetailScreen() {
           </View>
         </View>
 
-        <Text style={styles.title}>{getField(item, "title")}</Text>
+        <AutoText style={styles.title}>{getField(item, "title")}</AutoText>
 
         <Text style={styles.date}>
           {formatDate(item.published_date, {
@@ -92,7 +98,6 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.borderLight,
   },
   backBtn: { width: 40, justifyContent: "center" },
-  backArrow: { fontSize: 28, color: Colors.primary },
   headerTitle: {
     fontSize: 16,
     fontWeight: "700",

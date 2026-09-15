@@ -3,7 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import * as Localization from 'expo-localization';
 import * as SecureStore from 'expo-secure-store';
 import * as Updates from 'expo-updates';
-import { DevSettings, I18nManager } from 'react-native';
+import { DevSettings, I18nManager, Platform } from 'react-native';
 import en from '@/locales/en.json';
 import ar from '@/locales/ar.json';
 import { STORAGE_KEYS } from '@/constants/storage-keys';
@@ -19,6 +19,12 @@ export async function initI18n() {
   const lang = stored ?? (deviceLang === 'ar' ? 'ar' : 'en');
 
   const isRTL = lang === 'ar';
+  // allowRTL defaults to true on both platforms (iOS: RCTI18nUtil.m
+  // isRTLAllowed returns YES when the NSUserDefaults key is absent), so this is
+  // defensive rather than load-bearing — it pins the flag so a future
+  // expo-localization `supportsRTL` setting, or anything else writing
+  // RCTI18nUtil_allowRTL, can't silently disable RTL underneath us.
+  I18nManager.allowRTL(true);
   if (I18nManager.isRTL !== isRTL) {
     I18nManager.forceRTL(isRTL);
   }
@@ -54,32 +60,46 @@ export async function initI18n() {
  * promise settle (the JS context is torn down). When the direction doesn't
  * change, no reload happens and the promise resolves normally.
  */
-export async function changeLanguage(lang: 'en' | 'ar'): Promise<{ reloaded: boolean }> {
+export async function changeLanguage(
+  lang: 'en' | 'ar'
+): Promise<{ reloaded: boolean; restartRequired: boolean }> {
   await SecureStore.setItemAsync(STORAGE_KEYS.LANGUAGE, lang);
   await i18n.changeLanguage(lang);
 
   const willBeRTL = lang === 'ar';
   const needsReload = I18nManager.isRTL !== willBeRTL;
   if (!needsReload) {
-    return { reloaded: false };
+    return { reloaded: false, restartRequired: false };
   }
 
+  I18nManager.allowRTL(true);
   I18nManager.forceRTL(willBeRTL);
+
+  // iOS reads the native RTL flag once per surface: I18nManager.isRTL is a
+  // startup constant (RCTI18nManager.mm constantsToExport) and Fabric pins the
+  // layout direction in RCTFabricSurface._updateLayoutContext. forceRTL() only
+  // writes NSUserDefaults, so nothing re-reads it mid-session. A JS reload is
+  // not reliably enough on iOS — the flag is only guaranteed to apply on a cold
+  // start — so report restartRequired and let the caller say so out loud
+  // instead of appearing to have done nothing.
+  if (Platform.OS === 'ios') {
+    return { reloaded: false, restartRequired: true };
+  }
 
   if (Updates.isEnabled) {
     await Updates.reloadAsync();
-    return { reloaded: true };
+    return { reloaded: true, restartRequired: false };
   }
 
   if (__DEV__ && typeof DevSettings.reload === 'function') {
     DevSettings.reload();
-    return { reloaded: true };
+    return { reloaded: true, restartRequired: false };
   }
 
   // Neither reload path is available — the direction is still persisted
   // correctly for next cold start, the caller just can't auto-reload now.
   console.warn('[i18n] no reload mechanism available; language direction will apply after a manual restart.');
-  return { reloaded: false };
+  return { reloaded: false, restartRequired: true };
 }
 
 export default i18n;

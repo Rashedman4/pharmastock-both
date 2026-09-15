@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import {
   fetchNews,
   fetchNewsItem,
@@ -6,6 +6,7 @@ import {
 import {
   fetchDailyUpdates,
   fetchDailyUpdateItem,
+  fetchAvailableDates,
 } from '@/services/dailyUpdates.service';
 import {
   fetchBreakthroughs,
@@ -33,14 +34,30 @@ export function useNewsItem(id: number) {
   });
 }
 
-export function useDailyUpdates() {
+/**
+ * One calendar day of updates. The day is part of the query key so each day
+ * caches independently, and `placeholderData` keeps the previous day's rows on
+ * screen while the new one loads instead of flashing an empty list.
+ */
+export function useDailyUpdates(date: string) {
   return useInfiniteQuery({
-    queryKey: ['dailyUpdates'],
-    queryFn: ({ pageParam = 1 }) => fetchDailyUpdates(pageParam as number),
+    queryKey: ['dailyUpdates', date],
+    queryFn: ({ pageParam = 1 }) => fetchDailyUpdates({ date, page: pageParam as number }),
     getNextPageParam: (lastPage) =>
       lastPage.pagination.hasNext ? lastPage.pagination.page + 1 : undefined,
     initialPageParam: 1,
     staleTime: 120_000,
+    placeholderData: keepPreviousData,
+  });
+}
+
+/** Days with at least one update, for marking empty days in the picker. */
+export function useAvailableDates(from: string, to: string) {
+  return useQuery({
+    queryKey: ['dailyUpdates', 'availableDates', from, to],
+    queryFn: () => fetchAvailableDates(from, to),
+    enabled: !!from && !!to,
+    staleTime: 300_000,
   });
 }
 

@@ -13,6 +13,8 @@ import { goBackOr } from '@/lib/navigation';
 import { useTranslation } from 'react-i18next';
 import { useBreakthrough } from '@/hooks/useContent';
 import { Badge } from '@/components/ui/Badge';
+import { AutoText } from '@/components/ui/AutoText';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
 import { useRTL } from '@/lib/rtl';
@@ -60,7 +62,11 @@ export default function BreakthroughDetailScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => goBackOr('/(tabs)/breakthroughs')} style={styles.backBtn}>
-          <Text style={styles.backArrow}>{isRTL ? '›' : '‹'}</Text>
+          <Ionicons
+            name={isRTL ? 'chevron-forward' : 'chevron-back'}
+            size={26}
+            color={Colors.primary}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle} numberOfLines={1}>
           {item.symbol}
@@ -70,13 +76,13 @@ export default function BreakthroughDetailScreen() {
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.companyRow}>
-          <Text style={styles.company}>{item.company}</Text>
+          <AutoText style={styles.company}>{item.company}</AutoText>
           <View style={styles.symbolPill}>
             <Text style={styles.symbolText}>{item.symbol}</Text>
           </View>
         </View>
 
-        <Text style={styles.title}>{getField(item, 'title')}</Text>
+        <AutoText style={styles.title}>{getField(item, 'title')}</AutoText>
 
         <View style={styles.badges}>
           <Badge
@@ -92,12 +98,12 @@ export default function BreakthroughDetailScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('breakthroughs.description')}</Text>
-          <Text style={styles.sectionBody}>{getField(item, 'description')}</Text>
+          <AutoText style={styles.sectionBody}>{getField(item, 'description')}</AutoText>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('breakthroughs.potential_impact')}</Text>
-          <Text style={styles.sectionBody}>{getField(item, 'potential_impact')}</Text>
+          <AutoText style={styles.sectionBody}>{getField(item, 'potential_impact')}</AutoText>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -118,7 +124,6 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.borderLight,
   },
   backBtn: { width: 40, justifyContent: 'center' },
-  backArrow: { fontSize: 28, color: Colors.primary },
   headerTitle: { fontSize: 16, fontWeight: '700', color: Colors.primary, flex: 1, textAlign: 'center' },
   content: { padding: 16 },
   companyRow: {

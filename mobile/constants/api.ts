@@ -21,6 +21,7 @@ export const API_ROUTES = {
   },
   dailyUpdates: {
     list: '/api/mobile/v1/daily-updates',
+    availableDates: '/api/mobile/v1/daily-updates/available-dates',
     detail: (id: number) => `/api/mobile/v1/daily-updates/${id}`,
   },
   breakthroughs: {

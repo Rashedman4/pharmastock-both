@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
@@ -38,13 +38,22 @@ export default function LanguageScreen() {
       // Sync preference to backend so push notifications arrive in the right language
       apiClient.patch(API_ROUTES.meLanguage, { language: lang }).catch(() => {});
 
-      const { reloaded } = await changeLanguage(lang);
+      const { reloaded, restartRequired } = await changeLanguage(lang);
       setLanguage(lang);
       // If a reload was triggered, this component's JS context is about to be
-      // torn down — `reloaded` only comes back false when the direction (and
-      // therefore nothing native) needed to change, so it's safe to just stop
-      // showing the spinner in that case.
-      if (!reloaded) setApplying(false);
+      // torn down, so there is nothing left to do here. Otherwise the direction
+      // either didn't need to change, or (iOS) can only take effect on a cold
+      // start — say so rather than looking like the tap did nothing.
+      if (!reloaded) {
+        setApplying(false);
+        if (restartRequired) {
+          Alert.alert(
+            t('settings.restart_required_title'),
+            t('settings.restart_required_message'),
+            [{ text: t('common.ok') }]
+          );
+        }
+      }
     } catch {
       setApplying(false);
     }

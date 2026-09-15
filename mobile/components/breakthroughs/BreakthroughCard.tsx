@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/Card';
+import { AutoText } from '@/components/ui/AutoText';
 import { Badge } from '@/components/ui/Badge';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
@@ -34,17 +35,17 @@ export const BreakthroughCard = React.memo(function BreakthroughCard({ item, onP
   return (
     <Card onPress={onPress}>
       <View style={styles.header}>
-        <Text style={styles.company} numberOfLines={1}>
+        <AutoText style={styles.company} numberOfLines={1}>
           {item.company}
-        </Text>
+        </AutoText>
         <View style={styles.symbolPill}>
           <Text style={styles.symbolText}>{item.symbol}</Text>
         </View>
       </View>
 
-      <Text style={styles.title} numberOfLines={2}>
+      <AutoText style={styles.title} numberOfLines={2}>
         {getField(item, 'title')}
-      </Text>
+      </AutoText>
 
       <View style={styles.badges}>
         <Badge

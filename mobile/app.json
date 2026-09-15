@@ -2,13 +2,14 @@
   "expo": {
     "name": "Bio Pharma Stock",
     "slug": "pharmastock",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
+      "buildNumber": "1",
       "bundleIdentifier": "com.biopharmastock.app",
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
@@ -52,6 +53,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
+      "versionCode": 4,
       "permissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.VIBRATE",

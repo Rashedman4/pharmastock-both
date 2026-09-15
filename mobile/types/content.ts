@@ -17,6 +17,13 @@ export interface DailyUpdateItem {
   published_date: string;
 }
 
+/** One day that has at least one daily update, from /daily-updates/available-dates. */
+export interface AvailableDate {
+  /** YYYY-MM-DD in the backend's canonical timezone. */
+  date: string;
+  count: number;
+}
+
 export interface Breakthrough {
   id: number;
   title_en: string;

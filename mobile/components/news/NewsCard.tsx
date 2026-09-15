@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/Card";
+import { AutoText } from "@/components/ui/AutoText";
 import { Colors } from "@/constants/colors";
 import { useLocalizedField } from "@/lib/i18n-content";
 import type { NewsItem } from "@/types/content";
@@ -39,9 +40,9 @@ export const NewsCard = React.memo(function NewsCard({
         </View>
       </View>
 
-      <Text style={styles.title} numberOfLines={2}>
+      <AutoText style={styles.title} numberOfLines={2}>
         {getField(item, "title")}
-      </Text>
+      </AutoText>
 
       <Text style={styles.date}>{timeAgo(item.published_date)}</Text>
     </Card>

@@ -20,6 +20,7 @@ import { NewsCard } from '@/components/news/NewsCard';
 import { BreakthroughCard } from '@/components/breakthroughs/BreakthroughCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
+import { AutoText } from '@/components/ui/AutoText';
 import { Colors } from '@/constants/colors';
 import { useRTL } from '@/lib/rtl';
 import type { NewsItem, Breakthrough } from '@/types/content';
@@ -46,15 +47,6 @@ export default function HomeScreen() {
 
   const welcomeKey = user?.firstName ? 'home.welcome_name' : 'home.welcome';
   const welcomeName = user?.firstName ?? '';
-
-  // The greeting mixes Arabic with a Latin first name (e.g. "مرحبًا، RASHED").
-  // Text's default "auto" alignment picks a direction from the first strong
-  // character, which is normally fine here, but pin it explicitly rather
-  // than lean on that heuristic — see the same fix in NotificationItem.
-  const heroTextStyle = {
-    textAlign: isRTL ? ('right' as const) : ('left' as const),
-    writingDirection: isRTL ? ('rtl' as const) : ('ltr' as const),
-  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -91,13 +83,13 @@ export default function HomeScreen() {
             />
             <View style={[styles.heroFlourish, isRTL && styles.heroFlourishRTL]} />
             <View style={styles.heroContent}>
-              <Text style={[styles.heroGreeting, heroTextStyle]}>
+              <AutoText style={styles.heroGreeting}>
                 {t(welcomeKey, { name: welcomeName })}
-              </Text>
-              <Text style={[styles.heroTagline, heroTextStyle]}>{t('home.tagline')}</Text>
-              <Text style={[styles.heroSubtitle, heroTextStyle]} numberOfLines={2}>
+              </AutoText>
+              <AutoText style={styles.heroTagline}>{t('home.tagline')}</AutoText>
+              <AutoText style={styles.heroSubtitle} numberOfLines={2}>
                 {t('home.hero_subtitle')}
-              </Text>
+              </AutoText>
             </View>
           </View>
         </View>

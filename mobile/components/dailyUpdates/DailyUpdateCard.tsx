@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/Card';
+import { AutoText } from '@/components/ui/AutoText';
 import { Colors } from '@/constants/colors';
 import { useLocalizedField } from '@/lib/i18n-content';
 import type { DailyUpdateItem } from '@/types/content';
@@ -39,14 +40,14 @@ export const DailyUpdateCard = React.memo(function DailyUpdateCard({ item, onPre
       </View>
 
       {subtitle ? (
-        <Text style={styles.subtitle} numberOfLines={2}>
+        <AutoText style={styles.subtitle} numberOfLines={2}>
           {subtitle}
-        </Text>
+        </AutoText>
       ) : null}
 
-      <Text style={styles.description} numberOfLines={3}>
+      <AutoText style={styles.description} numberOfLines={3}>
         {getField(item, 'description')}
-      </Text>
+      </AutoText>
 
       <Text style={styles.date}>{timeAgo(item.published_date)}</Text>
     </Card>
