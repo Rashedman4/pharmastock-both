@@ -5,23 +5,6 @@ export const metadata = {
   description:
     "Stay updated with the latest news and articles about pharmaceutical stocks and market trends.",
   alternates: buildAlternates("/news", "en"),
-  keywords: [
-    "pharmaceutical news",
-    "pharma stock news",
-    "biotech stocks",
-    "stock market updates",
-    "trading news",
-    "PharmaStock analysis",
-    "healthcare stocks",
-    "FDA approvals",
-    "biotech investments",
-    "latest drug developments",
-    "financial news",
-    "stock predictions",
-    "pharma industry trends",
-    "investment opportunities",
-    "market reports",
-  ],
 };
 export default function NewsPage() {
   return (

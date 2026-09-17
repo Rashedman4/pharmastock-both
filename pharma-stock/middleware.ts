@@ -42,7 +42,14 @@ const PROTECTED_ROUTES = [
   Route.Admin,
   Route.SignalsApi,
   Route.DailyVideo,
-  Route.EliteApplications,
+  // NOTE: Route.EliteApplications ("/elite-group") is deliberately NOT gated.
+  // It is the public program landing page — the comment above and the sitemap
+  // both treat it as public, and gating it hid the site's main commercial page
+  // from search engines and from prospects arriving on a partner referral link.
+  // PublicElitePage handles the guest case itself (401 from /api/elite/status
+  // -> "must log in" prompt), and every /api/elite/* route enforces auth
+  // independently via getAuthUser(), so nothing sensitive is exposed.
+  // The nested Elite dashboards below remain gated.
   // Elite dashboards and investor pages
   Route.EliteDashboard,
   Route.ElitePortfolio,

@@ -19,60 +19,6 @@ export const metadata = {
     "Bio Pharma Stock | Biopharma Research Intelligence — Signals, News & Insights",
   description:
     "BioPharmaStock is a specialized biopharma research intelligence company. We analyze clinical trials, FDA regulatory events, and market catalysts to deliver real-time trading signals, biotech stock news, expert analysis, and daily investment insights.",
-  keywords: [
-    "biopharma research intelligence",
-    "pharma stocks",
-    "biotech stocks",
-    "pharmaceutical stock signals",
-    "stock market analysis",
-    "trading signals",
-    "pharmaceutical industry",
-    "biotech investment",
-    "biotech trends",
-    "pharma investment",
-    "stock news",
-    "daily stock updates",
-    "biotech stock predictions",
-    "pharma stock forecast",
-    "US stock market",
-    "stock trading insights",
-    "pharmaceutical market trends",
-    "biotech companies",
-    "healthcare stocks",
-    "stock market research",
-    "biotech IPOs",
-    "pharma ETFs",
-    "best biotech stocks",
-    "top pharmaceutical stocks",
-    "biotech penny stocks",
-    "pharma industry updates",
-    "stock price analysis",
-    "investing in biotech",
-    "pharmaceutical sector investments",
-    "biotech stock ratings",
-    "pharmaceutical business news",
-    "long-term biotech investments",
-    "healthcare sector stocks",
-    "pharma stock market insights",
-    "biotech stock buy signals",
-    "big pharma stock updates",
-    "latest pharma stock reports",
-    "pharma stock alerts",
-    "market trends in biotechnology",
-    "pharma sector financial news",
-    "AI stock predictions for biotech",
-    "biotech mergers and acquisitions",
-    "biotech company earnings reports",
-    "pharma trading strategies",
-    "pharma stock technical analysis",
-    "pharma stock portfolio strategies",
-    "FDA approvals and stock impact",
-    "pharma regulatory news",
-    "latest drug developments",
-    "pharmaceutical companies in NASDAQ",
-    "top biotech stocks to watch",
-    "stock market for healthcare companies",
-  ],
   openGraph: {
     title: "Bio Pharma Stock | Biopharma Research Intelligence",
     description:
@@ -165,15 +111,11 @@ export default function RootLayout({
               name: "Bio Pharma Stock",
               url: "https://biopharmastock.com",
               inLanguage: ["en", "ar"],
-              potentialAction: {
-                "@type": "SearchAction",
-                target: {
-                  "@type": "EntryPoint",
-                  urlTemplate:
-                    "https://biopharmastock.com/en/ask-about-stock?q={search_term_string}",
-                },
-                "query-input": "required name=search_term_string",
-              },
+              // No `potentialAction`/SearchAction: the only candidate target
+              // (/en/ask-about-stock) is auth-gated and 307s to a `noindex`
+              // login page, so declaring it advertised a search entry point
+              // that no crawler or user could actually reach. Re-add this once
+              // a genuinely public search page exists.
             }),
           }}
         />
