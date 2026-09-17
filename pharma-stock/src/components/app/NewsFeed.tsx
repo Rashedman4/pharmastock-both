@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { ar } from "date-fns/locale";
@@ -28,14 +28,28 @@ interface NewsResponse {
   totalNews: number;
 }
 
-export default function NewsFeed({ lang }: LangProps) {
-  const [newsData, setNewsData] = useState<NewsResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+interface NewsFeedProps extends LangProps {
+  /**
+   * Page 1, unfiltered, fetched on the server so the list is in the HTML for
+   * crawlers and on first paint. Omitted (or null, if the query failed) falls
+   * back to the original client-side fetch-on-mount.
+   */
+  initialData?: NewsResponse | null;
+}
+
+export default function NewsFeed({ lang, initialData = null }: NewsFeedProps) {
+  const [newsData, setNewsData] = useState<NewsResponse | null>(initialData);
+  const [loading, setLoading] = useState<boolean>(!initialData);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [symbolInput, setSymbolInput] = useState<string>("");
   const [activeSymbol, setActiveSymbol] = useState<string>("");
+
+  // The server already rendered page 1 unfiltered, so skip the fetch that
+  // would otherwise fire on mount and re-request exactly that. Every later
+  // run (page change, symbol search, refresh) fetches as before.
+  const skipInitialFetch = useRef(Boolean(initialData));
 
   const fetchNews = useCallback(async (page: number) => {
     try {
@@ -58,6 +72,10 @@ export default function NewsFeed({ lang }: LangProps) {
   }, [activeSymbol]);
 
   useEffect(() => {
+    if (skipInitialFetch.current) {
+      skipInitialFetch.current = false;
+      return;
+    }
     fetchNews(currentPage);
   }, [currentPage, fetchNews]);
 
@@ -98,7 +116,10 @@ export default function NewsFeed({ lang }: LangProps) {
             lang === "ar" ? "flex-row-reverse" : ""
           }`}
         >
-          <p className="text-sm text-gray-500">
+          {/* Wall-clock time of the viewer's own session: the server renders
+              its own clock, the client corrects it on hydration. Expected to
+              differ, so don't warn about it. */}
+          <p className="text-sm text-gray-500" suppressHydrationWarning>
             {lang === "ar" ? "آخر تحديث:" : "Last updated:"}{" "}
             {format(lastUpdated, "HH:mm:ss")}
           </p>
@@ -182,10 +203,20 @@ export default function NewsFeed({ lang }: LangProps) {
                   <Calendar
                     className={`w-4 h-4 ${lang === "ar" ? "ml-1" : "mr-1"}`}
                   />
-                  {formatDistanceToNow(new Date(item.published_date), {
-                    addSuffix: true,
-                    locale: lang === "ar" ? ar : undefined,
-                  })}
+                  {/* Relative time is computed against whatever "now" is, so
+                      server and client can land on different wording either
+                      side of a boundary. The machine-readable absolute date
+                      lives in dateTime, which crawlers read and users don't
+                      see. */}
+                  <time
+                    dateTime={item.published_date}
+                    suppressHydrationWarning
+                  >
+                    {formatDistanceToNow(new Date(item.published_date), {
+                      addSuffix: true,
+                      locale: lang === "ar" ? ar : undefined,
+                    })}
+                  </time>
                 </div>
               </CardContent>
             </Card>

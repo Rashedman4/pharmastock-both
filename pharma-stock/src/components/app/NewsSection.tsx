@@ -8,6 +8,11 @@ interface LangProps {
   lang: "en" | "ar";
 }
 
+interface NewsSectionProps extends LangProps {
+  /** Server-rendered first page of news, passed straight through to NewsFeed. */
+  initialNews?: React.ComponentProps<typeof NewsFeed>["initialData"];
+}
+
 type Tab = "news" | "daily-updates";
 
 const labels: Record<Tab, Record<"en" | "ar", string>> = {
@@ -15,7 +20,7 @@ const labels: Record<Tab, Record<"en" | "ar", string>> = {
   "daily-updates": { en: "Daily Updates", ar: "التحديثات اليومية" },
 };
 
-export default function NewsSection({ lang }: LangProps) {
+export default function NewsSection({ lang, initialNews }: NewsSectionProps) {
   const [activeTab, setActiveTab] = useState<Tab>("news");
 
   return (
@@ -42,7 +47,7 @@ export default function NewsSection({ lang }: LangProps) {
       </div>
 
       {activeTab === "news" ? (
-        <NewsFeed lang={lang} />
+        <NewsFeed lang={lang} initialData={initialNews} />
       ) : (
         <DailyUpdatesFeed lang={lang} />
       )}

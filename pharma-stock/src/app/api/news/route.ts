@@ -1,65 +1,18 @@
 import { NextResponse } from "next/server";
-import pool from "@/lib/db";
-
-const NEWS_PER_PAGE = 15;
+import { getNewsPage } from "@/lib/queries/news";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const page = parseInt(searchParams.get("page") || "1");
-  const symbol = (searchParams.get("symbol") || "").trim();
-  const offset = (page - 1) * NEWS_PER_PAGE;
+  const symbol = searchParams.get("symbol") || "";
 
   try {
-    // Get total count with optional partial symbol filter
-    let totalNews = 0;
-    if (symbol) {
-      const like = `%${symbol}%`;
-      const countFiltered = await pool.query(
-        "SELECT COUNT(*) FROM news WHERE symbol ILIKE $1",
-        [like]
-      );
-      totalNews = parseInt(countFiltered.rows[0].count);
-    } else {
-      const countResult = await pool.query("SELECT COUNT(*) FROM news");
-      totalNews = parseInt(countResult.rows[0].count);
-    }
-    const totalPages = Math.ceil(totalNews / NEWS_PER_PAGE);
-
-    // Get paginated news with optional partial symbol filter
-    let result;
-    if (symbol) {
-      const like = `%${symbol}%`;
-      const query = `
-        SELECT *
-        FROM news
-        WHERE symbol ILIKE $1
-        ORDER BY published_date DESC
-        LIMIT $2 OFFSET $3
-      `;
-      result = await pool.query(query, [like, NEWS_PER_PAGE, offset]);
-    } else {
-      const query = `
-        SELECT *
-        FROM news
-        ORDER BY published_date DESC
-        LIMIT $1 OFFSET $2
-      `;
-      result = await pool.query(query, [NEWS_PER_PAGE, offset]);
-    }
-
-    return NextResponse.json(
-      {
-        news: result.rows,
-        totalPages,
-        currentPage: page,
-        totalNews,
-      },
-      { status: 200 }
-    );
+    const result = await getNewsPage({ page, symbol });
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "Error fetching news, error: " + error },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
