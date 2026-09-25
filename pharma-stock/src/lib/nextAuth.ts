@@ -7,6 +7,7 @@ import pool from "@/lib/db";
 import { createRateLimiter, getClientIPFromHeaders } from "@/lib/rate-limit";
 import { hashToken } from "@/lib/mobile/jwt";
 import { generateAppleClientSecret } from "@/lib/mobile/appleClientSecret";
+import { recordLogin, headersAuthContext } from "@/lib/services/auth-log.service";
 
 const loginLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 10 });
 const handoffLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 20 });
@@ -27,11 +28,33 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const ip = getClientIPFromHeaders(
-          req?.headers as Record<string, string | string[] | undefined> | undefined
-        );
+        const headers = req?.headers as
+          | Record<string, string | string[] | undefined>
+          | undefined;
+        const { ip, userAgent } = headersAuthContext(headers);
+        const email = credentials?.email ?? null;
+
+        // Credentials logins are recorded here rather than in the `signIn`
+        // callback: this is the only place that sees the failure cases, and
+        // `authorize` receives the request, so ip/user-agent are available.
+        // The callback therefore skips this provider (see callbacks.signIn).
+        // Explicitly typed so TypeScript treats a `fail(...)` call as
+        // never-returning and narrows `user` on the lines after it.
+        const fail: (reason: string) => never = (reason) => {
+          recordLogin({
+            client: "web",
+            method: "credentials",
+            success: false,
+            emailAttempted: email,
+            failureReason: reason,
+            ip,
+            userAgent,
+          });
+          throw new Error(reason);
+        };
+
         if (!loginLimiter(`login:${ip}`)) {
-          throw new Error("Too many login attempts. Please try again later.");
+          fail("Too many login attempts. Please try again later.");
         }
 
         const client = await pool.connect();
@@ -41,18 +64,28 @@ export const authOptions: NextAuthOptions = {
 
           const user = result.rows[0];
           if (!user) {
-            throw new Error("No user found with this email");
+            fail("No user found with this email");
           }
           if (user.provider === "google" || user.provider === "apple") {
-            throw new Error("Email registered with social login");
+            fail("Email registered with social login");
           }
           const isValid = await bcrypt.compare(
             credentials?.password as string,
             user.password as string
           );
           if (!isValid) {
-            throw new Error("Invalid password");
+            fail("Invalid password");
           }
+
+          recordLogin({
+            userId: user.id,
+            client: "web",
+            method: "credentials",
+            success: true,
+            emailAttempted: email,
+            ip,
+            userAgent,
+          });
 
           return { id: user.id, role: user.role, email: user.email };
         } finally {
@@ -122,6 +155,17 @@ export const authOptions: NextAuthOptions = {
           )
           .catch(() => {});
 
+        recordLogin({
+          userId: user.id,
+          client: "web",
+          method: "handoff",
+          success: true,
+          emailAttempted: user.email,
+          ...headersAuthContext(
+            req?.headers as Record<string, string | string[] | undefined> | undefined
+          ),
+        });
+
         return {
           id: user.id,
           role: user.role,
@@ -170,9 +214,27 @@ export const authOptions: NextAuthOptions = {
           }
 
           user.id = existingUser.id;
+          // OAuth logins are recorded here because `authorize` never runs for
+          // them. NextAuth's signIn callback receives no request, so ip and
+          // user-agent stay null for google/apple rows — the monitor page
+          // renders those as "—".
+          recordLogin({
+            userId: existingUser.id,
+            client: "web",
+            method: "google",
+            success: true,
+            emailAttempted: profile?.email ?? existingUser.email ?? null,
+          });
           return true;
         } catch (error) {
           console.error("Error during Google sign-in:", error);
+          recordLogin({
+            client: "web",
+            method: "google",
+            success: false,
+            emailAttempted: profile?.email ?? null,
+            failureReason: "Google sign-in error",
+          });
           return false;
         } finally {
           client.release();
@@ -218,9 +280,23 @@ export const authOptions: NextAuthOptions = {
           }
 
           user.id = existingUser.id;
+          recordLogin({
+            userId: existingUser.id,
+            client: "web",
+            method: "apple",
+            success: true,
+            emailAttempted: existingUser.email ?? null,
+          });
           return true;
         } catch (error) {
           console.error("Error during Apple sign-in:", error);
+          recordLogin({
+            client: "web",
+            method: "apple",
+            success: false,
+            emailAttempted: profile?.email ?? user.email ?? null,
+            failureReason: "Apple sign-in error",
+          });
           return false;
         } finally {
           client.release();

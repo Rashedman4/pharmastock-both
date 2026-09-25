@@ -9,6 +9,7 @@ import {
   getRefreshTokenTTL,
 } from '@/lib/mobile/jwt';
 import { getClientIP } from '@/lib/mobile/rate-limit';
+import { recordLogin, requestAuthContext } from '@/lib/services/auth-log.service';
 import { exchangeAppleAuthorizationCode } from '@/lib/mobile/appleTokens';
 import { encryptAppleToken } from '@/lib/mobile/appleTokenCrypto';
 
@@ -189,6 +190,16 @@ export async function POST(req: NextRequest) {
       ]);
     }
   }
+
+  // Login tracking for the admin monitor page (fire-and-forget, never throws).
+  recordLogin({
+    userId: user.id,
+    client: 'mobile',
+    method: 'apple',
+    success: true,
+    emailAttempted: user.email ?? email ?? null,
+    ...requestAuthContext(req),
+  });
 
   const accessToken = generateAccessToken(user.id, user.email ?? email ?? '');
   const refreshToken = generateRefreshToken();

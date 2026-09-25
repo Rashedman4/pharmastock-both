@@ -3,6 +3,7 @@ import Link from "next/link";
 
 const links = [
   { href: "/admin", label: "Overview" },
+  { href: "/admin/monitor", label: "Monitor" },
   { href: "/admin/partners", label: "Partners" },
   { href: "/admin/elite-applications", label: "Investor Applications" },
   { href: "/admin/elite-portfolios", label: "Investor Management" },

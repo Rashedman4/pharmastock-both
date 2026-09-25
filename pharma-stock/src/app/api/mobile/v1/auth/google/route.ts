@@ -8,6 +8,7 @@ import {
   getRefreshTokenTTL,
 } from '@/lib/mobile/jwt';
 import { getClientIP } from '@/lib/mobile/rate-limit';
+import { recordLogin, requestAuthContext } from '@/lib/services/auth-log.service';
 
 interface GoogleTokenInfo {
   sub: string;
@@ -139,6 +140,16 @@ export async function POST(req: NextRequest) {
       ).rows[0];
     }
   }
+
+  // Login tracking for the admin monitor page (fire-and-forget, never throws).
+  recordLogin({
+    userId: user.id,
+    client: 'mobile',
+    method: 'google',
+    success: true,
+    emailAttempted: user.email ?? email,
+    ...requestAuthContext(req),
+  });
 
   const accessToken = generateAccessToken(user.id, user.email ?? email);
   const refreshToken = generateRefreshToken();

@@ -11,6 +11,7 @@ import {
   getRefreshTokenTTL,
 } from '@/lib/mobile/jwt';
 import { createRateLimiter, getClientIP, rateLimitResponse } from '@/lib/mobile/rate-limit';
+import { recordLogin, requestAuthContext } from '@/lib/services/auth-log.service';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -52,9 +53,24 @@ export async function POST(req: NextRequest) {
 
   const { email, password, device_id, device_name } = parsed.data;
 
+  // Login tracking for the admin monitor page. recordLogin is fire-and-forget
+  // and never throws, so none of these calls can fail the login.
+  const logCtx = requestAuthContext(req);
+  const logFailure = (reason: string, userId?: number | null) =>
+    recordLogin({
+      userId: userId ?? null,
+      client: 'mobile',
+      method: 'credentials',
+      success: false,
+      emailAttempted: email,
+      failureReason: reason,
+      ...logCtx,
+    });
+
   const user = await getUserWithPasswordByEmail(email);
 
   if (!user) {
+    logFailure('No user found with this email');
     return NextResponse.json(
       { error: { code: 'INVALID_CREDENTIALS', message: 'Email or password is incorrect' } },
       { status: 401 }
@@ -62,6 +78,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (user.provider === 'google') {
+    logFailure('Email registered with social login', user.id);
     return NextResponse.json(
       {
         error: {
@@ -75,6 +92,7 @@ export async function POST(req: NextRequest) {
 
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
+    logFailure('Invalid password', user.id);
     return NextResponse.json(
       { error: { code: 'INVALID_CREDENTIALS', message: 'Email or password is incorrect' } },
       { status: 401 }
@@ -86,6 +104,15 @@ export async function POST(req: NextRequest) {
   const tokenHash = hashToken(refreshToken);
   const expiresAt = new Date(Date.now() + getRefreshTokenTTL() * 1000);
   const ip = getClientIP(req);
+
+  recordLogin({
+    userId: user.id,
+    client: 'mobile',
+    method: 'credentials',
+    success: true,
+    emailAttempted: email,
+    ...logCtx,
+  });
 
   await pool.query(
     `INSERT INTO mobile_refresh_tokens (user_id, token_hash, device_id, device_name, ip_address, expires_at)
