@@ -6,6 +6,7 @@ import BreakthroughSpotlight from "@/components/app/BreakthroughSpotlight";
 import IndustryInsights from "@/components/app/IndustryInsights";
 import GlobalPharmaMap from "@/components/app/GlobalPharmaMap";
 import EliteGroupCTA from "@/components/EliteGroupCTA";
+import GetTheAppSection from "@/components/app/GetTheAppSection";
 import { buildAlternates } from "@/lib/seo";
 export const metadata = {
   title: "Bio Pharma Stock | رؤى بحثية لقطاع الأدوية الحيوية — حيث يلتقي العلم بالاستثمار",
@@ -20,6 +21,7 @@ export default function Home() {
       <Hero lang="ar" />
       <TopStocksSlider lang="ar" />
       <EliteGroupCTA lang="ar" />
+      <GetTheAppSection lang="ar" />
       <div className="  py-8 ">
         <WhyPharmaSector lang="ar" />
         <BreakthroughSpotlight lang="ar" />

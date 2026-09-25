@@ -6,6 +6,7 @@ import BreakthroughSpotlight from "@/components/app/BreakthroughSpotlight";
 import IndustryInsights from "@/components/app/IndustryInsights";
 import GlobalPharmaMap from "@/components/app/GlobalPharmaMap";
 import EliteGroupCTA from "@/components/EliteGroupCTA";
+import GetTheAppSection from "@/components/app/GetTheAppSection";
 import { buildAlternates } from "@/lib/seo";
 export const metadata = {
   title:
@@ -20,6 +21,7 @@ export default function Home() {
       <Hero lang="en" />
       <TopStocksSlider lang="en" />
       <EliteGroupCTA lang="en" />
+      <GetTheAppSection lang="en" />
 
       <div className="  py-8 ">
         <WhyPharmaSector lang="en" />

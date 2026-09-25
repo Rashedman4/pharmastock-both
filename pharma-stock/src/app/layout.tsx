@@ -9,6 +9,7 @@ import PolicyModal from "@/components/app/PolicyModal";
 import AuthModal from "@/components/app/AuthModal";
 import Script from "next/script";
 import PageTracker from "@/components/app/PageTracker";
+import AppPromoBanner from "@/components/app/AppPromoBanner";
 //import WhatsAppButton from "@/components/app/WhatsAppButton";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -173,6 +174,7 @@ export default function RootLayout({
         <SessionWrapper>
           <Footer />
         </SessionWrapper>
+        <AppPromoBanner />
       </body>
     </html>
   );

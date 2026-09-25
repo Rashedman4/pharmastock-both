@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Rubik } from "next/font/google";
 import Image from "next/image";
+import StoreBadges from "@/components/app/StoreBadges";
+import { hasAnyStoreLink } from "@/config/app-store";
 
 const rubik = Rubik({
   weight: ["400"],
@@ -200,6 +202,22 @@ const Footer = () => {
                 </Button>
               </a>
             </div>
+
+            {/* Renders nothing until a real store link is set in
+                src/config/app-store.ts, so the footer keeps its shape. */}
+            {hasAnyStoreLink ? (
+              <div className="mt-6">
+                <h4 className="text-md font-semibold mb-1">
+                  {isArabic ? "حمّل التطبيق" : "Get the App"}
+                </h4>
+                <p className="text-xs text-pureWhite/70 mb-3">
+                  {isArabic
+                    ? "إشعارات فورية على هاتفك"
+                    : "Instant notifications on your phone"}
+                </p>
+                <StoreBadges lang={isArabic ? "ar" : "en"} variant="dark" />
+              </div>
+            ) : null}
           </div>
         </div>
 
