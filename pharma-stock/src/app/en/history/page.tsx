@@ -14,7 +14,7 @@ export default function HistoryPage() {
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
       <div className="mb-4 sm:mb-8">
-        <h1 className="text-xl sm:text-2xl font-bold text-royalBlue flex items-center">
+        <h1 className="text-xl sm:text-2xl font-bold text-royalBlue dark:text-slate-100 flex items-center">
           <ArrowUpDown className="mr-2 h-6 w-6 sm:h-8 sm:w-8" />
           History
         </h1>

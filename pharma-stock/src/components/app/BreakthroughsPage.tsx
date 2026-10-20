@@ -165,7 +165,7 @@ export default function BreakthroughsPage({
 
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 ${
+      className={`min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-950 dark:to-slate-900 ${
         lang === "ar" ? "text-right" : ""
       }`}
     >
@@ -187,10 +187,10 @@ export default function BreakthroughsPage({
         <Card className="shadow-lg border border-red-200">
           <CardContent className="p-6 flex items-center justify-between gap-4">
             <div>
-              <p className="font-semibold text-red-600">
+              <p className="font-semibold text-red-600 dark:text-red-400">
                 Failed to load breakthroughs.
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-slate-300">
                 Try again. If it keeps happening, your API is failing.
               </p>
             </div>
@@ -204,13 +204,13 @@ export default function BreakthroughsPage({
       ) : (
         <>
           <div className="mb-6 flex items-center justify-between">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-slate-300">
               {t.showing}{" "}
-              <span className="font-semibold text-royalBlue">
+              <span className="font-semibold text-royalBlue dark:text-slate-100">
                 {rangeStart}-{rangeEnd}
               </span>{" "}
               {t.of}{" "}
-              <span className="font-semibold text-royalBlue">
+              <span className="font-semibold text-royalBlue dark:text-slate-100">
                 {totalBreakthroughs}
               </span>{" "}
               {t.breakthroughs}
@@ -218,7 +218,7 @@ export default function BreakthroughsPage({
 
             {/* Subtle “updating” indicator (when changing filters/pages) */}
             {isUpdating && (
-              <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400">
                 <span className="h-2 w-2 rounded-full bg-brightTeal animate-pulse" />
                 Updating…
               </div>
@@ -300,7 +300,7 @@ function PageHeader({
       transition={{ duration: 0.7 }}
     >
       <motion.h1
-        className="text-4xl font-bold text-royalBlue mb-4 flex items-center justify-center"
+        className="text-4xl font-bold text-royalBlue dark:text-slate-100 mb-4 flex items-center justify-center"
         initial={{ scale: 0.9 }}
         animate={isInView ? { scale: 1 } : { scale: 0.9 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -318,7 +318,7 @@ function PageHeader({
         className="h-1 bg-brightTeal mx-auto mb-6"
       />
       <motion.p
-        className="text-xl text-gray-600 max-w-3xl mx-auto"
+        className="text-xl text-gray-600 dark:text-slate-300 max-w-3xl mx-auto"
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
@@ -354,7 +354,7 @@ function FiltersSection({
         <CardContent className="p-6">
           <div className="flex items-center mb-4">
             <Filter className="mr-2 h-5 w-5 text-brightTeal" />
-            <h3 className="text-lg font-semibold text-royalBlue">
+            <h3 className="text-lg font-semibold text-royalBlue dark:text-slate-100">
               {t.filterTitle}
             </h3>
           </div>
@@ -375,7 +375,7 @@ function FiltersSection({
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brightTeal"
+              className="px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-brightTeal"
             >
               <option value="all">{t.allCategories}</option>
               <option value="drug">
@@ -393,7 +393,7 @@ function FiltersSection({
             <select
               value={selectedStage}
               onChange={(e) => setSelectedStage(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brightTeal"
+              className="px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-brightTeal"
             >
               <option value="all">{t.allStages}</option>
               <option value="research">
@@ -462,7 +462,7 @@ function BreakthroughCard({
       whileHover={{ y: -5 }}
       className="h-full"
     >
-      <Card className="h-full border-2 border-gray-200 hover:border-brightTeal/50 transition-all duration-300 shadow-lg hover:shadow-xl">
+      <Card className="h-full border-2 border-gray-200 dark:border-slate-700 hover:border-brightTeal/50 transition-all duration-300 shadow-lg hover:shadow-xl">
         <CardContent className="p-6 flex flex-col h-full">
           {/* Header */}
           <div className="flex justify-between items-start mb-4">
@@ -483,16 +483,16 @@ function BreakthroughCard({
               </Badge>
             </div>
             {/* Post Date */}
-            <span className="text-xs text-gray-500">{postDate}</span>
+            <span className="text-xs text-gray-500 dark:text-slate-400">{postDate}</span>
           </div>
 
           {/* Title and Company */}
-          <h3 className="text-xl font-bold text-royalBlue mb-2">
+          <h3 className="text-xl font-bold text-royalBlue dark:text-slate-100 mb-2">
             {lang === "ar" ? breakthrough.title_ar : breakthrough.title_en}
           </h3>
           <div className="flex items-center mb-4">
-            <Building2 className="mr-1 h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600">
+            <Building2 className="mr-1 h-4 w-4 text-gray-500 dark:text-slate-400" />
+            <span className="text-sm text-gray-600 dark:text-slate-300">
               {breakthrough.company}{" "}
               <span className="text-md font-bold text-brightTeal">
                 ({breakthrough.symbol})
@@ -501,18 +501,18 @@ function BreakthroughCard({
           </div>
 
           {/* Description */}
-          <p className="text-gray-700 mb-4 flex-grow">
+          <p className="text-gray-700 dark:text-slate-200 mb-4 flex-grow">
             {lang === "ar"
               ? breakthrough.description_ar
               : breakthrough.description_en}
           </p>
 
           {/* Market Impact */}
-          <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-            <h4 className="font-semibold text-royalBlue mb-2">
+          <div className="mb-4 p-3 bg-gray-50 dark:bg-slate-900 rounded-lg">
+            <h4 className="font-semibold text-royalBlue dark:text-slate-100 mb-2">
               {t.marketPotential}
             </h4>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-slate-300">
               {lang === "ar"
                 ? breakthrough.potential_impact_ar
                 : breakthrough.potential_impact_en}
@@ -529,33 +529,33 @@ function BreakthroughsSkeleton({ lang }: { lang: "en" | "ar" }) {
     <div className={lang === "ar" ? "text-right" : ""}>
       {/* Count skeleton */}
       <div className="mb-6 flex items-center justify-between">
-        <div className="h-5 w-64 bg-gray-200 rounded animate-pulse" />
-        <div className="h-5 w-24 bg-gray-200 rounded animate-pulse" />
+        <div className="h-5 w-64 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+        <div className="h-5 w-24 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
       </div>
 
       {/* Cards skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Card key={i} className="border-2 border-gray-200 shadow-lg">
+          <Card key={i} className="border-2 border-gray-200 dark:border-slate-700 shadow-lg">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <div className="h-6 w-32 bg-gray-200 rounded animate-pulse" />
-                <div className="h-4 w-20 bg-gray-200 rounded animate-pulse" />
+                <div className="h-6 w-32 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="h-4 w-20 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
               </div>
 
-              <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse mb-3" />
-              <div className="h-4 w-1/2 bg-gray-200 rounded animate-pulse mb-6" />
+              <div className="h-6 w-3/4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse mb-3" />
+              <div className="h-4 w-1/2 bg-gray-200 dark:bg-slate-700 rounded animate-pulse mb-6" />
 
               <div className="space-y-2 mb-6">
-                <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
-                <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
-                <div className="h-4 w-5/6 bg-gray-200 rounded animate-pulse" />
+                <div className="h-4 w-full bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="h-4 w-full bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="h-4 w-5/6 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
               </div>
 
-              <div className="p-3 bg-gray-50 rounded-lg">
-                <div className="h-4 w-40 bg-gray-200 rounded animate-pulse mb-3" />
-                <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
-                <div className="h-4 w-4/5 bg-gray-200 rounded animate-pulse mt-2" />
+              <div className="p-3 bg-gray-50 dark:bg-slate-900 rounded-lg">
+                <div className="h-4 w-40 bg-gray-200 dark:bg-slate-700 rounded animate-pulse mb-3" />
+                <div className="h-4 w-full bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="h-4 w-4/5 bg-gray-200 dark:bg-slate-700 rounded animate-pulse mt-2" />
               </div>
             </CardContent>
           </Card>
@@ -564,9 +564,9 @@ function BreakthroughsSkeleton({ lang }: { lang: "en" | "ar" }) {
 
       {/* Pagination skeleton */}
       <div className="flex justify-center items-center gap-2 mt-8 pb-12">
-        <div className="h-9 w-10 bg-gray-200 rounded animate-pulse" />
-        <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
-        <div className="h-9 w-10 bg-gray-200 rounded animate-pulse" />
+        <div className="h-9 w-10 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+        <div className="h-5 w-32 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+        <div className="h-9 w-10 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
       </div>
     </div>
   );

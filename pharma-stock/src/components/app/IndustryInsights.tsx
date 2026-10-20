@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { Lightbulb, TrendingUp, BarChart3, ArrowUpLeft } from "lucide-react";
 import { useRef } from "react";
+import { useTheme } from "next-themes";
 
 interface ChartAnimationProps {
   children: React.ReactNode;
@@ -101,6 +102,8 @@ const marketTrendData = [
 
 export default function IndustryInsights({ lang }: langProps) {
   const insights = insightsTranslation[lang];
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   return (
     <section className="py-16 bg-gradient-to-br from-royalBlue/5 via-royalBlue/2 to-brightTeal/5">
       <div className="container mx-auto px-4">
@@ -123,7 +126,7 @@ export default function IndustryInsights({ lang }: langProps) {
           <ChartAnimation className="lg:col-span-2">
             <Card className="shadow-lg h-full">
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-royalBlue mb-4 flex items-center">
+                <h3 className="text-xl font-bold text-royalBlue dark:text-slate-100 mb-4 flex items-center">
                   {lang == "en" && (
                     <TrendingUp className="mr-2 h-5 w-5 text-brightTeal" />
                   )}
@@ -142,15 +145,42 @@ export default function IndustryInsights({ lang }: langProps) {
                       data={marketTrendData}
                       margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis dataKey="year" />
-                      <YAxis />
-                      <Tooltip />
+                      {/* Chart colours are the one place dark mode cannot be
+                          expressed as a `dark:` class — Recharts takes them as
+                          props. Light keeps the exact values it had: every
+                          override below is `undefined` unless the scheme is
+                          dark, which leaves Recharts on its own defaults. */}
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke={isDark ? "#24304A" : "#f0f0f0"}
+                      />
+                      <XAxis
+                        dataKey="year"
+                        stroke={isDark ? "#A3AEC2" : undefined}
+                        tick={isDark ? { fill: "#A3AEC2" } : undefined}
+                      />
+                      <YAxis
+                        stroke={isDark ? "#A3AEC2" : undefined}
+                        tick={isDark ? { fill: "#A3AEC2" } : undefined}
+                      />
+                      <Tooltip
+                        contentStyle={
+                          isDark
+                            ? {
+                                backgroundColor: "#111A2E",
+                                borderColor: "#24304A",
+                                color: "#E6EBF5",
+                              }
+                            : undefined
+                        }
+                        labelStyle={isDark ? { color: "#E6EBF5" } : undefined}
+                        itemStyle={isDark ? { color: "#E6EBF5" } : undefined}
+                      />
                       <Line
                         type="monotone"
                         dataKey="traditional"
                         name="Traditional Pharma"
-                        stroke="#0A2472"
+                        stroke={isDark ? "#8FA8FF" : "#0A2472"}
                         strokeWidth={2}
                         dot={{ r: 3 }}
                       />
@@ -158,7 +188,7 @@ export default function IndustryInsights({ lang }: langProps) {
                         type="monotone"
                         dataKey="precision"
                         name="Precision Medicine"
-                        stroke="#00A896"
+                        stroke={isDark ? "#19C3AE" : "#00A896"}
                         strokeWidth={2}
                         dot={{ r: 3 }}
                       />
@@ -173,7 +203,7 @@ export default function IndustryInsights({ lang }: langProps) {
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
-                <p className="text-sm text-gray-600 mt-4 text-center">
+                <p className="text-sm text-gray-600 dark:text-slate-300 mt-4 text-center">
                   {lang === "ar"
                     ? "يعرض النمو المفهرس (2018 = 100) أن العلاجات الرقمية والدقيقة تنمو بشكل أسرع من خطوط إنتاج الأدوية التقليدية."
                     : "Indexed growth (2018 = 100) shows precision and digital therapies scaling faster than legacy pharma pipelines."}
@@ -184,7 +214,7 @@ export default function IndustryInsights({ lang }: langProps) {
           <div>
             <Card className="shadow-lg h-full">
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-royalBlue mb-4 flex items-center">
+                <h3 className="text-xl font-bold text-royalBlue dark:text-slate-100 mb-4 flex items-center">
                   {lang == "en" && (
                     <BarChart3 className="mr-2 h-5 w-5 text-brightTeal" />
                   )}
@@ -212,7 +242,7 @@ export default function IndustryInsights({ lang }: langProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-center text-xs text-gray-500 mt-8"
+          className="text-center text-xs text-gray-500 dark:text-slate-400 mt-8"
         >
           {lang === "ar"
             ? "*البيانات مستندة إلى مصادر صناعية موثوقة (IQVIA, FDA, Grand View Research) ومحدّثة في يوليو 2026."
@@ -241,7 +271,7 @@ function SectionHeader({
       transition={{ duration: 0.7 }}
     >
       <motion.h2
-        className="text-3xl font-bold text-royalBlue mb-2 flex items-center justify-center"
+        className="text-3xl font-bold text-royalBlue dark:text-slate-100 mb-2 flex items-center justify-center"
         initial={{ scale: 0.9 }}
         animate={isInView ? { scale: 1 } : { scale: 0.9 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -255,7 +285,7 @@ function SectionHeader({
         className="h-1 bg-brightTeal mx-auto mb-4"
       />
       <motion.p
-        className="text-gray-600 max-w-2xl mx-auto"
+        className="text-gray-600 dark:text-slate-300 max-w-2xl mx-auto"
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
@@ -293,10 +323,10 @@ function InsightItem({ insight, index, lang }: langProps & InsightItemProps) {
       initial={{ opacity: 0, x: 50 }}
       animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="pb-4 border-b border-gray-200 last:border-0"
+      className="pb-4 border-b border-gray-200 dark:border-slate-700 last:border-0"
     >
       <div className="flex justify-between items-start mb-2">
-        <h4 className="font-semibold text-gray-800">{insight.title}</h4>
+        <h4 className="font-semibold text-gray-800 dark:text-slate-100">{insight.title}</h4>
         <Badge
           className={
             insight.impact === "positive"
@@ -319,7 +349,7 @@ function InsightItem({ insight, index, lang }: langProps & InsightItemProps) {
             : "Neutral"}
         </Badge>
       </div>
-      <p className="text-sm text-gray-600 mb-2">{insight.description}</p>
+      <p className="text-sm text-gray-600 dark:text-slate-300 mb-2">{insight.description}</p>
       <div className="flex flex-wrap gap-1">
         {insight.sectors.map((sector, idx) => (
           <motion.div

@@ -110,7 +110,7 @@ export default function RegisterComp() {
     <>
       <Card className="max-w-md mx-auto" dir="rtl">
         <CardHeader>
-          <CardTitle className="text-royalBlue">إنشاء حساب جديد</CardTitle>
+          <CardTitle className="text-royalBlue dark:text-slate-100">إنشاء حساب جديد</CardTitle>
         </CardHeader>
         <CardContent>
           {success ? (
@@ -122,7 +122,7 @@ export default function RegisterComp() {
               <div className="mb-4 flex gap-4">
                 <div className="flex-1">
                   <label
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                     htmlFor="firstName"
                   >
                     الاسم الأول
@@ -139,7 +139,7 @@ export default function RegisterComp() {
                 </div>
                 <div className="flex-1">
                   <label
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                     htmlFor="lastName"
                   >
                     الاسم الأخير
@@ -157,7 +157,7 @@ export default function RegisterComp() {
               </div>
               <div className="mb-4">
                 <label
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                   htmlFor="email"
                 >
                   البريد الإلكتروني
@@ -175,7 +175,7 @@ export default function RegisterComp() {
               {/* Country code and phone number */}
               <div className="mb-4">
                 <label
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                   htmlFor="phone"
                 >
                   رقم الهاتف
@@ -220,7 +220,7 @@ export default function RegisterComp() {
               </div>
               <div className="mb-4">
                 <label
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                   htmlFor="password"
                 >
                   كلمة المرور
@@ -237,7 +237,7 @@ export default function RegisterComp() {
               </div>
               <div className="mb-6">
                 <label
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                   htmlFor="confirmPassword"
                 >
                   تأكيد كلمة المرور
@@ -267,7 +267,7 @@ export default function RegisterComp() {
             </form>
           )}
 
-          <p className="mt-4 text-center text-sm text-gray-500">
+          <p className="mt-4 text-center text-sm text-gray-500 dark:text-slate-400">
             لديك حساب بالفعل؟{" "}
             <Link
               href="/ar/auth/login"

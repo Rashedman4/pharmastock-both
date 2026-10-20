@@ -200,8 +200,8 @@ export default function MobileTermsOfService({ lang }: LangProps) {
       className={`container mx-auto py-8 px-4 max-w-3xl ${isArabic ? "text-right" : ""}`}
       dir={isArabic ? "rtl" : "ltr"}
     >
-      <h1 className="text-3xl font-bold text-royalBlue mb-2">{t.title}</h1>
-      <p className="text-sm text-gray-500 mb-8">{t.lastUpdated}</p>
+      <h1 className="text-3xl font-bold text-royalBlue dark:text-slate-100 mb-2">{t.title}</h1>
+      <p className="text-sm text-gray-500 dark:text-slate-400 mb-8">{t.lastUpdated}</p>
 
       <div className="space-y-8">
         {t.sections.map((section, index) => (
@@ -210,13 +210,13 @@ export default function MobileTermsOfService({ lang }: LangProps) {
               {section.title}
             </h2>
             {section.paragraphs?.map((p, pIndex) => (
-              <p key={pIndex} className="text-gray-700">
+              <p key={pIndex} className="text-gray-700 dark:text-slate-200">
                 {p}
               </p>
             ))}
             {section.bullets && (
               <ul
-                className={`list-disc space-y-1 text-gray-700 ${
+                className={`list-disc space-y-1 text-gray-700 dark:text-slate-200 ${
                   isArabic ? "pr-6" : "pl-6"
                 }`}
               >

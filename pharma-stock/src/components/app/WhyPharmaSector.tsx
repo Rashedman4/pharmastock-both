@@ -96,7 +96,7 @@ export default function WhyPharmaSector({ lang }: LangProps) {
   return (
     <section
       ref={containerRef}
-      className="mb-12 py-16 bg-gradient-to-br from-royalBlue to-brightTeal text-pureWhite relative overflow-hidden"
+      className="mb-12 py-16 bg-gradient-to-br from-royalBlue to-brightTeal dark:from-slate-900 dark:to-slate-800 text-pureWhite relative overflow-hidden"
     >
       <div className="container mx-auto px-4">
         <div className="relative mb-12">

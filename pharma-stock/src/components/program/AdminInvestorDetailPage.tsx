@@ -342,7 +342,7 @@ export default function AdminInvestorDetailPage({
         </div>
       ) : null}
       {info ? (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
           {info}
         </div>
       ) : null}
@@ -363,23 +363,23 @@ export default function AdminInvestorDetailPage({
           </Button>
         }
       >
-        <div className="flex flex-wrap gap-3 text-sm text-slate-600">
-          <div className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-700">
+        <div className="flex flex-wrap gap-3 text-sm text-slate-600 dark:text-slate-300">
+          <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 font-semibold text-slate-700 dark:text-slate-200">
             Free capital: {money(summary.freeCapitalAmount)}
           </div>
-          <div className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-700">
+          <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 font-semibold text-slate-700 dark:text-slate-200">
             Money in market: {money(summary.moneyInMarket)}
           </div>
-          <div className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-700">
+          <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 font-semibold text-slate-700 dark:text-slate-200">
             Total equity: {money(summary.totalEquity)}
           </div>
-          <div className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-700">
+          <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 font-semibold text-slate-700 dark:text-slate-200">
             Partner: {data.partnerName || "None"}
           </div>
-          <div className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-semibold text-emerald-700">
+          <div className="rounded-full border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 font-semibold text-emerald-700 dark:text-emerald-300">
             Firm paid: {money(summary.firmProfitPaid)}
           </div>
-          <div className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 font-semibold text-amber-700">
+          <div className="rounded-full border border-amber-200 bg-amber-50 dark:bg-amber-950/40 px-3 py-1 font-semibold text-amber-700 dark:text-amber-300">
             Remaining firm due: {money(summary.firmProfitOutstanding)}
           </div>
         </div>
@@ -390,67 +390,67 @@ export default function AdminInvestorDetailPage({
         description="This strips out the noise and shows the numbers that actually matter."
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Free capital
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {money(summary.freeCapitalAmount)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Money in market
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {money(summary.moneyInMarket)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Overall profit
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {money(summary.overallProfit)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Firm profit
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {money(summary.firmProfit)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Investor profit
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {money(summary.investorProfit)}
             </p>
           </div>
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-            <p className="text-xs uppercase tracking-wide text-emerald-700">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 p-4">
+            <p className="text-xs uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
               Firm paid
             </p>
             <p className="mt-2 text-2xl font-semibold text-emerald-900">
               {money(summary.firmProfitPaid)}
             </p>
           </div>
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-            <p className="text-xs uppercase tracking-wide text-amber-700">
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 dark:bg-amber-950/40 p-4">
+            <p className="text-xs uppercase tracking-wide text-amber-700 dark:text-amber-300">
               Firm due
             </p>
             <p className="mt-2 text-2xl font-semibold text-amber-900">
               {money(summary.firmProfitOutstanding)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Unrealized
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {money(summary.openUnrealizedProfit)}
             </p>
           </div>
@@ -462,7 +462,7 @@ export default function AdminInvestorDetailPage({
         description="Stripe and bank-transfer payments are listed here. Manual bank transfers must be approved only after the full current due amount reaches the bank."
       >
         {data.portfolio.firmPayments.length === 0 ? (
-          <p className="text-sm text-slate-500">No firm profit payments yet.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No firm profit payments yet.</p>
         ) : (
           <div className="space-y-4">
             {data.portfolio.firmPayments.map((payment: any) => {
@@ -474,24 +474,24 @@ export default function AdminInvestorDetailPage({
                 );
 
               return (
-                <div key={payment.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div key={payment.id} className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <StatusBadge status={payment.status} />
-                        <span className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+                        <span className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
                           {method.replace(/_/g, " ")}
                         </span>
                       </div>
-                      <p className="mt-2 text-sm text-slate-600">
+                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
                         Requested {money(payment.amountRequested)} • Paid {money(payment.amountPaid)}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
                         Created {shortDate(payment.createdAt)} • Paid at {payment.paidAt ? shortDate(payment.paidAt) : "—"}
                       </p>
                     </div>
                     {payment.proofUrl ? (
-                      <a href={payment.proofUrl} target="_blank" rel="noreferrer" className="text-sm font-semibold text-blue-700 underline">
+                      <a href={payment.proofUrl} target="_blank" rel="noreferrer" className="text-sm font-semibold text-blue-700 dark:text-blue-300 underline">
                         Open transfer proof
                       </a>
                     ) : null}
@@ -499,14 +499,14 @@ export default function AdminInvestorDetailPage({
 
                   {method === "BANK_TRANSFER" ? (
                     <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+                      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 text-sm text-slate-700 dark:text-slate-200">
                         <p><span className="font-semibold">Manual reference:</span> {payment.manualReference || "—"}</p>
                         <p><span className="font-semibold">Transfer reference:</span> {payment.transferReference || "—"}</p>
                         <p><span className="font-semibold">Bank:</span> {payment.bankName || "—"}</p>
                         <p className="font-mono break-all"><span className="font-sans font-semibold">IBAN:</span> {payment.iban || "—"}</p>
-                        {payment.reviewNote ? <p className="mt-2 text-xs text-slate-500">Last note: {payment.reviewNote}</p> : null}
+                        {payment.reviewNote ? <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Last note: {payment.reviewNote}</p> : null}
                       </div>
-                      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
                         <Textarea
                           placeholder="Admin review note"
                           value={state[`payment-review-${payment.id}`] || ""}
@@ -536,7 +536,7 @@ export default function AdminInvestorDetailPage({
                             </Button>
                           </div>
                         ) : (
-                          <p className="mt-3 text-xs text-slate-500">No manual review action for this status.</p>
+                          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">No manual review action for this status.</p>
                         )}
                       </div>
                     </div>
@@ -646,21 +646,21 @@ export default function AdminInvestorDetailPage({
           {data.plans.map((plan: any) => (
             <div
               key={plan.id}
-              className="rounded-2xl border border-slate-200 p-5 shadow-sm"
+              className="rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm"
             >
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-lg font-semibold text-slate-900">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                   {plan.symbol}
                 </h3>
                 <StatusBadge status={plan.status} />
                 <StatusBadge status={plan.investorDecision} />
               </div>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 Qty {plan.suggestedQuantity} • Entry {money(plan.targetEntryPrice)} •{" "}
                 {shortDate(plan.plannedAt)}
               </p>
               {plan.execution ? (
-                <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 p-4 text-sm text-emerald-900">
                   <p>
                     Executed {plan.execution.executedQuantity} at{" "}
                     {money(plan.execution.executedPrice)} on{" "}
@@ -692,11 +692,11 @@ export default function AdminInvestorDetailPage({
                 </div>
               ) : null}
               {!plan.execution && !["EXECUTED", "CANCELLED", "CLOSED"].includes(String(plan.status || "").toUpperCase()) ? (
-                <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-4">
+                <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 dark:bg-blue-950/40 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold text-blue-900">Admin force open</p>
-                      <p className="text-xs text-blue-700">Open the plan directly without waiting for investor execution submission.</p>
+                      <p className="text-xs text-blue-700 dark:text-blue-300">Open the plan directly without waiting for investor execution submission.</p>
                     </div>
                     <Button
                       type="button"
@@ -755,20 +755,20 @@ export default function AdminInvestorDetailPage({
               ) : null}
 
               <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div className="space-y-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
                   {plan.messages.length === 0 ? (
-                    <p className="text-sm text-slate-500">No notes yet.</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">No notes yet.</p>
                   ) : (
                     plan.messages.map((message: any) => (
                       <div
                         key={message.id}
-                        className="rounded-xl bg-white p-3 text-sm text-slate-700"
+                        className="rounded-xl bg-white dark:bg-slate-900 p-3 text-sm text-slate-700 dark:text-slate-200"
                       >
-                        <p className="font-semibold text-slate-900">
+                        <p className="font-semibold text-slate-900 dark:text-slate-100">
                           {message.senderRole}
                         </p>
                         <p>{message.messageText}</p>
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                           {shortDate(message.createdAt)}
                         </p>
                       </div>
@@ -808,12 +808,12 @@ export default function AdminInvestorDetailPage({
         description="The current column is now explicit and the close flow stays visible."
       >
         {data.portfolio.openPositions.length === 0 ? (
-          <p className="text-sm text-slate-500">No open positions yet.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No open positions yet.</p>
         ) : (
           <div className="space-y-5">
-            <div className="overflow-x-auto rounded-2xl border border-slate-200">
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
               <table className="min-w-full divide-y divide-slate-200 text-sm">
-                <thead className="bg-slate-50 text-left text-slate-600">
+                <thead className="bg-slate-50 dark:bg-slate-900 text-left text-slate-600 dark:text-slate-300">
                   <tr>
                     <th className="px-4 py-3 font-semibold">Symbol</th>
                     <th className="px-4 py-3 font-semibold">Qty</th>
@@ -825,10 +825,10 @@ export default function AdminInvestorDetailPage({
                     <th className="px-4 py-3 font-semibold">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 bg-white">
+                <tbody className="divide-y divide-slate-200 bg-white dark:bg-slate-900">
                   {data.portfolio.openPositions.map((position: any) => (
                     <tr key={position.id}>
-                      <td className="px-4 py-4 font-semibold text-slate-900">
+                      <td className="px-4 py-4 font-semibold text-slate-900 dark:text-slate-100">
                         {position.symbol}
                       </td>
                       <td className="px-4 py-4">{position.quantityOpen}</td>
@@ -855,19 +855,19 @@ export default function AdminInvestorDetailPage({
             {data.portfolio.openPositions.map((position: any) => (
               <div
                 key={`position-form-${position.id}`}
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
+                className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-5"
               >
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-lg font-semibold text-slate-900">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                     {position.symbol}
                   </h3>
                   <StatusBadge status={position.status} />
                 </div>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   Qty {position.quantityOpen} • Entry {money(position.entryPrice)} •
                   Current {money(position.currentPrice)}
                 </p>
-                <div className="mt-4 grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 lg:grid-cols-4">
+                <div className="mt-4 grid gap-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 lg:grid-cols-4">
                   <Input
                     type="number"
                     placeholder="Close quantity"
@@ -932,13 +932,13 @@ export default function AdminInvestorDetailPage({
               request.initiatedByRole === "INVESTOR" ? (
                 <div
                   key={request.id}
-                  className="rounded-2xl border border-amber-200 bg-amber-50 p-5"
+                  className="rounded-2xl border border-amber-200 bg-amber-50 dark:bg-amber-950/40 p-5"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <StatusBadge status={request.status} />
-                        <div className="rounded-full border border-amber-200 px-3 py-1 text-xs font-semibold text-amber-700">
+                        <div className="rounded-full border border-amber-200 px-3 py-1 text-xs font-semibold text-amber-700 dark:text-amber-300">
                           Investor requested close
                         </div>
                       </div>
@@ -1019,11 +1019,11 @@ export default function AdminInvestorDetailPage({
         description="Closing evidence and net profit are shown directly."
       >
         {data.portfolio.closures.length === 0 ? (
-          <p className="text-sm text-slate-500">No closures recorded yet.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No closures recorded yet.</p>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-slate-200">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
             <table className="min-w-full divide-y divide-slate-200 text-sm">
-              <thead className="bg-slate-50 text-left text-slate-600">
+              <thead className="bg-slate-50 dark:bg-slate-900 text-left text-slate-600 dark:text-slate-300">
                 <tr>
                   <th className="px-4 py-3 font-semibold">Symbol</th>
                   <th className="px-4 py-3 font-semibold">Qty</th>
@@ -1036,7 +1036,7 @@ export default function AdminInvestorDetailPage({
                   <th className="px-4 py-3 font-semibold">Closed</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 bg-white">
+              <tbody className="divide-y divide-slate-200 bg-white dark:bg-slate-900">
                 {data.portfolio.closures.map((closure: any) => {
                   const investorNet =
                     closure.realizedProfitAmount -
@@ -1045,7 +1045,7 @@ export default function AdminInvestorDetailPage({
 
                   return (
                     <tr key={closure.id}>
-                      <td className="px-4 py-4 font-semibold text-slate-900">
+                      <td className="px-4 py-4 font-semibold text-slate-900 dark:text-slate-100">
                         {closure.symbol}
                       </td>
                       <td className="px-4 py-4">{closure.closedQuantity}</td>
@@ -1067,7 +1067,7 @@ export default function AdminInvestorDetailPage({
                               href={closure.evidenceUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="font-semibold text-blue-700 underline"
+                              className="font-semibold text-blue-700 dark:text-blue-300 underline"
                             >
                               Open image
                             </a>
@@ -1075,7 +1075,7 @@ export default function AdminInvestorDetailPage({
                             <img
                               src={closure.evidenceUrl}
                               alt={closure.evidenceName || "Close evidence"}
-                              className="max-h-24 rounded-xl border border-slate-200 object-cover"
+                              className="max-h-24 rounded-xl border border-slate-200 dark:border-slate-700 object-cover"
                             />
                           </div>
                         ) : (

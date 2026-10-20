@@ -359,7 +359,7 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
     >
       <SectionCard title={t.sectionTitle} description={t.sectionDescription}>
         {pendingRequest ? (
-          <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/40 px-4 py-3 text-sm text-amber-800">
             {t.pendingRequestNotice(
               money(pendingRequest.requestedCapitalAmount, lang),
               shortDate(pendingRequest.createdAt),
@@ -367,7 +367,7 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
           </div>
         ) : null}
         {capitalInfo ? (
-          <div className="mb-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          <div className="mb-3 rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
             {capitalInfo}
           </div>
         ) : null}
@@ -387,21 +387,21 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
             {savingCapital ? t.saving : t.saveCapital}
           </Button>
           <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-sm text-slate-600 dark:text-slate-300">
               {t.freeCapital}
-              <div className="mt-1 font-semibold text-slate-900" dir="ltr">
+              <div className="mt-1 font-semibold text-slate-900 dark:text-slate-100" dir="ltr">
                 {money(freeCapital, lang)}
               </div>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-sm text-slate-600 dark:text-slate-300">
               {t.moneyInMarket}
-              <div className="mt-1 font-semibold text-slate-900" dir="ltr">
+              <div className="mt-1 font-semibold text-slate-900 dark:text-slate-100" dir="ltr">
                 {money(moneyInMarket, lang)}
               </div>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-sm text-slate-600 dark:text-slate-300">
               {t.totalEquity}
-              <div className="mt-1 font-semibold text-slate-900" dir="ltr">
+              <div className="mt-1 font-semibold text-slate-900 dark:text-slate-100" dir="ltr">
                 {money(totalEquity, lang)}
               </div>
             </div>
@@ -429,26 +429,26 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
             return (
               <div
                 key={plan.id}
-                className="rounded-2xl border border-slate-200 p-5 shadow-sm"
+                className="rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-lg font-semibold text-slate-900">
+                      <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                         {plan.symbol}
                       </h3>
                       <StatusBadge status={plan.status} lang={lang} />
                       <StatusBadge status={plan.investorDecision} lang={lang} />
                     </div>
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                       {plan.companyName || t.noCompany} •{" "}
                       {shortDate(plan.plannedAt, lang)}
                     </p>
                   </div>
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-sm text-slate-600 dark:text-slate-300">
                     {t.suggestedAllocation}
                     <div
-                      className="mt-1 font-semibold text-slate-900"
+                      className="mt-1 font-semibold text-slate-900 dark:text-slate-100"
                       dir="ltr"
                     >
                       {money(suggestedAllocation, lang)}
@@ -456,56 +456,56 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
                   </div>
                 </div>
 
-                <div className="mt-4 grid gap-3 text-sm text-slate-600 md:grid-cols-2 xl:grid-cols-5">
-                  <div className="rounded-xl bg-slate-50 p-3">
+                <div className="mt-4 grid gap-3 text-sm text-slate-600 dark:text-slate-300 md:grid-cols-2 xl:grid-cols-5">
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-900 p-3">
                     {t.referencePrice}
                     <br />
-                    <span className="font-semibold text-slate-900" dir="ltr">
+                    <span className="font-semibold text-slate-900 dark:text-slate-100" dir="ltr">
                       {money(plan.referenceMarketPrice, lang)}
                     </span>
                   </div>
-                  <div className="rounded-xl bg-slate-50 p-3">
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-900 p-3">
                     {t.targetEntry}
                     <br />
-                    <span className="font-semibold text-slate-900" dir="ltr">
+                    <span className="font-semibold text-slate-900 dark:text-slate-100" dir="ltr">
                       {money(plan.targetEntryPrice, lang)}
                     </span>
                   </div>
-                  <div className="rounded-xl bg-slate-50 p-3">
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-900 p-3">
                     {t.target1}
                     <br />
-                    <span className="font-semibold text-slate-900" dir="ltr">
+                    <span className="font-semibold text-slate-900 dark:text-slate-100" dir="ltr">
                       {plan.targetPrice1 == null
                         ? "—"
                         : money(plan.targetPrice1, lang)}
                     </span>
                   </div>
-                  <div className="rounded-xl bg-slate-50 p-3">
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-900 p-3">
                     {t.target2}
                     <br />
-                    <span className="font-semibold text-slate-900" dir="ltr">
+                    <span className="font-semibold text-slate-900 dark:text-slate-100" dir="ltr">
                       {plan.targetPrice2 == null
                         ? "—"
                         : money(plan.targetPrice2, lang)}
                     </span>
                   </div>
-                  <div className="rounded-xl bg-slate-50 p-3">
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-900 p-3">
                     {t.suggestedQuantity}
                     <br />
-                    <span className="font-semibold text-slate-900" dir="ltr">
+                    <span className="font-semibold text-slate-900 dark:text-slate-100" dir="ltr">
                       {plan.suggestedQuantity}
                     </span>
                   </div>
                 </div>
 
                 {plan.adminNote ? (
-                  <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900">
+                  <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50 dark:bg-blue-950/40 p-4 text-sm text-blue-900">
                     {t.adminNote}: {plan.adminNote}
                   </div>
                 ) : null}
 
                 {!plan.execution ? (
-                  <div className="mt-5 space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="mt-5 space-y-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
                     {decisionPending ? (
                       <div className="grid gap-3 lg:grid-cols-[1fr,auto]">
                         <Textarea
@@ -542,16 +542,16 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
                         </div>
                       </div>
                     ) : (
-                      <div className="rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">
+                      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm text-slate-700 dark:text-slate-200">
                         {t.investorDecisionSaved}:{" "}
-                        <span className="font-semibold text-slate-900">
+                        <span className="font-semibold text-slate-900 dark:text-slate-100">
                           <StatusBadge
                             status={plan.investorDecision}
                             lang={lang}
                           />
                         </span>
                         {plan.investorNote ? (
-                          <span className="text-slate-500">
+                          <span className="text-slate-500 dark:text-slate-400">
                             {" "}
                             • {plan.investorNote}
                           </span>
@@ -560,7 +560,7 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
                     )}
 
                     {plan.investorDecision === "ACCEPTED" ? (
-                      <div className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 lg:grid-cols-2 xl:grid-cols-5">
+                      <div className="grid gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 lg:grid-cols-2 xl:grid-cols-5">
                         <Input
                           type="number"
                           placeholder={t.actualQuantity}
@@ -623,7 +623,7 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
                             placeholder={t.executionNotePlaceholder}
                             dir={isArabic ? "rtl" : "ltr"}
                           />
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
                             {t.capitalReductionNote}
                           </p>
                         </div>
@@ -631,7 +631,7 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
                     ) : null}
                   </div>
                 ) : (
-                  <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                  <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 p-4 text-sm text-emerald-900">
                     {t.executedSummary(
                       plan.execution.executedQuantity,
                       money(plan.execution.executedPrice, lang),
@@ -654,23 +654,23 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
 
                 <div className="mt-5 grid gap-4 lg:grid-cols-2">
                   <div className="space-y-2">
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                       {t.notesWithAdmin}
                     </p>
-                    <div className="max-h-48 space-y-2 overflow-y-auto rounded-xl border border-slate-200 bg-white p-3">
+                    <div className="max-h-48 space-y-2 overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3">
                       {plan.messages.length === 0 ? (
-                        <p className="text-sm text-slate-500">{t.noNotes}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">{t.noNotes}</p>
                       ) : (
                         plan.messages.map((message) => (
                           <div
                             key={message.id}
-                            className="rounded-xl bg-slate-50 p-3 text-sm text-slate-700"
+                            className="rounded-xl bg-slate-50 dark:bg-slate-900 p-3 text-sm text-slate-700 dark:text-slate-200"
                           >
-                            <p className="font-semibold text-slate-900">
+                            <p className="font-semibold text-slate-900 dark:text-slate-100">
                               {message.senderRole}
                             </p>
                             <p>{message.messageText}</p>
-                            <p className="mt-1 text-xs text-slate-500">
+                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                               {shortDate(message.createdAt, lang)}
                             </p>
                           </div>
@@ -679,7 +679,7 @@ export default function ElitePlanPage({ lang = "en" }: { lang?: "en" | "ar" }) {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                       {t.sendNoteTitle}
                     </p>
                     <Textarea

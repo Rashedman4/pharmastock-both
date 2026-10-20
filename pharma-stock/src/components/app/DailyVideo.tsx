@@ -109,7 +109,7 @@ export default function DailyVideo({ lang }: LangProps) {
             />
           </div>
           <div className={`p-6 ${lang === "ar" ? "text-right" : ""}`}>
-            <p className="text-gray-700 mb-4">
+            <p className="text-gray-700 dark:text-slate-200 mb-4">
               {lang === "ar" ? videoData.content_ar : videoData.content_en}
             </p>
             <h3 className="font-semibold text-lg mb-2">

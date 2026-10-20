@@ -364,7 +364,7 @@ export default function PublicElitePage({
               asChild
               size="lg"
               variant="outline"
-              className=" border-white/40 bg-white text-slate-950 shadow-lg shadow-black/20 hover:bg-slate-100"
+              className=" border-white/40 bg-white dark:bg-slate-900 text-slate-950 dark:text-slate-100 shadow-lg shadow-black/20 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <Link href={`/${lang}/elite-group/dashboard`}>
                 {t.openDashboard}
@@ -378,10 +378,10 @@ export default function PublicElitePage({
 
       <section className="space-y-5">
         <div className={isArabic ? "text-right" : ""}>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 md:text-4xl">
             {t.benefitsTitle}
           </h2>
-          <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
+          <p className="mt-2 max-w-2xl text-sm text-slate-600 dark:text-slate-300 md:text-base">
             {t.benefitsDescription}
           </p>
         </div>
@@ -393,7 +393,7 @@ export default function PublicElitePage({
             return (
               <div
                 key={item.title}
-                className={`self-start rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                className={`self-start rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
                   isArabic ? "text-right" : ""
                 }`}
               >
@@ -405,11 +405,11 @@ export default function PublicElitePage({
                   </div>
                 </div>
 
-                <h3 className="text-base font-semibold leading-7 text-slate-900">
+                <h3 className="text-base font-semibold leading-7 text-slate-900 dark:text-slate-100">
                   {item.title}
                 </h3>
 
-                <p className="mt-2 text-sm leading-6 text-slate-600">
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
                   {item.description}
                 </p>
               </div>
@@ -423,16 +423,16 @@ export default function PublicElitePage({
           <StatusBadge status={status?.status || "NONE"} lang={lang} />
 
           {status?.adminResponse ? (
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                 {t.adminNoteLabel}
               </p>
-              <p className="mt-1 text-sm text-slate-700">{status.adminResponse}</p>
+              <p className="mt-1 text-sm text-slate-700 dark:text-slate-200">{status.adminResponse}</p>
             </div>
           ) : null}
 
           {ref ? (
-            <p className="text-sm text-slate-500">{t.referralDetected}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t.referralDetected}</p>
           ) : null}
         </div>
       </SectionCard>
@@ -459,7 +459,7 @@ export default function PublicElitePage({
                 required
               />
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
                   {t.capitalLabel}
                 </label>
                 <Input
@@ -475,7 +475,7 @@ export default function PublicElitePage({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
                 {t.notesLabel}
               </label>
               <Textarea
@@ -483,14 +483,14 @@ export default function PublicElitePage({
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
                 }
-                className={`min-h-[130px] rounded-xl border-slate-300 ${isArabic ? "text-right" : ""}`}
+                className={`min-h-[130px] rounded-xl border-slate-300 dark:border-slate-600 ${isArabic ? "text-right" : ""}`}
                 placeholder={t.notesPlaceholder}
                 dir={isArabic ? "rtl" : "ltr"}
               />
             </div>
 
-            <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <p className="text-sm text-slate-600">{agreement.summary}</p>
+            <div className="space-y-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+              <p className="text-sm text-slate-600 dark:text-slate-300">{agreement.summary}</p>
               <button
                 type="button"
                 onClick={() => setShowAgreementModal(true)}
@@ -498,19 +498,19 @@ export default function PublicElitePage({
               >
                 {agreement.readFullLinkLabel}
               </button>
-              <label className="flex items-start gap-2 text-sm text-slate-700">
+              <label className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200">
                 <input
                   type="checkbox"
                   checked={agreementAccepted}
                   onChange={(e) => setAgreementAccepted(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 dark:border-slate-600 text-teal-600 focus:ring-teal-500"
                 />
                 <span>{agreement.checkboxLabel}</span>
               </label>
             </div>
 
             {message ? (
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
                 {message}
               </div>
             ) : null}
@@ -536,23 +536,23 @@ export default function PublicElitePage({
           <DialogHeader>
             <DialogTitle>{agreement.title}</DialogTitle>
           </DialogHeader>
-          <p className="text-sm font-medium text-slate-500">{agreement.subtitle}</p>
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{agreement.subtitle}</p>
           <p className="text-xs text-slate-400">{agreement.lastUpdated}</p>
-          <p className="text-sm leading-6 text-slate-700">{agreement.preamble}</p>
+          <p className="text-sm leading-6 text-slate-700 dark:text-slate-200">{agreement.preamble}</p>
           <div className="space-y-5">
             {agreement.sections.map((section, index) => (
               <div key={index} className="space-y-2">
-                <h3 className="text-base font-semibold text-slate-900">
+                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
                   {section.heading}
                 </h3>
                 {section.paragraphs?.map((paragraph, pIndex) => (
-                  <p key={pIndex} className="text-sm leading-6 text-slate-700">
+                  <p key={pIndex} className="text-sm leading-6 text-slate-700 dark:text-slate-200">
                     {paragraph}
                   </p>
                 ))}
                 {section.list ? (
                   <ul
-                    className={`list-disc space-y-1 text-sm leading-6 text-slate-700 ${
+                    className={`list-disc space-y-1 text-sm leading-6 text-slate-700 dark:text-slate-200 ${
                       isArabic ? "pr-5" : "pl-5"
                     }`}
                   >

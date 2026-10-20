@@ -159,7 +159,7 @@ export default function EliteDashboardPage({
               <Button
                 asChild
                 size="lg"
-                className="min-w-[170px] border border-white/40 bg-white text-slate-950 shadow-lg shadow-black/20 hover:bg-slate-100"
+                className="min-w-[170px] border border-white/40 bg-white dark:bg-slate-900 text-slate-950 dark:text-slate-100 shadow-lg shadow-black/20 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 <Link href={`/${lang}/elite-group/plan`}>{t.viewPlans}</Link>
               </Button>
@@ -169,7 +169,7 @@ export default function EliteDashboardPage({
               <Button
                 asChild
                 size="lg"
-                className="min-w-[170px] border border-white/40 bg-white text-slate-950 shadow-lg shadow-black/20 hover:bg-slate-100"
+                className="min-w-[170px] border border-white/40 bg-white dark:bg-slate-900 text-slate-950 dark:text-slate-100 shadow-lg shadow-black/20 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 <Link href={`/${lang}/elite-group/plan`}>{t.viewPlans}</Link>
               </Button>
@@ -213,7 +213,7 @@ export default function EliteDashboardPage({
       </div>
 
       <SectionCard title={t.nextTitle}>
-        <ul className="space-y-3 text-sm text-slate-600">
+        <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
           {t.nextSteps.map((step) => (
             <li key={step}>• {step}</li>
           ))}

@@ -100,6 +100,18 @@ export default function AuthModal() {
     }
   }, [pathname, status, delayPassed, policyOk]);
 
+  // Opened on demand by a guest action that needs an account — the watch and
+  // alert buttons on the stock pages dispatch this. Deliberately ignores the
+  // "maybe later" cookie: the user just asked for it.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onRequest = () => {
+      if (status !== "authenticated") setIsOpen(true);
+    };
+    window.addEventListener("openAuthModal", onRequest);
+    return () => window.removeEventListener("openAuthModal", onRequest);
+  }, [status]);
+
   const handleDismiss = () => {
     Cookies.set("authModalDismissed", "true", { expires: 1 }); // 1 day
     setIsOpen(false);
@@ -120,7 +132,7 @@ export default function AuthModal() {
             <CardHeader className="relative">
               <button
                 aria-label="Close"
-                className="absolute right-2 top-2 rounded p-2 text-gray-500 hover:bg-lightGray hover:text-gray-700"
+                className="absolute right-2 top-2 rounded p-2 text-gray-500 dark:text-slate-400 hover:bg-lightGray dark:hover:bg-slate-800 hover:text-gray-700 dark:hover:text-slate-200"
                 onClick={handleDismiss}
               >
                 <X className="h-4 w-4" />
@@ -133,7 +145,7 @@ export default function AuthModal() {
                 {t.title}
               </CardTitle>
               <p
-                className={`mt-1 text-sm text-gray-600 ${
+                className={`mt-1 text-sm text-gray-600 dark:text-slate-300 ${
                   lang === "ar" ? "text-right" : "text-left"
                 }`}
               >
@@ -172,7 +184,7 @@ export default function AuthModal() {
                 <Button
                   variant="ghost"
                   onClick={handleDismiss}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200"
                 >
                   {t.dismiss}
                 </Button>

@@ -200,7 +200,7 @@ export default function PublicPartnerPage({
 
       <div>
         <SectionCard title={t.canDoTitle}>
-          <ul className="space-y-3 text-sm text-slate-600">
+          <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
             {t.canDoItems.map((item) => (
               <li key={item}>• {item}</li>
             ))}

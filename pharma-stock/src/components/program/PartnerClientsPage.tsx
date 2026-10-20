@@ -103,12 +103,12 @@ export default function PartnerClientsPage({
           {rows.map((row) => (
             <div
               key={row.investorUserId}
-              className="rounded-2xl border border-slate-200 p-5 shadow-sm"
+              className="rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm"
             >
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-lg font-semibold text-slate-900">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                       {row.investorName}
                     </h3>
                     <StatusBadge status={row.linkStatus} lang={lang} />
@@ -116,10 +116,10 @@ export default function PartnerClientsPage({
                       <StatusBadge status={row.memberStatus} lang={lang} />
                     ) : null}
                   </div>
-                  <p dir="ltr" className="text-left text-sm text-slate-500">
+                  <p dir="ltr" className="text-left text-sm text-slate-500 dark:text-slate-400">
                     {row.email}
                   </p>
-                  <div className="flex flex-wrap gap-4 text-sm text-slate-600">
+                  <div className="flex flex-wrap gap-4 text-sm text-slate-600 dark:text-slate-300">
                     <span>
                       {t.capital}: {money(row.currentCapital, lang)}
                     </span>

@@ -188,7 +188,7 @@ export default function AskAboutStockComp({ lang }: langProps) {
       animate="visible"
     >
       <motion.div variants={itemVariants}>
-        <h1 className="text-4xl font-bold text-royalBlue mb-8 text-center">
+        <h1 className="text-4xl font-bold text-royalBlue dark:text-slate-100 mb-8 text-center">
           {t.title}
         </h1>
       </motion.div>

@@ -72,13 +72,13 @@ export function PhoneNumberField({
 
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium text-slate-700">{label}</label>
+      <label className="text-sm font-medium text-slate-700 dark:text-slate-200">{label}</label>
 
       <div className={`flex gap-2 ${isArabic ? "flex-row-reverse" : ""}`}>
         <select
           value={countryCode}
           onChange={(e) => onCountryCodeChange(e.target.value)}
-          className="h-11 w-[170px] rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          className="h-11 w-[170px] rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 text-sm text-slate-700 dark:text-slate-200 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
           aria-label={label}
           required={required}
         >

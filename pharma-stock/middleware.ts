@@ -13,6 +13,7 @@ enum Route {
   SignalsApi = "/api/signals",
   DailyVideo = "/daily-video",
   EliteApplications = "/elite-group",
+  Watchlist = "/watchlist",
   //Pricing = "/subscription",
   // Partner (agent) routes and elite dashboards (introduced in the
   // Affiliate/Agent specification). The landing pages under
@@ -39,6 +40,9 @@ enum Route {
 const PROTECTED_ROUTES = [
   Route.Signals,
   Route.AskAboutStock,
+  // The watchlist is per-user. Stock search, stock pages and announcements
+  // stay public.
+  Route.Watchlist,
   Route.Admin,
   Route.SignalsApi,
   Route.DailyVideo,

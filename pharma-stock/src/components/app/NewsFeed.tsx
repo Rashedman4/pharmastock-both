@@ -119,7 +119,7 @@ export default function NewsFeed({ lang, initialData = null }: NewsFeedProps) {
           {/* Wall-clock time of the viewer's own session: the server renders
               its own clock, the client corrects it on hydration. Expected to
               differ, so don't warn about it. */}
-          <p className="text-sm text-gray-500" suppressHydrationWarning>
+          <p className="text-sm text-gray-500 dark:text-slate-400" suppressHydrationWarning>
             {lang === "ar" ? "آخر تحديث:" : "Last updated:"}{" "}
             {format(lastUpdated, "HH:mm:ss")}
           </p>
@@ -164,7 +164,7 @@ export default function NewsFeed({ lang, initialData = null }: NewsFeedProps) {
 
         {activeSymbol && (
           <p
-            className={`text-xs text-gray-500 ${
+            className={`text-xs text-gray-500 dark:text-slate-400 ${
               lang === "ar" ? "text-right" : "text-left"
             }`}
           >
@@ -190,16 +190,16 @@ export default function NewsFeed({ lang, initialData = null }: NewsFeedProps) {
                   </span>
                   {/*   <span
                     className={`font-semibold ${
-                      item.price > 0 ? "text-green-600" : "text-red-600"
+                      item.price > 0 ? "text-green-600 dark:text-green-400" : "text-red-600"
                     }`}
                   >
                     ${item.price}
                   </span> */}
                 </div>
-                <p className="text-gray-700 mb-2">
+                <p className="text-gray-700 dark:text-slate-200 mb-2">
                   {lang === "ar" ? item.title_ar : item.title_en}
                 </p>
-                <div className="flex items-center text-sm text-gray-500">
+                <div className="flex items-center text-sm text-gray-500 dark:text-slate-400">
                   <Calendar
                     className={`w-4 h-4 ${lang === "ar" ? "ml-1" : "mr-1"}`}
                   />

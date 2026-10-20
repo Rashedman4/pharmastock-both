@@ -90,7 +90,7 @@ export default function QuestionForm({ lang }: LangProps) {
     >
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl text-royalBlue">
+          <CardTitle className="text-xl text-royalBlue dark:text-slate-100">
             {translations[lang].title}
           </CardTitle>
         </CardHeader>

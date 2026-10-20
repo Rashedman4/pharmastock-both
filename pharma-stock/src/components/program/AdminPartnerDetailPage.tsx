@@ -70,11 +70,11 @@ export default function AdminPartnerDetailPage({ partnerId }: { partnerId: numbe
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={data.status} />
-            <div className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">Referral code: {data.referralCode || 'Not created yet'}</div>
-            <div className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">Phone: {data.phoneNumber}</div>
-            <div className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">IBAN: {data.iban || 'Not provided yet'}</div>
+            <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">Referral code: {data.referralCode || 'Not created yet'}</div>
+            <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">Phone: {data.phoneNumber}</div>
+            <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">IBAN: {data.iban || 'Not provided yet'}</div>
           </div>
-          <p className="text-sm text-slate-600">{data.bio}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300">{data.bio}</p>
           <Textarea value={reviewNote} onChange={(e) => setReviewNote(e.target.value)} placeholder="Admin review note" />
           <div className="flex flex-wrap gap-2">
             <Button type="button" onClick={() => review(true)}>Approve partner</Button>
@@ -85,18 +85,18 @@ export default function AdminPartnerDetailPage({ partnerId }: { partnerId: numbe
 
       <SectionCard title="Partner payout state" description="Unlocked means the investor already paid the firm's share for related closures.">
         <div className="grid gap-4 md:grid-cols-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4"><p className="text-xs uppercase tracking-wide text-slate-500">Unlocked</p><p className="mt-2 text-2xl font-semibold text-slate-900">{money(data.payoutSummary?.unlockedAmount || 0)}</p></div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4"><p className="text-xs uppercase tracking-wide text-slate-500">Available</p><p className="mt-2 text-2xl font-semibold text-slate-900">{money(data.payoutSummary?.availableToRequestAmount || 0)}</p></div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4"><p className="text-xs uppercase tracking-wide text-slate-500">Requested</p><p className="mt-2 text-2xl font-semibold text-slate-900">{money(data.payoutSummary?.requestedLockedAmount || 0)}</p></div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4"><p className="text-xs uppercase tracking-wide text-slate-500">Paid out</p><p className="mt-2 text-2xl font-semibold text-slate-900">{money(data.payoutSummary?.paidOutAmount || 0)}</p></div>
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"><p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Unlocked</p><p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">{money(data.payoutSummary?.unlockedAmount || 0)}</p></div>
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"><p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Available</p><p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">{money(data.payoutSummary?.availableToRequestAmount || 0)}</p></div>
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"><p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Requested</p><p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">{money(data.payoutSummary?.requestedLockedAmount || 0)}</p></div>
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"><p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Paid out</p><p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">{money(data.payoutSummary?.paidOutAmount || 0)}</p></div>
         </div>
         <div className="mt-4 space-y-3">
-          {(data.payoutRequests || []).length === 0 ? <p className="text-sm text-slate-500">No partner payout requests yet.</p> : data.payoutRequests?.map((request) => (
-            <div key={request.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          {(data.payoutRequests || []).length === 0 ? <p className="text-sm text-slate-500 dark:text-slate-400">No partner payout requests yet.</p> : data.payoutRequests?.map((request) => (
+            <div key={request.id} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <p className="font-semibold text-slate-900">{money(request.requestedAmount)}</p>
-                  <p className="text-sm text-slate-500">IBAN {request.ibanSnapshot} • Requested {request.createdAt}</p>
+                  <p className="font-semibold text-slate-900 dark:text-slate-100">{money(request.requestedAmount)}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">IBAN {request.ibanSnapshot} • Requested {request.createdAt}</p>
                 </div>
                 <StatusBadge status={request.status} />
               </div>
@@ -107,14 +107,14 @@ export default function AdminPartnerDetailPage({ partnerId }: { partnerId: numbe
 
       <SectionCard title="Linked investors" description="These are the investors attributed to this partner.">
         <div className="space-y-3">
-          {data.investors.length === 0 ? <p className="text-sm text-slate-500">No linked investors yet.</p> : data.investors.map((investor) => (
-            <div key={investor.investorUserId} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          {data.investors.length === 0 ? <p className="text-sm text-slate-500 dark:text-slate-400">No linked investors yet.</p> : data.investors.map((investor) => (
+            <div key={investor.investorUserId} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <p className="font-semibold text-slate-900">{investor.investorName}</p>
-                  <p className="text-sm text-slate-500">{investor.email}</p>
+                  <p className="font-semibold text-slate-900 dark:text-slate-100">{investor.investorName}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{investor.email}</p>
                 </div>
-                <div className="text-right text-sm text-slate-600">
+                <div className="text-right text-sm text-slate-600 dark:text-slate-300">
                   <p>Capital {money(investor.currentCapital)}</p>
                   <p>Profit {money(investor.realizedProfit)}</p>
                   <p>Current partner due {money(investor.partnerShare)}</p>

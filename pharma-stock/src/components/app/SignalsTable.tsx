@@ -79,7 +79,7 @@ export default function SignalsTable({ lang }: LangProps) {
     <Card className="overflow-hidden shadow-lg">
       <CardContent className="p-2 sm:p-4">
         <div className="flex justify-between items-center mb-4">
-          <p className="text-xs sm:text-sm text-gray-500">
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400">
             Last updated: {formatDate(lastUpdated.toISOString())}
           </p>
           <Button
@@ -100,28 +100,28 @@ export default function SignalsTable({ lang }: LangProps) {
           <Table>
             <TableHeader>
               <TableRow className="bg-royalBlue bg-opacity-10">
-                <TableHead className="text-royalBlue font-semibold text-xs sm:text-sm text-center">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-xs sm:text-sm text-center">
                   {lang === "ar" ? "الرمز" : "Symbol"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-xs sm:text-sm  text-center">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-xs sm:text-sm  text-center">
                   {lang === "ar" ? "النوع" : "Type"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-xs sm:text-sm  text-center">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-xs sm:text-sm  text-center">
                   {lang === "ar" ? "سعر الدخول" : "Enter"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-xs sm:text-sm text-center">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-xs sm:text-sm text-center">
                   {lang === "ar" ? "السعر الآن" : "Now"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-xs sm:text-sm text-center">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-xs sm:text-sm text-center">
                   {lang === "ar" ? "الهدف الأول" : "Target 1"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-xs sm:text-sm text-center">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-xs sm:text-sm text-center">
                   {lang === "ar" ? "الهدف الثاني" : "Target 2"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-xs sm:text-sm text-center">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-xs sm:text-sm text-center">
                   {lang === "ar" ? "تاريخ الدخول" : "Opened"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-xs sm:text-sm text-center">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-xs sm:text-sm text-center">
                   {lang === "ar" ? "السبب" : "Reason"}
                 </TableHead>
               </TableRow>
@@ -135,7 +135,7 @@ export default function SignalsTable({ lang }: LangProps) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
-                    className="hover:bg-lightGray transition-colors duration-200 text-center"
+                    className="hover:bg-lightGray dark:hover:bg-slate-800 transition-colors duration-200 text-center"
                   >
                     <TableCell className="text-xs sm:text-sm md:text-base px-1 sm:px-4 py-2 sm:py-3">
                       <Badge
@@ -178,7 +178,7 @@ export default function SignalsTable({ lang }: LangProps) {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="text-brightTeal hover:text-royalBlue hover:bg-brightTeal hover:bg-opacity-10 text-xs sm:text-sm p-1 sm:p-2"
+                                  className="text-brightTeal hover:text-royalBlue dark:hover:text-slate-100 hover:bg-brightTeal hover:bg-opacity-10 text-xs sm:text-sm p-1 sm:p-2"
                                   onClick={() => setSelectedSignal(signal)}
                                 >
                                   <Info className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -285,7 +285,7 @@ function EmptyState({ lang }: LangProps) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <p className="text-royalBlue font-semibold text-xs sm:text-sm">
+        <p className="text-royalBlue dark:text-slate-100 font-semibold text-xs sm:text-sm">
           {lang === "ar"
             ? "ليس هناك توصيات الان."
             : "There are no signals now."}

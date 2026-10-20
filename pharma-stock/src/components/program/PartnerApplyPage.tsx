@@ -282,7 +282,7 @@ export default function PartnerApplyPage({
         <form className="space-y-5" onSubmit={handleSubmit}>
           <div className="grid gap-5 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
                 {t.displayNameLabel}
               </label>
               <Input
@@ -311,7 +311,7 @@ export default function PartnerApplyPage({
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
               {t.bioLabel}
             </label>
             <Textarea
@@ -323,7 +323,7 @@ export default function PartnerApplyPage({
             />
           </div>
           {message ? (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
               {message}
             </div>
           ) : null}

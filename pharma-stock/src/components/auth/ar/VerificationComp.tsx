@@ -92,14 +92,14 @@ function VerificationForm() {
   return (
     <Card className="max-w-md mx-auto mt-10 " dir="rtl">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold text-royalBlue">
+        <CardTitle className="text-3xl font-bold text-royalBlue dark:text-slate-100">
           تحقق من بريدك الإلكتروني
         </CardTitle>
         <CardDescription className="text-center">
           لقد أرسلنا رمز تحقق مكون من 6 أحرف إلى {email}.<br />
           يرجى إدخاله أدناه.
           <br />
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-500 dark:text-slate-400">
             (يرجى التحقق من مجلد الرسائل غير المرغوب فيها (spam) في حال لم تصلك
             الرسالة.)
           </span>
@@ -109,7 +109,7 @@ function VerificationForm() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
               htmlFor="verificationCode"
             >
               رمز التحقق
@@ -142,7 +142,7 @@ function VerificationForm() {
             تحقق
           </Button>
         </form>
-        <p className="mt-4 text-center text-sm text-gray-500">
+        <p className="mt-4 text-center text-sm text-gray-500 dark:text-slate-400">
           لم تتلقَ الرمز؟{" "}
           <button
             className={`text-brightTeal hover:text-brightTeal/90 ${

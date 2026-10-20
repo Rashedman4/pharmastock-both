@@ -50,7 +50,7 @@ export default function GetTheAppSection({ lang = "en" }: { lang?: Lang }) {
   return (
     <section
       dir={isArabic ? "rtl" : "ltr"}
-      className="relative overflow-hidden bg-white py-10 md:py-14"
+      className="relative overflow-hidden bg-white dark:bg-slate-900 py-10 md:py-14"
     >
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-28 left-1/4 h-72 w-72 rounded-full bg-brightTeal/10 blur-3xl" />
@@ -63,9 +63,9 @@ export default function GetTheAppSection({ lang = "en" }: { lang?: Lang }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.55 }}
-          className="mx-auto max-w-4xl rounded-2xl border border-slate-200 bg-gradient-to-br from-royalBlue via-royalBlue/95 to-brightTeal p-[1px] shadow-sm"
+          className="mx-auto max-w-4xl rounded-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-royalBlue via-royalBlue/95 to-brightTeal p-[1px] shadow-sm"
         >
-          <div className="rounded-2xl bg-gradient-to-br from-royalBlue via-royalBlue/95 to-brightTeal px-6 py-8 md:px-10 md:py-10">
+          <div className="rounded-2xl bg-gradient-to-br from-royalBlue via-royalBlue/95 to-brightTeal dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 px-6 py-8 md:px-10 md:py-10">
             <p className="text-xs font-semibold uppercase tracking-widest text-brightTeal/90 md:text-sm">
               {t.eyebrow}
             </p>

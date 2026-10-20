@@ -17,7 +17,7 @@ export const metadata = {
 };
 export default function Home() {
   return (
-    <main className="min-h-screen bg-pureWhite">
+    <main className="min-h-screen bg-pureWhite dark:bg-slate-900">
       <Hero lang="en" />
       <TopStocksSlider lang="en" />
       <EliteGroupCTA lang="en" />

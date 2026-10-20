@@ -55,7 +55,7 @@ function ResetPasswordForm() {
     <>
       <Card className="max-w-md mx-auto mt-10 " dir="rtl">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold text-royalBlue">
+          <CardTitle className="text-3xl font-bold text-royalBlue dark:text-slate-100">
             إعادة تعيين كلمة المرور
           </CardTitle>
         </CardHeader>
@@ -69,7 +69,7 @@ function ResetPasswordForm() {
               <div className="mb-4">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                 >
                   كلمة المرور الجديدة
                 </label>
@@ -86,7 +86,7 @@ function ResetPasswordForm() {
               <div className="mb-4">
                 <label
                   htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                 >
                   تأكيد كلمة المرور
                 </label>

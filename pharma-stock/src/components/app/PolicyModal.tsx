@@ -82,7 +82,7 @@ export default function PolicyModal() {
         >
           <Card className="border-brightTeal">
             <CardHeader className="flex justify-between items-center">
-              <CardTitle className="text-xl font-bold text-royalBlue">
+              <CardTitle className="text-xl font-bold text-royalBlue dark:text-slate-100">
                 {t.title}
               </CardTitle>
               <Button
@@ -98,7 +98,7 @@ export default function PolicyModal() {
             <CardContent
               className={`space-y-4 ${lang === "ar" ? "rtl" : "ltr"}`}
             >
-              <p className="text-gray-600">{t.summary}</p>
+              <p className="text-gray-600 dark:text-slate-300">{t.summary}</p>
               <div className="flex flex-col sm:flex-row gap-2 justify-end">
                 <Button
                   variant="outline"

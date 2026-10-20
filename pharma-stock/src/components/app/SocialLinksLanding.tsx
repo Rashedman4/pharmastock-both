@@ -90,7 +90,7 @@ export default function SocialLinksLanding({ lang }: LangProps) {
   return (
     <div
       dir={lang === "ar" ? "rtl" : "ltr"}
-      className="min-h-screen bg-gradient-to-br from-royalBlue via-royalBlue to-brightTeal relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-royalBlue via-royalBlue to-brightTeal dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 relative overflow-hidden"
     >
       {/* Background Animations */}
       <div className="absolute inset-0 overflow-hidden">
@@ -189,7 +189,7 @@ function BenefitCard({
       <Card className="bg-pureWhite/10 backdrop-blur-md border-pureWhite/20">
         <CardContent className="p-6 text-center">
           <div className="w-16 h-16 bg-brightTeal rounded-full flex items-center justify-center mx-auto mb-4">
-            <benefit.icon className="w-8 h-8 text-royalBlue" />
+            <benefit.icon className="w-8 h-8 text-royalBlue dark:text-slate-100" />
           </div>
           <h3 className="text-xl font-bold text-pureWhite mb-2">
             {benefit.title[lang]}
@@ -255,7 +255,7 @@ function SocialLinkCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.8 + index * 0.15 }}
     >
-      <Card className="h-full bg-pureWhite hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-brightTeal">
+      <Card className="h-full bg-pureWhite dark:bg-slate-900 hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-brightTeal">
         <div className={`h-3 bg-gradient-to-r ${link.bgGradient}`} />
         <CardContent className="p-6 flex flex-col h-full">
           <div className="flex items-center mb-4">
@@ -268,7 +268,7 @@ function SocialLinkCard({
               <Icon className="w-7 h-7" style={{ color: link.color }} />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-royalBlue">
+              <h3 className="text-xl font-bold text-royalBlue dark:text-slate-100">
                 {link.name[lang]}
               </h3>
               <div className="h-0.5 w-12 bg-brightTeal mt-1" />

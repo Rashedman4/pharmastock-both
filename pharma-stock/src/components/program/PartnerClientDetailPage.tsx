@@ -127,24 +127,24 @@ export default function PartnerClientDetailPage({
           {data.referralCodeUsed ? (
             <div
               dir="ltr"
-              className="rounded-full border border-slate-200 px-3 py-1 text-left text-xs font-semibold text-slate-700"
+              className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 text-left text-xs font-semibold text-slate-700 dark:text-slate-200"
             >
               {t.referral}: {data.referralCodeUsed}
             </div>
           ) : null}
-          <div className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+          <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
             {t.capital}: {money(data.currentCapital, lang)}
           </div>
-          <div className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+          <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
             {t.realizedProfit}: {money(data.summary.realizedProfit, lang)}
           </div>
-          <div className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+          <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
             {t.partnerDue}: {money(data.summary.partnerShare, lang)}
           </div>
-          <div className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+          <div className="rounded-full border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
             {t.firmPaid}: {money(data.summary.firmProfitPaid, lang)}
           </div>
-          <div className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+          <div className="rounded-full border border-blue-200 bg-blue-50 dark:bg-blue-950/40 px-3 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300">
             {t.unlockedShare}: {money(data.summary.partnerUnlockedAmount, lang)}
           </div>
         </div>
@@ -156,19 +156,19 @@ export default function PartnerClientDetailPage({
       >
         <div className="space-y-3">
           {data.positions.length === 0 ? (
-            <p className="text-sm text-slate-500">{t.noOpenPositions}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t.noOpenPositions}</p>
           ) : (
             data.positions.map((position) => (
               <div
                 key={position.id}
-                className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <p className="font-semibold text-slate-900">
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">
                       {position.symbol}
                     </p>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       {t.qty} {position.quantity} • {t.entry}{" "}
                       {money(position.entryPrice, lang)} •{" "}
                       {shortDate(position.openedAt, lang)}
@@ -185,19 +185,19 @@ export default function PartnerClientDetailPage({
       <SectionCard title={t.closuresTitle} description={t.closuresDescription}>
         <div className="space-y-3">
           {data.closures.length === 0 ? (
-            <p className="text-sm text-slate-500">{t.noClosures}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t.noClosures}</p>
           ) : (
             data.closures.map((closure) => (
               <div
                 key={closure.id}
-                className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <p className="font-semibold text-slate-900">
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">
                       {closure.symbol}
                     </p>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       {t.qty} {closure.quantity} • {t.exit}{" "}
                       {money(closure.exitPrice, lang)} •{" "}
                       {shortDate(closure.closedAt, lang)}
@@ -206,16 +206,16 @@ export default function PartnerClientDetailPage({
                   <div
                     className={`text-sm ${isArabic ? "text-right" : "text-left sm:text-right"}`}
                   >
-                    <p className="font-semibold text-slate-900">
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">
                       {t.profit} {money(closure.realizedProfit, lang)}
                     </p>
-                    <p className="text-slate-500">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t.closureShare} {money(closure.partnerShare, lang)}
                     </p>
-                    <p className="text-slate-500">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t.firmPaid} {money(closure.firmPaidAmount, lang)}
                     </p>
-                    <p className="text-slate-500">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {t.unlockedShare}{" "}
                       {money(closure.partnerUnlockedAmount, lang)}
                     </p>

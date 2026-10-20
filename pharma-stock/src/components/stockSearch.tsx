@@ -18,7 +18,7 @@ export default function StockSearchComp() {
   return (
     <Card className="mb-8">
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold text-royalBlue">
+        <CardTitle className="text-2xl font-semibold text-royalBlue dark:text-slate-100">
           Stocks Management
         </CardTitle>
       </CardHeader>

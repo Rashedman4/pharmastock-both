@@ -109,17 +109,17 @@ export default function SuccessComp({ lang }: LangProps) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl mx-auto bg-white rounded-xl shadow-xl p-8"
+          className="max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-xl shadow-xl p-8"
         >
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-8 h-8 text-green-500" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-800">{t.title}</h1>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-slate-100">{t.title}</h1>
           </div>
 
           <div className="space-y-6">
-            <div className="bg-gray-50 p-6 rounded-lg">
+            <div className="bg-gray-50 dark:bg-slate-900 p-6 rounded-lg">
               <h2 className="text-xl font-semibold mb-4">
                 {t.subscriptionDetails}
               </h2>
@@ -141,10 +141,10 @@ export default function SuccessComp({ lang }: LangProps) {
               <h2 className="text-xl font-semibold mb-4">{t.whatsappTitle}</h2>
               <div className="space-y-4">
                 <p>{t.whatsappInstructions}</p>
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-gray-50 dark:bg-slate-900 p-4 rounded-lg">
                   <p>{t.step1}</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <code className="bg-gray-100 px-3 py-1 rounded">
+                    <code className="bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded">
                       {whatsappNumber}
                     </code>
                     <Button
@@ -176,10 +176,10 @@ export default function SuccessComp({ lang }: LangProps) {
                   </div>
 
                   {pinCode && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="bg-gray-50 dark:bg-slate-900 p-4 rounded-lg">
                       <p>{t.step2}</p>
                       <div className="flex items-center gap-2 mt-2">
-                        <code className="bg-gray-100 px-3 py-1 rounded">
+                        <code className="bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded">
                           {pinCode}
                         </code>
                         <Button

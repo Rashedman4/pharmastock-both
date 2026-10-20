@@ -84,13 +84,13 @@ function VerificationForm() {
   return (
     <Card className="max-w-md mx-auto mt-10">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold text-royalBlue">
+        <CardTitle className="text-3xl font-bold text-royalBlue dark:text-slate-100">
           Verify Your Email
         </CardTitle>
         <CardDescription className="text-center">
           We have sent a 6-letter verification code to your {email}.<br />
           Please enter it below. <br />
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-500 dark:text-slate-400">
             (Check your spam or junk folder if you don’t see the email.)
           </span>
         </CardDescription>
@@ -99,7 +99,7 @@ function VerificationForm() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
               htmlFor="verificationCode"
             >
               Verification Code
@@ -130,7 +130,7 @@ function VerificationForm() {
             Verify
           </Button>
         </form>
-        <p className="mt-4 text-center text-sm text-gray-500">
+        <p className="mt-4 text-center text-sm text-gray-500 dark:text-slate-400">
           Did not receive the code?{" "}
           <button
             className={`text-brightTeal hover:text-brightTeal/90 ${

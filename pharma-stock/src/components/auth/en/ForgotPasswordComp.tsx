@@ -40,7 +40,7 @@ export default function ForgotPasswordComp() {
   return (
     <Card className="max-w-md mx-auto mt-10">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold text-royalBlue">
+        <CardTitle className="text-3xl font-bold text-royalBlue dark:text-slate-100">
           Forgot Password
         </CardTitle>
       </CardHeader>
@@ -48,7 +48,7 @@ export default function ForgotPasswordComp() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
               htmlFor="email"
             >
               Email
@@ -61,7 +61,7 @@ export default function ForgotPasswordComp() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-slate-200 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
           <Button
@@ -71,9 +71,9 @@ export default function ForgotPasswordComp() {
             Reset Password
           </Button>
         </form>
-        {message && <p className="mt-4 text-green-600">{message}</p>}
-        {error && <p className="mt-4 text-red-600">{error}</p>}
-        <p className="mt-4 text-center text-sm text-gray-500">
+        {message && <p className="mt-4 text-green-600 dark:text-green-400">{message}</p>}
+        {error && <p className="mt-4 text-red-600 dark:text-red-400">{error}</p>}
+        <p className="mt-4 text-center text-sm text-gray-500 dark:text-slate-400">
           Remember your password?{" "}
           <Link
             href="/en/auth/login"

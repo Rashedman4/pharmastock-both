@@ -117,7 +117,7 @@ export default function EditProfileComp() {
     return (
       <Card className="max-w-lg mx-auto mt-10">
         <CardContent className="pt-6">
-          <p className="text-center text-gray-500">جار التحميل...</p>
+          <p className="text-center text-gray-500 dark:text-slate-400">جار التحميل...</p>
         </CardContent>
       </Card>
     );
@@ -126,13 +126,13 @@ export default function EditProfileComp() {
   return (
     <Card className="max-w-lg mx-auto mt-10" dir="rtl">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold text-royalBlue">تعديل الملف الشخصي</CardTitle>
+        <CardTitle className="text-3xl font-bold text-royalBlue dark:text-slate-100">تعديل الملف الشخصي</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
           <div className="mb-4 flex gap-4">
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="firstName">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2" htmlFor="firstName">
                 الاسم الأول
               </label>
               <Input
@@ -146,7 +146,7 @@ export default function EditProfileComp() {
               )}
             </div>
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="lastName">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2" htmlFor="lastName">
                 اسم العائلة
               </label>
               <Input
@@ -162,15 +162,15 @@ export default function EditProfileComp() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="email">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2" htmlFor="email">
               البريد الإلكتروني
             </label>
-            <Input id="email" value={profile?.email ?? ""} disabled className="bg-gray-50 text-gray-500" />
+            <Input id="email" value={profile?.email ?? ""} disabled className="bg-gray-50 dark:bg-slate-900 text-gray-500 dark:text-slate-400" />
             <p className="text-xs text-gray-400 mt-1">لا يمكن تغيير البريد الإلكتروني.</p>
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="phonenumber">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2" htmlFor="phonenumber">
               رقم الهاتف <span className="text-xs text-gray-400">(اختياري)</span>
             </label>
             <Input
@@ -187,10 +187,10 @@ export default function EditProfileComp() {
 
           <hr className="my-6" />
 
-          <p className="text-sm font-semibold text-gray-700 mb-4">تغيير كلمة المرور</p>
+          <p className="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">تغيير كلمة المرور</p>
 
           {isSocial ? (
-            <div className="rounded-md bg-blue-50 border border-blue-100 px-4 py-3 text-sm text-blue-700 mb-4">
+            <div className="rounded-md bg-blue-50 dark:bg-blue-950/40 border border-blue-100 px-4 py-3 text-sm text-blue-700 dark:text-blue-300 mb-4">
               {profile?.provider === "google"
                 ? "تم تسجيل الدخول عبر Google — تُدار كلمة المرور من قِبل المزوّد."
                 : "تم تسجيل الدخول عبر Apple — تُدار كلمة المرور من قِبل المزوّد."}
@@ -198,7 +198,7 @@ export default function EditProfileComp() {
           ) : (
             <>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="currentPassword">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2" htmlFor="currentPassword">
                   كلمة المرور الحالية
                 </label>
                 <Input
@@ -214,7 +214,7 @@ export default function EditProfileComp() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="newPassword">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2" htmlFor="newPassword">
                   كلمة المرور الجديدة
                 </label>
                 <Input
@@ -230,7 +230,7 @@ export default function EditProfileComp() {
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="confirmPassword">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2" htmlFor="confirmPassword">
                   تأكيد كلمة المرور الجديدة
                 </label>
                 <Input

@@ -78,9 +78,9 @@ export default function TopStocksSlider({ lang }: LangProps) {
   }, []);
 
   return (
-    <div className="w-full bg-gray-100 py-3 md:py-6 overflow-hidden">
+    <div className="w-full bg-gray-100 dark:bg-slate-800 py-3 md:py-6 overflow-hidden">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold text-royalBlue mb-4">
+        <h2 className="text-2xl font-bold text-royalBlue dark:text-slate-100 mb-4">
           {lang === "ar" ? "أفضل الأسهم الدوائية" : " Top Pharma Stocks"}
         </h2>
         <motion.div
@@ -105,13 +105,13 @@ export default function TopStocksSlider({ lang }: LangProps) {
               <CardContent className="flex items-center justify-between p-4">
                 <div>
                   <h3 className="font-bold text-lg">{stock.symbol}</h3>
-                  <p className="text-sm text-gray-600">{stock.name}</p>
+                  <p className="text-sm text-gray-600 dark:text-slate-300">{stock.name}</p>
                 </div>
                 <div className="text-right">
                   <p className="font-semibold">${stock.price?.toFixed(2)}</p>
                   <p
                     className={`flex items-center ${
-                      stock.change >= 0 ? "text-green-600" : "text-red-600"
+                      stock.change >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600"
                     }`}
                   >
                     {stock.change >= 0 ? (

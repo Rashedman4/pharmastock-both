@@ -296,7 +296,7 @@ export default function PolicyComp({ lang }: LangProps) {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold text-royalBlue mb-8">{t.title}</h1>
+      <h1 className="text-3xl font-bold text-royalBlue dark:text-slate-100 mb-8">{t.title}</h1>
 
       <div className="space-y-8 mb-12">
         {t.sections.map((section, index) => (
@@ -306,10 +306,10 @@ export default function PolicyComp({ lang }: LangProps) {
             </h2>
             {section.subsections.map((subsection, subIndex) => (
               <div key={subIndex} className="ml-4 space-y-2">
-                <h3 className="text-xl font-medium text-royalBlue">
+                <h3 className="text-xl font-medium text-royalBlue dark:text-slate-100">
                   {subsection.title}
                 </h3>
-                <p className="text-gray-600">{subsection.content}</p>
+                <p className="text-gray-600 dark:text-slate-300">{subsection.content}</p>
               </div>
             ))}
           </div>
@@ -317,7 +317,7 @@ export default function PolicyComp({ lang }: LangProps) {
       </div>
 
       {!isAccepted && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 p-4 shadow-lg border-t">
+        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 p-4 shadow-lg border-t">
           <div className="container mx-auto flex justify-center">
             <Button
               onClick={handleAccept}
@@ -330,7 +330,7 @@ export default function PolicyComp({ lang }: LangProps) {
       )}
 
       {isAccepted && (
-        <div className="text-center text-green-600 font-medium">
+        <div className="text-center text-green-600 dark:text-green-400 font-medium">
           {t.accepted}
         </div>
       )}

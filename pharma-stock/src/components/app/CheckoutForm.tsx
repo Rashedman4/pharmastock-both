@@ -82,15 +82,15 @@ export default function CheckoutForm({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full">
+      <div className="bg-white dark:bg-slate-900 rounded-lg p-6 max-w-md w-full">
         <h3 className="text-xl font-bold mb-4">
           {lang === "en" ? "Complete Payment" : "إتمام الدفع"}
         </h3>
 
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+        <div className="mb-6 p-4 bg-gray-50 dark:bg-slate-900 rounded-lg">
           {isFirstTimeSubscriber && (
             <div className="mb-2">
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 dark:text-slate-300">
                 {lang === "en" ? "Regular price" : "السعر العادي"}
               </div>
               <div className="text-lg line-through text-gray-400">
@@ -99,7 +99,7 @@ export default function CheckoutForm({
             </div>
           )}
           <div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-600 dark:text-slate-300">
               {isFirstTimeSubscriber
                 ? lang === "en"
                   ? "Special offer price"
@@ -108,11 +108,11 @@ export default function CheckoutForm({
                 ? "Amount to pay"
                 : "المبلغ المطلوب"}
             </div>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
               ${finalAmount}
             </div>
             {isFirstTimeSubscriber && (
-              <div className="mt-1 text-sm text-green-600">
+              <div className="mt-1 text-sm text-green-600 dark:text-green-400">
                 {lang === "en" ? "50% off applied!" : "تم تطبيق خصم 50٪!"}
               </div>
             )}

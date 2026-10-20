@@ -44,7 +44,7 @@ const Footer = () => {
 
   return (
     <footer
-      className={`bg-royalBlue text-pureWhite ${
+      className={`bg-royalBlue text-pureWhite dark:bg-slate-950 dark:border-t dark:border-slate-800 ${
         isArabic ? `dir-rtl text-right ${rubik.className}` : ""
       }`}
       dir={isArabic ? "rtl" : "ltr"}

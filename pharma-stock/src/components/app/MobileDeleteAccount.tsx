@@ -109,8 +109,8 @@ export default function MobileDeleteAccount({ lang }: LangProps) {
       className={`container mx-auto py-8 px-4 max-w-3xl ${isArabic ? "text-right" : ""}`}
       dir={isArabic ? "rtl" : "ltr"}
     >
-      <h1 className="text-3xl font-bold text-royalBlue mb-4">{t.title}</h1>
-      <p className="text-gray-700 mb-8">{t.intro}</p>
+      <h1 className="text-3xl font-bold text-royalBlue dark:text-slate-100 mb-4">{t.title}</h1>
+      <p className="text-gray-700 dark:text-slate-200 mb-8">{t.intro}</p>
 
       <div className="space-y-8">
         {t.sections.map((section, index) => (
@@ -120,7 +120,7 @@ export default function MobileDeleteAccount({ lang }: LangProps) {
             </h2>
             {section.steps && (
               <ol
-                className={`list-decimal space-y-1 text-gray-700 font-medium ${
+                className={`list-decimal space-y-1 text-gray-700 dark:text-slate-200 font-medium ${
                   isArabic ? "pr-6" : "pl-6"
                 }`}
               >
@@ -130,13 +130,13 @@ export default function MobileDeleteAccount({ lang }: LangProps) {
               </ol>
             )}
             {section.paragraphs?.map((p, pIndex) => (
-              <p key={pIndex} className="text-gray-700">
+              <p key={pIndex} className="text-gray-700 dark:text-slate-200">
                 {p}
               </p>
             ))}
             {section.bullets && (
               <ul
-                className={`list-disc space-y-1 text-gray-700 ${
+                className={`list-disc space-y-1 text-gray-700 dark:text-slate-200 ${
                   isArabic ? "pr-6" : "pl-6"
                 }`}
               >

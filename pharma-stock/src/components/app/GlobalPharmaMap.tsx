@@ -171,7 +171,7 @@ export default function GlobalPharmaMap({ lang }: LangProps) {
     regions.find((region) => region.id === activeRegion) || regions[0];
   const t = translations[lang];
   return (
-    <section className="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+    <section className="py-16 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-950 dark:to-slate-900">
       <div className="container mx-auto px-4">
         {/* Section header with scroll animation */}
         <SectionHeader
@@ -183,7 +183,7 @@ export default function GlobalPharmaMap({ lang }: LangProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <MapAnimation className="lg:col-span-2">
-            <div className="relative h-[400px] bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg overflow-hidden shadow-inner">
+            <div className="relative h-[400px] bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-800 rounded-lg overflow-hidden shadow-inner">
               <svg viewBox="0 0 800 400" className="w-full h-full">
                 {/* Simplified world map with interactive regions */}
                 <RegionPath
@@ -282,7 +282,7 @@ function SectionHeader({
       transition={{ duration: 0.7 }}
     >
       <motion.h2
-        className="text-3xl font-bold text-royalBlue mb-2 flex items-center justify-center"
+        className="text-3xl font-bold text-royalBlue dark:text-slate-100 mb-2 flex items-center justify-center"
         initial={{ scale: 0.9 }}
         animate={isInView ? { scale: 1 } : { scale: 0.9 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -296,7 +296,7 @@ function SectionHeader({
         className="h-1 bg-brightTeal mx-auto mb-4"
       />
       <motion.p
-        className="text-gray-600 max-w-2xl mx-auto"
+        className="text-gray-600 dark:text-slate-300 max-w-2xl mx-auto"
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
@@ -361,7 +361,7 @@ function RegionDetailCard({ region, lang }: LangProps & RegionDetailCardProps) {
       transition={{ duration: 0.7 }}
       key={region.id} // Re-trigger animation when region changes
     >
-      <Card className="h-full border-2 border-royalBlue/20 bg-white shadow-lg">
+      <Card className="h-full border-2 border-royalBlue/20 bg-white dark:bg-slate-900 shadow-lg">
         <CardContent className="p-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -370,7 +370,7 @@ function RegionDetailCard({ region, lang }: LangProps & RegionDetailCardProps) {
             key={`header-${region.id}`}
           >
             <div className="flex justify-between items-start mb-4">
-              <h3 className="text-xl font-bold text-royalBlue">
+              <h3 className="text-xl font-bold text-royalBlue dark:text-slate-100">
                 {region.name}
               </h3>
               <Badge
@@ -390,7 +390,7 @@ function RegionDetailCard({ region, lang }: LangProps & RegionDetailCardProps) {
               </Badge>
             </div>
 
-            <p className="text-gray-600 mb-6">{region.description}</p>
+            <p className="text-gray-600 dark:text-slate-300 mb-6">{region.description}</p>
           </motion.div>
 
           <motion.div
@@ -401,7 +401,7 @@ function RegionDetailCard({ region, lang }: LangProps & RegionDetailCardProps) {
             className="space-y-4"
           >
             <div>
-              <h4 className="text-sm font-semibold text-gray-500">
+              <h4 className="text-sm font-semibold text-gray-500 dark:text-slate-400">
                 {t.labels.topSectors}
               </h4>
               <div className="flex flex-wrap gap-2 mt-1">
@@ -412,7 +412,7 @@ function RegionDetailCard({ region, lang }: LangProps & RegionDetailCardProps) {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: 0.3 + idx * 0.1 }}
                   >
-                    <Badge variant="outline" className="bg-gray-100">
+                    <Badge variant="outline" className="bg-gray-100 dark:bg-slate-800">
                       {sector}
                     </Badge>
                   </motion.div>
@@ -421,11 +421,11 @@ function RegionDetailCard({ region, lang }: LangProps & RegionDetailCardProps) {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-500">
+              <h4 className="text-sm font-semibold text-gray-500 dark:text-slate-400">
                 {t.labels.trackedCompanies}
               </h4>
               <motion.p
-                className="text-2xl font-bold text-royalBlue"
+                className="text-2xl font-bold text-royalBlue dark:text-slate-100"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
@@ -441,13 +441,13 @@ function RegionDetailCard({ region, lang }: LangProps & RegionDetailCardProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
             key={`opportunity-${region.id}`}
-            className="mt-6 pt-4 border-t border-gray-200"
+            className="mt-6 pt-4 border-t border-gray-200 dark:border-slate-700"
           >
-            <h4 className="text-sm font-semibold text-gray-500 mb-2">
+            <h4 className="text-sm font-semibold text-gray-500 dark:text-slate-400 mb-2">
               {t.labels.investmentOpportunity}
             </h4>
             <motion.div
-              className="w-full bg-gray-200 rounded-full h-2.5"
+              className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.5 }}

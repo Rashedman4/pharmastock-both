@@ -83,7 +83,7 @@ export default function WhyUs({ lang }: LangProps) {
   return (
     <section className="mb-12 py-16 bg-gradient-to-br from-royalBlue/10 to-brightTeal/10 ">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold text-royalBlue mb-4">{t.title}</h2>
+        <h2 className="text-2xl font-bold text-royalBlue dark:text-slate-100 mb-4">{t.title}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {t.reasons.map((reason, index) => (
             <motion.div
@@ -92,7 +92,7 @@ export default function WhyUs({ lang }: LangProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.3 }}
             >
-              <Card className="hover:shadow-lg transition-shadow duration-300 h-full bg-white">
+              <Card className="hover:shadow-lg transition-shadow duration-300 h-full bg-white dark:bg-slate-900">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold text-brightTeal flex items-center">
                     <reason.icon
@@ -102,7 +102,7 @@ export default function WhyUs({ lang }: LangProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600">{reason.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-slate-300">{reason.description}</p>
                   <motion.div
                     className="mt-4 h-1 bg-brightTeal"
                     initial={{ width: 0 }}

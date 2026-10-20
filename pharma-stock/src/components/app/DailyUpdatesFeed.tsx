@@ -106,7 +106,7 @@ export default function DailyUpdatesFeed({ lang }: LangProps) {
             lang === "ar" ? "flex-row-reverse" : ""
           }`}
         >
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-slate-400">
             {lang === "ar" ? "آخر تحديث:" : "Last updated:"}{" "}
             {format(lastUpdated, "HH:mm:ss")}
           </p>
@@ -151,7 +151,7 @@ export default function DailyUpdatesFeed({ lang }: LangProps) {
 
         {activeSymbol && (
           <p
-            className={`text-xs text-gray-500 ${
+            className={`text-xs text-gray-500 dark:text-slate-400 ${
               lang === "ar" ? "text-right" : "text-left"
             }`}
           >
@@ -177,14 +177,14 @@ export default function DailyUpdatesFeed({ lang }: LangProps) {
                   </span>
                 </div>
                 {(lang === "ar" ? item.subtitle_ar : item.subtitle_en) ? (
-                  <p className="text-gray-900 font-semibold mb-2">
+                  <p className="text-gray-900 dark:text-slate-100 font-semibold mb-2">
                     {lang === "ar" ? item.subtitle_ar : item.subtitle_en}
                   </p>
                 ) : null}
-                <p className="text-gray-700 mb-2 whitespace-pre-line">
+                <p className="text-gray-700 dark:text-slate-200 mb-2 whitespace-pre-line">
                   {lang === "ar" ? item.description_ar : item.description_en}
                 </p>
-                <div className="flex items-center text-sm text-gray-500">
+                <div className="flex items-center text-sm text-gray-500 dark:text-slate-400">
                   <Calendar
                     className={`w-4 h-4 ${lang === "ar" ? "ml-1" : "mr-1"}`}
                   />

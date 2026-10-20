@@ -3,6 +3,7 @@
 import { useState } from "react";
 import NewsFeed from "@/components/app/NewsFeed";
 import DailyUpdatesFeed from "@/components/app/DailyUpdatesFeed";
+import AnnouncementsFeed from "@/components/app/AnnouncementsFeed";
 
 interface LangProps {
   lang: "en" | "ar";
@@ -13,12 +14,15 @@ interface NewsSectionProps extends LangProps {
   initialNews?: React.ComponentProps<typeof NewsFeed>["initialData"];
 }
 
-type Tab = "news" | "daily-updates";
+type Tab = "news" | "daily-updates" | "announcements";
 
 const labels: Record<Tab, Record<"en" | "ar", string>> = {
   news: { en: "News", ar: "الأخبار" },
   "daily-updates": { en: "Daily Updates", ar: "التحديثات اليومية" },
+  announcements: { en: "Announcements", ar: "إعلانات الشركات" },
 };
+
+const TABS: Tab[] = ["news", "daily-updates", "announcements"];
 
 export default function NewsSection({ lang, initialNews }: NewsSectionProps) {
   const [activeTab, setActiveTab] = useState<Tab>("news");
@@ -26,19 +30,19 @@ export default function NewsSection({ lang, initialNews }: NewsSectionProps) {
   return (
     <div className="space-y-4">
       <div
-        className={`flex gap-2 rounded-xl bg-gray-100 p-1 ${
+        className={`flex gap-2 rounded-xl bg-gray-100 dark:bg-slate-800 p-1 ${
           lang === "ar" ? "flex-row-reverse" : ""
         }`}
       >
-        {(["news", "daily-updates"] as Tab[]).map((tab) => (
+        {TABS.map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+            className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
               activeTab === tab
                 ? "bg-royalBlue text-pureWhite"
-                : "text-gray-600 hover:bg-gray-200"
+                : "text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 dark:hover:text-slate-100"
             }`}
           >
             {labels[tab][lang]}
@@ -48,8 +52,12 @@ export default function NewsSection({ lang, initialNews }: NewsSectionProps) {
 
       {activeTab === "news" ? (
         <NewsFeed lang={lang} initialData={initialNews} />
-      ) : (
+      ) : activeTab === "daily-updates" ? (
         <DailyUpdatesFeed lang={lang} />
+      ) : (
+        // Fetched client-side: the standalone /[lang]/announcements page is
+        // the server-rendered one crawlers see.
+        <AnnouncementsFeed lang={lang} initialPage={null} />
       )}
     </div>
   );

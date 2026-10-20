@@ -610,14 +610,14 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
       ) : null}
 
       {info ? (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
           {info}
         </div>
       ) : null}
 
       {cameFromMobileApp ? (
-        <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
-          <span className="text-sm text-slate-600">{t.returnToApp}</span>
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3">
+          <span className="text-sm text-slate-600 dark:text-slate-300">{t.returnToApp}</span>
           <Button
             type="button"
             variant="outline"
@@ -660,62 +660,62 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
         }
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               {t.freeCapital}
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {formatMoney(data.summary.freeCapitalAmount, lang)}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               {t.moneyInMarket}
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {formatMoney(data.summary.moneyInMarket, lang)}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               {t.totalEquity}
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {formatMoney(data.summary.totalEquity, lang)}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               {t.overallProfit}
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {formatMoney(data.summary.overallProfit, lang)}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               {t.firmProfit}
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {formatMoney(data.summary.firmProfit, lang)}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
               {t.investorProfit}
             </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               {formatMoney(data.summary.investorProfit, lang)}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-            <p className="text-xs uppercase tracking-wide text-emerald-700">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 p-4">
+            <p className="text-xs uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
               {t.firmProfitPaid}
             </p>
             <p className="mt-2 text-2xl font-semibold text-emerald-900">
@@ -723,8 +723,8 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-            <p className="text-xs uppercase tracking-wide text-amber-700">
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 dark:bg-amber-950/40 p-4">
+            <p className="text-xs uppercase tracking-wide text-amber-700 dark:text-amber-300">
               {t.firmProfitOutstanding}
             </p>
             <p className="mt-2 text-2xl font-semibold text-amber-900">
@@ -733,7 +733,7 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
           </div>
         </div>
 
-        <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+        <div className="mt-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 text-sm text-slate-600 dark:text-slate-300">
           {t.profitNotice}{" "}
           <span className="font-semibold">
             {formatMoney(data.summary.firmProfitPaid, lang)}
@@ -751,7 +751,7 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
         description={t.firmProfitPaymentsDesc}
       >
         {data.firmPayments.length === 0 ? (
-          <p className="text-sm text-slate-500">{t.noFirmPayments}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t.noFirmPayments}</p>
         ) : (
           <div className="space-y-4">
             {data.firmPayments.map((payment) => {
@@ -765,22 +765,22 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
               return (
                 <div
                   key={payment.id}
-                  className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                  className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <StatusBadge status={payment.status} />
-                        <span className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+                        <span className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
                           {method === "BANK_TRANSFER"
                             ? t.payByBankTransfer
                             : t.payWithStripe}
                         </span>
                       </div>
-                      <p className="text-sm text-slate-600">
+                      <p className="text-sm text-slate-600 dark:text-slate-300">
                         {t.requested}: {formatMoney(payment.amountRequested, lang)} • {t.paid}: {formatMoney(payment.amountPaid, lang)}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
                         {t.created}: {formatDate(payment.createdAt, lang)} • {t.paidAt}: {payment.paidAt ? formatDate(payment.paidAt, lang) : t.notAvailable}
                       </p>
                     </div>
@@ -789,7 +789,7 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
                         href={payment.proofUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 underline"
+                        className="rounded-full border border-blue-200 px-3 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300 underline"
                       >
                         {t.proof}
                       </a>
@@ -798,37 +798,37 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
 
                   {method === "BANK_TRANSFER" ? (
                     <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                        <p className="font-semibold text-slate-900">{t.bankDetails}</p>
+                      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 text-sm text-slate-700 dark:text-slate-200">
+                        <p className="font-semibold text-slate-900 dark:text-slate-100">{t.bankDetails}</p>
                         <dl className="mt-3 space-y-2">
                           <div>
-                            <dt className="text-xs uppercase tracking-wide text-slate-500">{t.beneficiary}</dt>
+                            <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{t.beneficiary}</dt>
                             <dd className="font-semibold">{payment.bankAccountName || t.notAvailable}</dd>
                           </div>
                           <div>
-                            <dt className="text-xs uppercase tracking-wide text-slate-500">{t.bank}</dt>
+                            <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{t.bank}</dt>
                             <dd className="font-semibold">{payment.bankName || t.notAvailable}</dd>
                           </div>
                           <div>
-                            <dt className="text-xs uppercase tracking-wide text-slate-500">{t.iban}</dt>
+                            <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{t.iban}</dt>
                             <dd className="font-mono text-sm break-all" dir="ltr">{payment.iban || t.notAvailable}</dd>
                           </div>
                           {payment.swiftCode ? (
                             <div>
-                              <dt className="text-xs uppercase tracking-wide text-slate-500">{t.swift}</dt>
+                              <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{t.swift}</dt>
                               <dd className="font-mono text-sm" dir="ltr">{payment.swiftCode}</dd>
                             </div>
                           ) : null}
                           <div>
-                            <dt className="text-xs uppercase tracking-wide text-slate-500">{t.reference}</dt>
+                            <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{t.reference}</dt>
                             <dd className="font-mono text-sm break-all" dir="ltr">{payment.manualReference || t.notAvailable}</dd>
                           </div>
                         </dl>
                       </div>
 
-                      <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                        <p className="text-sm font-semibold text-slate-900">{t.uploadReceipt}</p>
-                        <p className="mt-1 text-xs text-slate-500">
+                      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t.uploadReceipt}</p>
+                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                           {payment.reviewNote ? `${t.reviewNote}: ${payment.reviewNote}` : t.notAvailable}
                         </p>
                         {canSubmitProof ? (
@@ -866,9 +866,9 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
 
       <SectionCard title={t.openPositions}>
         {data.openPositions.length === 0 ? (
-          <p className="text-sm text-slate-500">{t.noOpenPositions}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t.noOpenPositions}</p>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-slate-200">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
             <table className="min-w-full divide-y divide-slate-200 text-sm">
               <thead
                 className={`${isArabic ? "text-right" : "text-left"} bg-slate-50 text-slate-600`}
@@ -884,14 +884,14 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
                   <th className="px-4 py-3 font-semibold">{t.status}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 bg-white">
+              <tbody className="divide-y divide-slate-200 bg-white dark:bg-slate-900">
                 {data.openPositions.map((position) => (
                   <tr key={position.id} className="align-top">
                     <td className="px-4 py-4">
-                      <div className="font-semibold text-slate-900">
+                      <div className="font-semibold text-slate-900 dark:text-slate-100">
                         {position.symbol}
                       </div>
-                      <div className="mt-1 text-xs text-slate-500">
+                      <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         {formatDate(position.openedAt, lang)}
                       </div>
                     </td>
@@ -925,16 +925,16 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
           {data.openPositions.map((position) => (
             <div
               key={`form-${position.id}`}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+              className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4"
             >
               <div
                 className={`flex flex-wrap items-center justify-between gap-3 ${isArabic ? "text-right" : "text-left"}`}
               >
                 <div>
-                  <h3 className="text-base font-semibold text-slate-900">
+                  <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
                     {t.closeRequestFor} {position.symbol}
                   </h3>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
                     {t.current} {formatMoney(position.currentPrice, lang)} •{" "}
                     {t.openQty} {position.quantityOpen}
                   </p>
@@ -1021,23 +1021,23 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
       <SectionCard title={t.closeRequests} description={t.closeRequestsDesc}>
         <div className="space-y-4">
           {data.closeRequests.length === 0 ? (
-            <p className="text-sm text-slate-500">{t.noCloseRequests}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t.noCloseRequests}</p>
           ) : (
             data.closeRequests.map((request) => (
               <div
                 key={request.id}
-                className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="space-y-2">
                     <div className="flex flex-wrap items-center gap-2">
                       <StatusBadge status={request.status} />
-                      <div className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+                      <div className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
                         {t.from} {getRoleLabel(request.initiatedByRole, lang)}
                       </div>
                     </div>
 
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-slate-600 dark:text-slate-300">
                       {t.qty} {request.requestedQuantity} •{" "}
                       {t.requestedExitPrice}{" "}
                       {request.requestedExitPrice == null
@@ -1047,7 +1047,7 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
                     </p>
 
                     {request.requestNote ? (
-                      <p className="text-sm text-slate-500">
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
                         {request.requestNote}
                       </p>
                     ) : null}
@@ -1057,7 +1057,7 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
                         href={request.evidenceUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex text-sm font-semibold text-blue-700 underline"
+                        className="inline-flex text-sm font-semibold text-blue-700 dark:text-blue-300 underline"
                       >
                         {t.openClosingEvidence}
                       </a>
@@ -1122,9 +1122,9 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
 
       <SectionCard title={t.closureHistory} description={t.closureHistoryDesc}>
         {data.closures.length === 0 ? (
-          <p className="text-sm text-slate-500">{t.noClosures}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t.noClosures}</p>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-slate-200">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
             <table className="min-w-full divide-y divide-slate-200 text-sm">
               <thead
                 className={`${isArabic ? "text-right" : "text-left"} bg-slate-50 text-slate-600`}
@@ -1145,7 +1145,7 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
                   <th className="px-4 py-3 font-semibold">{t.closed}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 bg-white">
+              <tbody className="divide-y divide-slate-200 bg-white dark:bg-slate-900">
                 {data.closures.map((closure) => {
                   const investorNet =
                     closure.realizedProfitAmount -
@@ -1154,7 +1154,7 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
 
                   return (
                     <tr key={closure.id}>
-                      <td className="px-4 py-4 font-semibold text-slate-900">
+                      <td className="px-4 py-4 font-semibold text-slate-900 dark:text-slate-100">
                         {closure.symbol}
                       </td>
                       <td className="px-4 py-4">{closure.closedQuantity}</td>
@@ -1179,7 +1179,7 @@ export default function ElitePortfolioPage({ lang = "en" }: { lang?: Lang }) {
                             href={closure.evidenceUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="font-semibold text-blue-700 underline"
+                            className="font-semibold text-blue-700 dark:text-blue-300 underline"
                           >
                             {t.viewImage}
                           </a>

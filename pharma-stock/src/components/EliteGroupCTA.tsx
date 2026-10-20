@@ -31,7 +31,7 @@ export default function EliteGroupCTA({ lang = "en" }: { lang?: Lang }) {
   return (
     <section
       dir={lang === "ar" ? "rtl" : "ltr"}
-      className="relative overflow-hidden bg-gray-100 py-10 md:py-14"
+      className="relative overflow-hidden bg-gray-100 dark:bg-slate-800 py-10 md:py-14"
     >
       {/* soft background accents */}
       <div className="pointer-events-none absolute inset-0">
@@ -49,7 +49,7 @@ export default function EliteGroupCTA({ lang = "en" }: { lang?: Lang }) {
         >
           {/* gradient border shell */}
           <div className="rounded-2xl p-[1px] bg-gradient-to-r from-royalBlue/25 via-brightTeal/25 to-yellow-400/30 shadow-sm">
-            <div className="rounded-2xl bg-gradient-to-br from-royalBlue via-royalBlue/95 to-brightTeal backdrop-blur-md border border-white/60">
+            <div className="rounded-2xl bg-gradient-to-br from-royalBlue via-royalBlue/95 to-brightTeal dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 backdrop-blur-md border border-white/60 dark:border-slate-700">
               <div className="px-6 py-8 md:px-10 md:py-10 text-center">
                 {/* icon */}
                 <motion.div
@@ -97,7 +97,7 @@ export default function EliteGroupCTA({ lang = "en" }: { lang?: Lang }) {
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       className={`group inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm md:text-base font-bold
-                        bg-yellow-400 text-royalBlue shadow-md shadow-yellow-500/20
+                        bg-yellow-400 text-royalBlue dark:text-slate-100 shadow-md shadow-yellow-500/20
                         hover:bg-yellow-300 transition-all
                         ${lang === "ar" ? "flex-row-reverse" : ""}`}
                     >

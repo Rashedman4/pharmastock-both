@@ -47,12 +47,12 @@ export default function HistoryChart({ lang }: LangProps) {
       <Card className="w-full">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="text-royalBlue text-base sm:text-lg md:text-xl lg:text-2xl">
+            <CardTitle className="text-royalBlue dark:text-slate-100 text-base sm:text-lg md:text-xl lg:text-2xl">
               {lang === "ar" ? "أداء التداول" : "Trade Performance"}
             </CardTitle>
 
             <div className="flex items-center space-x-2">
-              <p className="text-[10px] sm:text-sm text-gray-500">
+              <p className="text-[10px] sm:text-sm text-gray-500 dark:text-slate-400">
                 {lang === "ar"
                   ? ` آخر تحديث: ${formatDate(lastUpdated.toISOString())}`
                   : `Last updated: ${formatDate(lastUpdated.toISOString())}`}
@@ -96,7 +96,7 @@ export default function HistoryChart({ lang }: LangProps) {
             />
           </div>
 
-          <p className="text-xs sm:text-sm md:text-base mt-2 text-gray-500">
+          <p className="text-xs sm:text-sm md:text-base mt-2 text-gray-500 dark:text-slate-400">
             Total Trades: {totalTrades}
           </p>
         </CardContent>

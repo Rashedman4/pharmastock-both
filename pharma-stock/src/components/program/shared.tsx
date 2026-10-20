@@ -169,12 +169,12 @@ export function SectionCard({
   className?: string;
 }) {
   return (
-    <Card className={`border-slate-200 shadow-sm ${className}`}>
+    <Card className={`border-slate-200 dark:border-slate-700 shadow-sm ${className}`}>
       <CardHeader className="flex flex-row items-start justify-between gap-4">
         <div>
-          <CardTitle className="text-lg text-slate-900">{title}</CardTitle>
+          <CardTitle className="text-lg text-slate-900 dark:text-slate-100">{title}</CardTitle>
           {description ? (
-            <CardDescription className="mt-1 text-sm text-slate-500">
+            <CardDescription className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {description}
             </CardDescription>
           ) : null}
@@ -207,7 +207,7 @@ export function HeroPanel({
   return (
     <div
       dir={isArabic ? "rtl" : "ltr"}
-      className="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white shadow-xl"
+      className="overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white shadow-xl"
     >
       <div
         className={[
@@ -280,11 +280,11 @@ export function StatCard({
   hint?: string;
 }) {
   return (
-    <Card className="border-slate-200 shadow-sm">
+    <Card className="border-slate-200 dark:border-slate-700 shadow-sm">
       <CardContent className="p-5">
-        <p className="text-sm text-slate-500">{label}</p>
-        <p className="mt-2 text-2xl font-semibold text-slate-900">{value}</p>
-        {hint ? <p className="mt-2 text-xs text-slate-500">{hint}</p> : null}
+        <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
+        <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">{value}</p>
+        {hint ? <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{hint}</p> : null}
       </CardContent>
     </Card>
   );
@@ -302,12 +302,12 @@ export function EmptyState({
   ctaLabel?: string;
 }) {
   return (
-    <Card className="border-dashed border-slate-300 bg-slate-50">
+    <Card className="border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900">
       <CardContent className="flex flex-col items-center gap-3 p-10 text-center">
         <ShieldAlert className="h-8 w-8 text-slate-400" />
         <div>
-          <h3 className="font-semibold text-slate-900">{title}</h3>
-          <p className="mt-1 text-sm text-slate-500">{description}</p>
+          <h3 className="font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>
         </div>
         {ctaHref && ctaLabel ? (
           <Button asChild>
@@ -351,7 +351,7 @@ export function CopyButton({
 
 export function LoadingBlock({ label = "Loading..." }: { label?: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 shadow-sm">
+    <div className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 text-sm text-slate-600 dark:text-slate-300 shadow-sm">
       <Loader2 className="h-4 w-4 animate-spin" />
       {label}
     </div>
@@ -368,12 +368,12 @@ export function InfoList({
       {items.map((item) => (
         <div
           key={item.label}
-          className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+          className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4"
         >
-          <p className="text-xs uppercase tracking-wide text-slate-500">
+          <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             {item.label}
           </p>
-          <div className="mt-2 text-sm font-medium text-slate-900">
+          <div className="mt-2 text-sm font-medium text-slate-900 dark:text-slate-100">
             {item.value}
           </div>
         </div>
@@ -392,7 +392,7 @@ export function PillList({ items }: { items: string[] }) {
       {unique.map((item) => (
         <span
           key={item}
-          className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-700"
+          className="rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-1 text-xs font-medium text-slate-700 dark:text-slate-200"
         >
           {item}
         </span>
@@ -477,7 +477,7 @@ export function ActionLink({
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-900"
+      className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 dark:text-blue-300 hover:text-blue-900"
     >
       {children}
       <ArrowRight className="h-4 w-4" />
@@ -593,7 +593,7 @@ export function ProgramSectionNav({
   return (
     <div
       dir={isArabic ? "rtl" : "ltr"}
-      className="mb-6 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 via-white to-blue-50 p-2 shadow-sm"
+      className="mb-6 rounded-2xl border border-blue-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-2 shadow-sm"
     >
       <div className="flex flex-wrap items-center gap-2 justify-start">
         {visibleItems.map((item) => {
@@ -632,10 +632,10 @@ export function DecisionIcon({ status }: { status?: string | null }) {
       "ACCEPTED_BY_INVESTOR",
     ].includes(normalized)
   ) {
-    return <CheckCircle2 className="h-4 w-4 text-emerald-600" />;
+    return <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />;
   }
   if (["REJECTED", "REJECTED_BY_INVESTOR", "SUSPENDED"].includes(normalized)) {
     return <XCircle className="h-4 w-4 text-rose-600" />;
   }
-  return <Clock3 className="h-4 w-4 text-amber-600" />;
+  return <Clock3 className="h-4 w-4 text-amber-600 dark:text-amber-400" />;
 }

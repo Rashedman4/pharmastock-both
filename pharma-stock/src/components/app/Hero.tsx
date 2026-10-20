@@ -61,7 +61,7 @@ export default function Hero({ lang }: LangProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="bg-royalBlue text-pureWhite py-20 relative overflow-hidden"
+      className="bg-royalBlue dark:bg-slate-900 text-pureWhite py-20 relative overflow-hidden"
     >
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -203,7 +203,7 @@ export default function Hero({ lang }: LangProps) {
           </motion.div>
         </div>
       </div>
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-royalBlue via-royalBlue to-brightTeal opacity-50"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-royalBlue via-royalBlue to-brightTeal dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 opacity-50"></div>
     </motion.section>
   );
 }

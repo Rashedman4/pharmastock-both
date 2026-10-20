@@ -10,6 +10,7 @@ import AuthModal from "@/components/app/AuthModal";
 import Script from "next/script";
 import PageTracker from "@/components/app/PageTracker";
 import AppPromoBanner from "@/components/app/AppPromoBanner";
+import AppThemeProvider from "@/components/app/AppThemeProvider";
 //import WhatsAppButton from "@/components/app/WhatsAppButton";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -75,7 +76,9 @@ export default function RootLayout({
   const lang = "en";
 
   return (
-    <html lang={lang} className="light">
+    // `suppressHydrationWarning` is required by next-themes: it sets the
+    // theme class on <html> in a pre-paint script, before React hydrates.
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
@@ -140,7 +143,12 @@ export default function RootLayout({
         <link rel="icon" type="image/svg+xml" href="/app/favicon.svg" />
       </head>
       <body
-        className={`${inter.className} dark:bg-gray-900 dark:text-white flex flex-col min-h-screen`}
+        // The dark background/foreground come from the `.dark` CSS variables
+        // in globals.css (bg-background/text-foreground are applied to body
+        // in the base layer), which carry the navy palette. The old
+        // dark:bg-gray-900 / dark:text-white pair would override them with a
+        // neutral gray that is not in the palette.
+        className={`${inter.className} flex flex-col min-h-screen`}
       >
         {/* Twitter Pixel Script */}
         <Script id="twitter-pixel" strategy="afterInteractive">
@@ -158,23 +166,25 @@ export default function RootLayout({
           }(window,document,'script');
           twq('config','pshk2');`}
         </Script>
-        <SessionWrapper>
-          <Navbar />
-        </SessionWrapper>
-        <PageTracker />
-        <main className="flex-grow">
-          {" "}
-          <SessionWrapper>{children}</SessionWrapper>
-        </main>
-        <Toaster />
-        <PolicyModal />
-        <SessionWrapper>
-          <AuthModal />
-        </SessionWrapper>
-        <SessionWrapper>
-          <Footer />
-        </SessionWrapper>
-        <AppPromoBanner />
+        <AppThemeProvider>
+          <SessionWrapper>
+            <Navbar />
+          </SessionWrapper>
+          <PageTracker />
+          <main className="flex-grow">
+            {" "}
+            <SessionWrapper>{children}</SessionWrapper>
+          </main>
+          <Toaster />
+          <PolicyModal />
+          <SessionWrapper>
+            <AuthModal />
+          </SessionWrapper>
+          <SessionWrapper>
+            <Footer />
+          </SessionWrapper>
+          <AppPromoBanner />
+        </AppThemeProvider>
       </body>
     </html>
   );

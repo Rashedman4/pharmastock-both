@@ -93,12 +93,12 @@ export default function NewsFeed({ lang }: LangProps) {
                     <span className="font-bold text-brightTeal">
                       {item.symbol}:
                     </span>
-                    <div className="flex items-center text-sm text-gray-500">
+                    <div className="flex items-center text-sm text-gray-500 dark:text-slate-400">
                       <Calendar className="w-4 h-4 mr-1" />
                       {dates.relative}
                     </div>
                   </div>
-                  <p className="text-gray-700">{item.content}</p>
+                  <p className="text-gray-700 dark:text-slate-200">{item.content}</p>
                 </div>
               </CardContent>
             </Card>

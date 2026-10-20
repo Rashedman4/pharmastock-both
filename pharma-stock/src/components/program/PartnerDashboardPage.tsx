@@ -229,7 +229,7 @@ export default function PartnerDashboardPage({
         </div>
       ) : null}
       {info ? (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
           {info}
         </div>
       ) : null}
@@ -263,7 +263,7 @@ export default function PartnerDashboardPage({
           title={t.approvalPendingTitle}
           description={t.approvalPendingDescription}
         >
-          <p className="text-sm text-slate-600">{t.approvalPendingBody}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300">{t.approvalPendingBody}</p>
           <div
             className={`mt-4 ${isArabic ? "flex justify-start md:justify-end" : ""}`}
           >
@@ -316,13 +316,13 @@ export default function PartnerDashboardPage({
             description={t.referralToolsDescription}
           >
             <div className="grid gap-4 lg:grid-cols-[1fr,auto]">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-xs uppercase tracking-wide text-slate-500">
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+                <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   {t.invitationLink}
                 </p>
                 <p
                   dir="ltr"
-                  className="mt-2 break-all text-left text-sm font-medium text-slate-900"
+                  className="mt-2 break-all text-left text-sm font-medium text-slate-900 dark:text-slate-100"
                 >
                   {data.invitationLink || t.notAvailable}
                 </p>
@@ -375,7 +375,7 @@ export default function PartnerDashboardPage({
                   : `${t.requestAmount} ${money(data.partnerAvailableToRequestAmount || 0, lang)}`}
               </Button>
             </div>
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+            <div className="mt-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 text-sm text-slate-600 dark:text-slate-300">
               {t.dueSummaryPrefix} {money(data.totalPartnerShare || 0, lang)} •{" "}
               {t.unlockedPrefix} {money(data.partnerUnlockedAmount || 0, lang)}{" "}
               • {t.availablePrefix}{" "}
@@ -383,21 +383,21 @@ export default function PartnerDashboardPage({
             </div>
             <div className="mt-4 space-y-3">
               {(data.payoutRequests || []).length === 0 ? (
-                <p className="text-sm text-slate-500">{t.noPayouts}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{t.noPayouts}</p>
               ) : (
                 data.payoutRequests?.map((request) => (
                   <div
                     key={request.id}
-                    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                    className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
-                        <p className="font-semibold text-slate-900">
+                        <p className="font-semibold text-slate-900 dark:text-slate-100">
                           {money(request.requestedAmount, lang)}
                         </p>
                         <p
                           dir="ltr"
-                          className="text-left text-sm text-slate-500"
+                          className="text-left text-sm text-slate-500 dark:text-slate-400"
                         >
                           IBAN {request.ibanSnapshot} •{" "}
                           {request.paidAt

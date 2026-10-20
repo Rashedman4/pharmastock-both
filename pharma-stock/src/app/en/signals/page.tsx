@@ -27,12 +27,12 @@ export default function SignalsPage() {
   return (
     <div className="container mx-auto px-4 py-8 relative">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-royalBlue flex items-center">
+        <h1 className="text-3xl font-bold text-royalBlue dark:text-slate-100 flex items-center">
           <Signal className="mr-2 h-8 w-8" />
           Ideas
         </h1>
         <div className="mt-2 h-1 w-20 bg-brightTeal"></div>{" "}
-        <p className="mt-3 text-sm text-gray-600 ">
+        <p className="mt-3 text-sm text-gray-600 dark:text-slate-300 ">
           These signals are generated using advanced and highly efficient
           analytics and are provided for{" "}
           <strong>educational purposes only</strong>. You should conduct your

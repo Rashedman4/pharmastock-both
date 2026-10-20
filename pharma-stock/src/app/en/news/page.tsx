@@ -25,7 +25,7 @@ export default async function NewsPage() {
 
   return (
     <main className="container mx-auto px-0 py-0">
-      <h1 className="text-3xl font-bold text-royalBlue mb-6">
+      <h1 className="text-3xl font-bold text-royalBlue dark:text-slate-100 mb-6">
         Latest Pharmaceutical News
       </h1>
       <NewsSection lang="en" initialNews={initialNews} />

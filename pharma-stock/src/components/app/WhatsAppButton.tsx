@@ -67,7 +67,7 @@ export default function WhatsAppButton({ lang }: WhatsAppButtonProps) {
               <DialogTitle className="text-xl font-semibold">
                 {lang === "ar" ? "اختر الخدمة" : "Choose Service"}
               </DialogTitle>
-              <p className="text-sm text-gray-500 text-center">
+              <p className="text-sm text-gray-500 dark:text-slate-400 text-center">
                 {lang === "ar"
                   ? "حدد الطريقة التي ترغب في التواصل بها عبر واتساب"
                   : "Select how you want to connect on WhatsApp"}

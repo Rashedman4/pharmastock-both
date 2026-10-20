@@ -29,12 +29,12 @@ export default function SignalsPage() {
   return (
     <div className="container mx-auto px-4 py-8 relative">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-royalBlue flex items-center">
+        <h1 className="text-3xl font-bold text-royalBlue dark:text-slate-100 flex items-center">
           <Signal className="ml-2 h-8 w-8" />
           الأفكار
         </h1>
         <div className="mt-2 h-1 w-20 bg-brightTeal"></div>
-        <p className="mt-3 text-sm text-gray-600 text-right">
+        <p className="mt-3 text-sm text-gray-600 dark:text-slate-300 text-right">
           هذه الأفكار مستندة إلى تحليلات متقدمة وعالية الكفاءة، وهي مقدمة{" "}
           <strong>لأغراض تعليمية فقط</strong>. يجب عليك إجراء بحثك الخاص قبل
           اتخاذ أي قرارات استثمارية. لا نضمن أي نتائج محددة ولسنا مسؤولين عن أي

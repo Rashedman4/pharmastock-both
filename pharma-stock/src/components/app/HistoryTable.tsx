@@ -51,11 +51,11 @@ export default function HistoryTable({ lang }: LangProps) {
     <Card className="w-full ">
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle className="text-royalBlue text-base sm:text-lg md:text-xl lg:text-2xl">
+          <CardTitle className="text-royalBlue dark:text-slate-100 text-base sm:text-lg md:text-xl lg:text-2xl">
             {lang === "ar" ? "النتائج" : "Trade History"}
           </CardTitle>
           <div className="flex items-center space-x-2">
-            <p className="text-[10px] sm:text-sm text-gray-500">
+            <p className="text-[10px] sm:text-sm text-gray-500 dark:text-slate-400">
               {lang === "ar"
                 ? `اخر تحديث: ${formatDate(lastUpdated.toISOString())}`
                 : ` Last updated: ${formatDate(lastUpdated.toISOString())}`}
@@ -82,22 +82,22 @@ export default function HistoryTable({ lang }: LangProps) {
           <Table>
             <TableHeader>
               <TableRow className="bg-royalBlue bg-opacity-10 text-center">
-                <TableHead className="text-royalBlue font-semibold text-[10px] sm:text-sm md:text-base text-center px-3 sm:px-4 py-2 sm:py-3">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-[10px] sm:text-sm md:text-base text-center px-3 sm:px-4 py-2 sm:py-3">
                   {lang === "ar" ? "الرمز" : "Symbol"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-[10px] sm:text-sm md:text-base text-center px-1 sm:px-4 py-2 sm:py-3">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-[10px] sm:text-sm md:text-base text-center px-1 sm:px-4 py-2 sm:py-3">
                   {lang === "ar" ? "تاريخ الدخول" : "Entrance"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-[10px] sm:text-sm md:text-base text-center px-1 sm:px-4 py-2 sm:py-3">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-[10px] sm:text-sm md:text-base text-center px-1 sm:px-4 py-2 sm:py-3">
                   {lang === "ar" ? "سعر الدخول" : "In Price"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-[10px] sm:text-sm md:text-base text-center px-1 sm:px-4 py-2 sm:py-3">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-[10px] sm:text-sm md:text-base text-center px-1 sm:px-4 py-2 sm:py-3">
                   {lang === "ar" ? "سعر الخروج" : "Out Price"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-[10px] sm:text-sm md:text-base text-center px-1 sm:px-4 py-2 sm:py-3">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-[10px] sm:text-sm md:text-base text-center px-1 sm:px-4 py-2 sm:py-3">
                   {lang === "ar" ? "الربح/الخسارة" : "Profit/Loss"}
                 </TableHead>
-                <TableHead className="text-royalBlue font-semibold text-[10px] sm:text-sm md:text-base text-center px-1 sm:px-4 py-2 sm:py-3">
+                <TableHead className="text-royalBlue dark:text-slate-100 font-semibold text-[10px] sm:text-sm md:text-base text-center px-1 sm:px-4 py-2 sm:py-3">
                   {lang === "ar" ? "تاريخ الخروج" : "Closing"}
                 </TableHead>
               </TableRow>
@@ -116,7 +116,7 @@ export default function HistoryTable({ lang }: LangProps) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
-                      className="hover:bg-lightGray transition-colors duration-200 text-center"
+                      className="hover:bg-lightGray dark:hover:bg-slate-800 transition-colors duration-200 text-center"
                     >
                       <TableCell className=" py-2 sm:py-4 px-3 sm:px-4">
                         <Badge
@@ -139,7 +139,7 @@ export default function HistoryTable({ lang }: LangProps) {
                         <span
                           className={
                             Number.parseFloat(profitLoss) >= 0
-                              ? "text-green-600"
+                              ? "text-green-600 dark:text-green-400"
                               : "text-red-600"
                           }
                         >
@@ -195,7 +195,7 @@ function EmptyState({ lang }: LangProps) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <p className="text-royalBlue font-semibold text-xs">
+        <p className="text-royalBlue dark:text-slate-100 font-semibold text-xs">
           {lang === "ar"
             ? "ليس هناك نتائج الان."
             : "No historical data available."}

@@ -99,7 +99,7 @@ export default function AppPromoBanner() {
           // fixed wrapper never swallows clicks on the page behind it.
           className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-3 sm:px-4 sm:pb-4"
         >
-          <div className="pointer-events-auto mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-white/15 bg-royalBlue text-white shadow-2xl">
+          <div className="pointer-events-auto mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-white/15 dark:border-slate-700 bg-royalBlue dark:bg-slate-900 text-white shadow-2xl">
             <div className="flex items-start gap-4 p-4 sm:p-5">
               <span className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brightTeal/20 text-brightTeal sm:inline-flex">
                 <BellRing className="h-5 w-5" />

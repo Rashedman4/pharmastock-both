@@ -12,7 +12,7 @@ export const revalidate = 3600;
 // the build/revalidate time. "latest" means the newest of all three — the
 // homepage surfaces news, breakthroughs and prices together, so any of them
 // changing makes it worth re-crawling.
-type ContentKey = "news" | "breakthroughs" | "history";
+type ContentKey = "news" | "breakthroughs" | "history" | "announcements";
 type LastmodSource = ContentKey | "latest";
 
 // Real public, indexable routes only. Auth-gated routes (/signals,
@@ -27,6 +27,15 @@ const PUBLIC_PATHS: {
 }[] = [
   { path: "", changefreq: "daily", priority: 1, content: "latest" },
   { path: "/news", changefreq: "daily", priority: 0.8, content: "news" },
+  {
+    path: "/announcements",
+    changefreq: "daily",
+    priority: 0.8,
+    content: "announcements",
+  },
+  // Public and crawlable: the search UI itself is thin, but it is the entry
+  // point to every stock page.
+  { path: "/stocks", changefreq: "weekly", priority: 0.6 },
   {
     path: "/fda-designation",
     changefreq: "daily",
@@ -52,11 +61,13 @@ async function getContentTimestamps(): Promise<ContentTimestamps> {
       news: Date | null;
       breakthroughs: Date | null;
       history: Date | null;
+      announcements: Date | null;
     }>(`
       SELECT
-        (SELECT MAX(published_date) FROM news)           AS news,
-        (SELECT MAX(created_at)     FROM breakthroughs)  AS breakthroughs,
-        (SELECT MAX(closing_date)   FROM signal_history) AS history
+        (SELECT MAX(published_date) FROM news)                 AS news,
+        (SELECT MAX(created_at)     FROM breakthroughs)        AS breakthroughs,
+        (SELECT MAX(closing_date)   FROM signal_history)       AS history,
+        (SELECT MAX(published_date) FROM company_announcements) AS announcements
     `);
 
     const row = rows[0];
@@ -68,10 +79,50 @@ async function getContentTimestamps(): Promise<ContentTimestamps> {
         ? { breakthroughs: new Date(row.breakthroughs) }
         : {}),
       ...(row.history ? { history: new Date(row.history) } : {}),
+      ...(row.announcements
+        ? { announcements: new Date(row.announcements) }
+        : {}),
     };
   } catch (error) {
     console.error("sitemap: could not read content timestamps", error);
     return {};
+  }
+}
+
+/**
+ * Every published announcement and every covered stock gets its own URL — they
+ * are real content pages, and without them the only way in is the search box.
+ * Both queries degrade to an empty list rather than failing the sitemap.
+ */
+async function getContentUrls(): Promise<
+  { path: string; lastModified: Date }[]
+> {
+  try {
+    const [announcements, stocks] = await Promise.all([
+      pool.query<{ id: number; published_date: Date }>(
+        `SELECT id, published_date
+         FROM company_announcements
+         ORDER BY published_date DESC
+         LIMIT 2000`
+      ),
+      pool.query<{ symbol: string; updated_at: Date }>(
+        `SELECT symbol, updated_at FROM stocks WHERE is_active ORDER BY symbol LIMIT 2000`
+      ),
+    ]);
+
+    return [
+      ...announcements.rows.map((row) => ({
+        path: `/announcements/${row.id}`,
+        lastModified: new Date(row.published_date),
+      })),
+      ...stocks.rows.map((row) => ({
+        path: `/stocks/${row.symbol}`,
+        lastModified: new Date(row.updated_at),
+      })),
+    ];
+  } catch (error) {
+    console.error("sitemap: could not read content urls", error);
+    return [];
   }
 }
 
@@ -96,6 +147,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified,
         changeFrequency: changefreq,
         priority,
+        alternates: {
+          languages: {
+            en: `${baseUrl}/en${path}`,
+            ar: `${baseUrl}/ar${path}`,
+            "x-default": `${baseUrl}/en${path}`,
+          },
+        },
+      });
+    }
+  }
+
+  for (const { path, lastModified } of await getContentUrls()) {
+    for (const lang of ["en", "ar"] as const) {
+      entries.push({
+        url: `${baseUrl}/${lang}${path}`,
+        lastModified,
+        changeFrequency: "weekly",
+        priority: 0.5,
         alternates: {
           languages: {
             en: `${baseUrl}/en${path}`,

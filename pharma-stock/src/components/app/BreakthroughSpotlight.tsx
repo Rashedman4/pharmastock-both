@@ -144,7 +144,7 @@ export default function BreakthroughSpotlight({ lang }: LangProps) {
   const CategoryIcon = categoryIcons[activeBreakthrough.category];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white dark:bg-slate-900">
       <div className="container mx-auto px-4">
         <SectionHeader
           title={t.title}
@@ -210,19 +210,19 @@ export default function BreakthroughSpotlight({ lang }: LangProps) {
                       transition={{ duration: 0.5 }}
                       key={activeIndex}
                     >
-                      <h4 className="text-lg font-semibold text-royalBlue mb-4">
+                      <h4 className="text-lg font-semibold text-royalBlue dark:text-slate-100 mb-4">
                         {t.innovation}
                       </h4>
-                      <p className="mb-4 text-gray-700">
+                      <p className="mb-4 text-gray-700 dark:text-slate-200">
                         {lang === "en"
                           ? activeBreakthrough.description_en
                           : activeBreakthrough.description_ar}
                       </p>
 
-                      <h4 className="text-lg font-semibold text-royalBlue mb-4">
+                      <h4 className="text-lg font-semibold text-royalBlue dark:text-slate-100 mb-4">
                         {t.marketPotential}
                       </h4>
-                      <p className="mb-6 text-gray-700">
+                      <p className="mb-6 text-gray-700 dark:text-slate-200">
                         {lang === "en"
                           ? activeBreakthrough.potential_impact_en
                           : activeBreakthrough.potential_impact_ar}
@@ -263,7 +263,7 @@ export default function BreakthroughSpotlight({ lang }: LangProps) {
                             variant="outline"
                             size="sm"
                             onClick={handlePrev}
-                            className="border-royalBlue text-royalBlue"
+                            className="border-royalBlue text-royalBlue dark:text-slate-100"
                             disabled={breakthroughs.length <= 1}
                           >
                             {t.navigation.previous}
@@ -272,7 +272,7 @@ export default function BreakthroughSpotlight({ lang }: LangProps) {
                             variant="outline"
                             size="sm"
                             onClick={handleNext}
-                            className="border-royalBlue text-royalBlue"
+                            className="border-royalBlue text-royalBlue dark:text-slate-100"
                             disabled={breakthroughs.length <= 1}
                           >
                             {t.navigation.next}
@@ -316,7 +316,7 @@ function SectionHeader({ title, icon, description, lang }: SectionHeaderProps) {
       transition={{ duration: 0.7 }}
     >
       <motion.h2
-        className={`text-3xl font-bold text-royalBlue mb-2 flex  justify-center ${
+        className={`text-3xl font-bold text-royalBlue dark:text-slate-100 mb-2 flex  justify-center ${
           lang === "ar" ? "flex-row-reverse" : ""
         }`}
         initial={{ scale: 0.9 }}
@@ -333,7 +333,7 @@ function SectionHeader({ title, icon, description, lang }: SectionHeaderProps) {
         className="h-1 bg-brightTeal mx-auto mb-4"
       />
       <motion.p
-        className={`text-gray-600 max-w-2xl mx-auto ${
+        className={`text-gray-600 dark:text-slate-300 max-w-2xl mx-auto ${
           lang === "ar" ? "text-right" : "text-center"
         }`}
         initial={{ opacity: 0 }}

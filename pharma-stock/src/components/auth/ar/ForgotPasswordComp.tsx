@@ -48,7 +48,7 @@ export default function ForgotPasswordComp() {
     <>
       <Card className="max-w-md mx-auto mt-10 " dir="rtl">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold text-royalBlue">
+          <CardTitle className="text-3xl font-bold text-royalBlue dark:text-slate-100">
             نسيت كلمة المرور
           </CardTitle>
         </CardHeader>
@@ -56,7 +56,7 @@ export default function ForgotPasswordComp() {
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                 htmlFor="email"
               >
                 البريد الإلكتروني
@@ -69,7 +69,7 @@ export default function ForgotPasswordComp() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-slate-200 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
             <Button
@@ -79,14 +79,14 @@ export default function ForgotPasswordComp() {
               إعادة تعيين كلمة المرور
             </Button>
           </form>
-          {message && <p className="mt-4 text-green-600">{message}</p>}
+          {message && <p className="mt-4 text-green-600 dark:text-green-400">{message}</p>}
           {error && (
-            <p className="mt-4 text-red-600">
+            <p className="mt-4 text-red-600 dark:text-red-400">
               {" "}
               {error in errTranslate ? errTranslate[error] : error}
             </p>
           )}
-          <p className="mt-4 text-center text-sm text-gray-500">
+          <p className="mt-4 text-center text-sm text-gray-500 dark:text-slate-400">
             هل تتذكر كلمة المرور الخاصة بك؟{" "}
             <Link
               href="/ar/auth/login"

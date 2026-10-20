@@ -218,7 +218,7 @@ export default function AdminInvestorsPage() {
           onSubmit={createManualEliteMember}
         >
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
               Search users
             </label>
             <Input
@@ -228,11 +228,11 @@ export default function AdminInvestorsPage() {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
               Choose user
             </label>
             <select
-              className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm"
+              className="h-10 w-full rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm"
               value={manualForm.userId}
               onChange={(e) =>
                 setManualForm((current) => ({
@@ -250,7 +250,7 @@ export default function AdminInvestorsPage() {
             </select>
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
               Search partners
             </label>
             <Input
@@ -261,11 +261,11 @@ export default function AdminInvestorsPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
               Attach to partner
             </label>
             <select
-              className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm"
+              className="h-10 w-full rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm"
               value={manualForm.partnerAccountId}
               onChange={(e) =>
                 setManualForm((current) => ({
@@ -284,7 +284,7 @@ export default function AdminInvestorsPage() {
             </select>
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
               Starting capital
             </label>
             <Input
@@ -302,7 +302,7 @@ export default function AdminInvestorsPage() {
             />
           </div>
           <div className="space-y-2 lg:col-span-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
               Optional note
             </label>
             <Input
@@ -341,15 +341,15 @@ export default function AdminInvestorsPage() {
                 <Link
                   key={row.memberId}
                   href={`/admin/elite-portfolios/${row.memberId}`}
-                  className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm transition hover:border-amber-300 hover:bg-amber-100"
+                  className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/40 px-4 py-3 text-sm transition hover:border-amber-300 hover:bg-amber-100"
                 >
                   <div>
-                    <p className="font-semibold text-slate-900">
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">
                       {row.investorName}
                     </p>
-                    <p className="text-slate-500">{row.email}</p>
+                    <p className="text-slate-500 dark:text-slate-400">{row.email}</p>
                   </div>
-                  <span className="text-base font-semibold text-amber-700">
+                  <span className="text-base font-semibold text-amber-700 dark:text-amber-300">
                     {money(row.pendingFirmProfit)}
                   </span>
                 </Link>
@@ -366,12 +366,12 @@ export default function AdminInvestorsPage() {
           {rows.map((row) => (
             <div
               key={`${row.sourceType || "ROW"}-${row.applicationId ?? row.memberId ?? row.email}`}
-              className="rounded-2xl border border-slate-200 p-5 shadow-sm"
+              className="rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm"
             >
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-lg font-semibold text-slate-900">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                       {row.investorName}
                     </h3>
                     <StatusBadge status={row.applicationStatus} />
@@ -379,15 +379,15 @@ export default function AdminInvestorsPage() {
                       <StatusBadge status={row.memberStatus} />
                     ) : null}
                     {row.sourceType === "MANUAL" ? (
-                      <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                      <span className="rounded-full border border-blue-200 bg-blue-50 dark:bg-blue-950/40 px-3 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300">
                         Manual member
                       </span>
                     ) : null}
                   </div>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
                     {row.email} • {row.phoneNumber || "No phone"}
                   </p>
-                  <div className="flex flex-wrap gap-4 text-sm text-slate-600">
+                  <div className="flex flex-wrap gap-4 text-sm text-slate-600 dark:text-slate-300">
                     <span>Review capital: {money(row.investmentAmount)}</span>
                     <span>Current capital: {money(row.currentCapital)}</span>
                     <span>Partner: {row.partnerName || "None"}</span>

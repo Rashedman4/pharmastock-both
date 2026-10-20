@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import ThemeToggle from "@/components/app/ThemeToggle";
 import { Rubik } from "next/font/google";
 
 const rubik = Rubik({
@@ -100,7 +101,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`bg-royalBlue text-pureWhite sticky top-0 z-50 shadow-lg dark:bg-gray-800 ${
+      className={`bg-royalBlue text-pureWhite sticky top-0 z-50 shadow-lg dark:bg-slate-900 ${
         isArabic ? `dir-rtl ${rubik.className}` : ""
       }`}
     >
@@ -163,22 +164,22 @@ export default function Navbar() {
 
                   {dropdownOpen && (
                     <div
-                      className={`absolute top-full mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 z-50 ${
+                      className={`absolute top-full mt-2 w-52 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-gray-100 dark:border-slate-800 py-1.5 z-50 ${
                         isArabic ? "left-0" : "right-0"
                       }`}
                     >
                       <Link
                         href={`/${langPrefix}/profile`}
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-brightTeal/10 hover:text-royalBlue transition-colors"
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-slate-200 hover:bg-brightTeal/10 hover:text-royalBlue dark:hover:text-slate-100 transition-colors"
                       >
                         <Pencil className="h-4 w-4 text-brightTeal" />
                         {isArabic ? "تعديل الملف الشخصي" : "Edit Profile"}
                       </Link>
-                      <div className="my-1 mx-3 border-t border-gray-100" />
+                      <div className="my-1 mx-3 border-t border-gray-100 dark:border-slate-800" />
                       <button
                         onClick={handleLogout}
-                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
                       >
                         <LogOut className="h-4 w-4" />
                         {isArabic ? "تسجيل الخروج" : "Logout"}
@@ -207,6 +208,8 @@ export default function Navbar() {
                 <Globe className="mr-2 h-4 w-4" />
                 {langPrefix === "en" ? "العربية" : "English"}
               </Button>
+
+              <ThemeToggle lang={langPrefix} />
             </div>
           </div>
 
@@ -224,7 +227,7 @@ export default function Navbar() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: isArabic ? -100 : 100 }}
           transition={{ type: "tween", duration: 0.3 }}
-          className="lg:hidden fixed inset-0 bg-royalBlue dark:bg-gray-800 z-50 overflow-y-auto"
+          className="lg:hidden fixed inset-0 bg-royalBlue dark:bg-slate-900 z-50 overflow-y-auto"
         >
           <div className="flex flex-col h-full p-4">
             <div className="flex justify-between items-center mb-8">
@@ -299,6 +302,10 @@ export default function Navbar() {
                 <Globe className="mr-2 h-5 w-5" />
                 {langPrefix === "en" ? "العربية" : "English"}
               </Button>
+
+              <div className="flex justify-center pt-1">
+                <ThemeToggle lang={langPrefix} />
+              </div>
             </div>
           </div>
         </motion.div>

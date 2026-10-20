@@ -324,7 +324,7 @@ export default function PricingSection({ lang }: LangProps) {
               exit={{ opacity: 0, scale: 0.8 }}
               className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
             >
-              <Card className="p-6 max-w-md bg-white shadow-lg rounded-lg">
+              <Card className="p-6 max-w-md bg-white dark:bg-slate-900 shadow-lg rounded-lg">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold">
                     {lang === "en"
@@ -333,7 +333,7 @@ export default function PricingSection({ lang }: LangProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="mb-4 text-gray-700">
+                  <p className="mb-4 text-gray-700 dark:text-slate-200">
                     {lang === "en"
                       ? "You need to be logged in to subscribe."
                       : "يجب عليك تسجيل الدخول للاشتراك."}
@@ -342,7 +342,7 @@ export default function PricingSection({ lang }: LangProps) {
                     <Button
                       variant="outline"
                       onClick={() => setShowModal(false)}
-                      className="border-gray-300 text-gray-700"
+                      className="border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-200"
                     >
                       {lang === "en" ? "Cancel" : "إلغاء"}
                     </Button>
@@ -419,7 +419,7 @@ export default function PricingSection({ lang }: LangProps) {
                         <button
                           onClick={handleCancelSubscription}
                           disabled={cancelLoading}
-                          className="inline-flex items-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-20 transition-colors duration-200"
+                          className="inline-flex items-center rounded-md bg-white dark:bg-slate-900 px-4 py-2 text-sm font-semibold text-gray-900 dark:text-slate-100 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-20 transition-colors duration-200"
                         >
                           {cancelLoading
                             ? lang === "en"
@@ -436,7 +436,7 @@ export default function PricingSection({ lang }: LangProps) {
                     <div
                       className={`mt-4 p-3 rounded-md ${
                         cancelMessage.type === "success"
-                          ? "bg-green-50 text-green-800 border border-green-200"
+                          ? "bg-green-50 dark:bg-green-950/40 text-green-800 border border-green-200"
                           : "bg-red-50 text-red-800 border border-red-200"
                       }`}
                     >
@@ -520,20 +520,20 @@ export default function PricingSection({ lang }: LangProps) {
                       subscriptionStatus.isFirstTime == null ? (
                         <>
                           <div className="mb-2">
-                            <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-semibold">
+                            <span className="bg-red-100 text-red-600 dark:text-red-400 px-3 py-1 rounded-full text-sm font-semibold">
                               {t.specialOffer}
                             </span>
                           </div>
 
                           <div className="mb-2">
-                            <span className="text-sm text-gray-600">
+                            <span className="text-sm text-gray-600 dark:text-slate-300">
                               {t.discountedPrice}
                             </span>
                             <div>
                               <span className="text-4xl font-bold text-brightTeal">
                                 ${plan.discountedPrice}
                               </span>
-                              <span className="text-gray-600">
+                              <span className="text-gray-600 dark:text-slate-300">
                                 /{" "}
                                 {lang === "ar"
                                   ? plan.intervalAr
@@ -543,14 +543,14 @@ export default function PricingSection({ lang }: LangProps) {
                           </div>
 
                           <div className="mt-2">
-                            <span className="text-sm text-gray-600">
+                            <span className="text-sm text-gray-600 dark:text-slate-300">
                               {t.nextBills}
                             </span>
                             <div>
                               <span className="text-2xl font-semibold">
                                 ${plan.price}
                               </span>
-                              <span className="text-gray-600">
+                              <span className="text-gray-600 dark:text-slate-300">
                                 /{" "}
                                 {lang === "ar"
                                   ? plan.intervalAr
@@ -564,7 +564,7 @@ export default function PricingSection({ lang }: LangProps) {
                           <span className="text-4xl font-bold">
                             ${plan.price}
                           </span>
-                          <span className="text-gray-600">
+                          <span className="text-gray-600 dark:text-slate-300">
                             / {lang === "ar" ? plan.intervalAr : plan.interval}
                           </span>
                         </div>
@@ -607,7 +607,7 @@ export default function PricingSection({ lang }: LangProps) {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto"
+                  className="bg-white dark:bg-slate-900 rounded-lg p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto"
                 >
                   <div className="flex justify-between items-center mb-6">
                     <h3 className="text-2xl font-bold">
@@ -627,7 +627,7 @@ export default function PricingSection({ lang }: LangProps) {
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brightTeal"></div>
                     </div>
                   ) : transactions.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-8 text-gray-500 dark:text-slate-400">
                       {lang === "en"
                         ? "No transactions found"
                         : "لم يتم العثور على معاملات"}
@@ -685,7 +685,7 @@ export default function PricingSection({ lang }: LangProps) {
                                   </td>
                                   <td className="py-3 px-4">
                                     {transaction.discount_amount ? (
-                                      <span className="text-green-600">
+                                      <span className="text-green-600 dark:text-green-400">
                                         -$
                                         {(
                                           transaction.discount_amount / 100
@@ -706,7 +706,7 @@ export default function PricingSection({ lang }: LangProps) {
                                           ? "bg-green-100 text-green-800"
                                           : transaction.status === "failed"
                                           ? "bg-red-100 text-red-800"
-                                          : "bg-gray-100 text-gray-800"
+                                          : "bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-slate-100"
                                       }`}
                                     >
                                       {transaction.status}

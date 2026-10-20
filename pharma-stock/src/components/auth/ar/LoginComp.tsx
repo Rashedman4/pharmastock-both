@@ -62,17 +62,17 @@ export default function LoginComp() {
     <>
       {error && error === "يرجى تسجيل الدخول للوصول إلى هذه الصفحة." && (
         <div
-          className="w-full max-w-md mx-auto mb-4 p-4 rounded-md bg-lightGray border border-royalBlue/20"
+          className="w-full max-w-md mx-auto mb-4 p-4 rounded-md bg-lightGray dark:bg-slate-800 border border-royalBlue/20"
           dir="rtl"
         >
-          <p className="text-royalBlue text-sm font-medium">
+          <p className="text-royalBlue dark:text-slate-100 text-sm font-medium">
             يرجى تسجيل الدخول للوصول لهذه الصفحة
           </p>
         </div>
       )}
       <Card className="max-w-md mx-auto mt-10" dir="rtl">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold text-royalBlue">
+          <CardTitle className="text-3xl font-bold text-royalBlue dark:text-slate-100">
             تسجيل الدخول
           </CardTitle>
         </CardHeader>
@@ -86,7 +86,7 @@ export default function LoginComp() {
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                     htmlFor="email"
                   >
                     البريد الإلكتروني
@@ -103,7 +103,7 @@ export default function LoginComp() {
                 </div>
                 <div className="mb-6">
                   <label
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2"
                     htmlFor="password"
                   >
                     كلمة المرور
@@ -159,7 +159,7 @@ export default function LoginComp() {
                   </Button>
                 )}
               </div>
-              <p className="mt-4 text-center text-xs text-gray-500">
+              <p className="mt-4 text-center text-xs text-gray-500 dark:text-slate-400">
                 ليس لديك حساب؟{" "}
                 <Link
                   href="/ar/auth/register"

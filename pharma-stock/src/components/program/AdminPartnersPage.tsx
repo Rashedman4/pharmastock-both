@@ -41,17 +41,17 @@ export default function AdminPartnersPage() {
     <SectionCard title="Partners" description="Review partner applications, inspect referral details, and open the linked investor list.">
       <div className="space-y-4">
         {rows.map((partner) => (
-          <div key={partner.id} className="rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div key={partner.id} className="rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-lg font-semibold text-slate-900">{partner.displayName}</h3>
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{partner.displayName}</h3>
                   <StatusBadge status={partner.status} />
                 </div>
-                <p className="text-sm text-slate-500">Owner: {partner.ownerName} • {partner.email}</p>
-                <p className="text-sm text-slate-600">{partner.phoneNumber}</p>
-                <p className="max-w-3xl text-sm text-slate-600">{partner.bio}</p>
-                <div className="flex flex-wrap gap-4 text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">Owner: {partner.ownerName} • {partner.email}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300">{partner.phoneNumber}</p>
+                <p className="max-w-3xl text-sm text-slate-600 dark:text-slate-300">{partner.bio}</p>
+                <div className="flex flex-wrap gap-4 text-sm text-slate-500 dark:text-slate-400">
                   <span>Investors: {partner.investorsCount}</span>
                   <span>Current partner due: {money(partner.partnerShare)}</span>
                   <span>Referral code: {partner.referralCode || 'Not approved yet'}</span>
