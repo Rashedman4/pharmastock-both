@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Platform, Modal, FlatList, TextInput } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useForm, Controller } from 'react-hook-form';
@@ -11,7 +11,8 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { KeyboardAvoidingContainer } from '@/components/ui/KeyboardAvoidingContainer';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { signInWithGoogle } from '@/lib/googleSignIn';
@@ -57,6 +58,8 @@ const schema = z
 type FormData = z.infer<typeof schema>;
 
 export default function RegisterScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const { setTokens, setUser } = useAuthStore();
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -166,7 +169,7 @@ export default function RegisterScreen() {
           activeOpacity={0.8}
         >
           {googleLoading ? (
-            <ActivityIndicator color={Colors.textPrimary} size="small" />
+            <ActivityIndicator color={colors.textPrimary} size="small" />
           ) : (
             <>
               <Ionicons name="logo-google" size={20} color="#EA4335" />
@@ -244,7 +247,7 @@ export default function RegisterScreen() {
               <Text style={styles.countryCodeText} numberOfLines={1}>
                 {selectedCountryCode || t('auth.selectCountryCode')}
               </Text>
-              <Ionicons name="chevron-down" size={14} color={Colors.textMuted} />
+              <Ionicons name="chevron-down" size={14} color={colors.textMuted} />
             </TouchableOpacity>
             <Controller
               control={control}
@@ -254,7 +257,7 @@ export default function RegisterScreen() {
                   <TextInput
                     style={styles.phoneInput}
                     placeholder={t('auth.phoneNumberPlaceholder')}
-                    placeholderTextColor={Colors.textMuted}
+                    placeholderTextColor={colors.textMuted}
                     value={value}
                     onChangeText={onChange}
                     keyboardType="phone-pad"
@@ -338,10 +341,11 @@ export default function RegisterScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   header: { marginTop: 48, marginBottom: 32 },
-  title: { fontSize: 28, fontWeight: '800', color: Colors.primaryDark, marginBottom: 8 },
-  subtitle: { fontSize: 15, color: Colors.textSecondary },
+  title: { fontSize: 28, fontWeight: '800', color: c.primaryDark, marginBottom: 8 },
+  subtitle: { fontSize: 15, color: c.textSecondary },
   form: { flex: 1 },
   submitBtn: { marginTop: 8 },
   dividerRow: {
@@ -353,11 +357,11 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: Colors.borderLight,
+    backgroundColor: c.borderLight,
   },
   dividerText: {
     fontSize: 13,
-    color: Colors.textMuted,
+    color: c.textMuted,
     fontWeight: '500',
   },
   googleBtn: {
@@ -366,16 +370,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
     borderWidth: 1.5,
-    borderColor: Colors.borderLight,
+    borderColor: c.borderLight,
     borderRadius: 12,
     paddingVertical: 13,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     marginBottom: 4,
   },
   googleBtnText: {
     fontSize: 15,
     fontWeight: '600',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
   },
   footer: {
     flexDirection: 'row',
@@ -384,14 +388,14 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     paddingTop: 16,
   },
-  footerText: { color: Colors.textSecondary, fontSize: 14 },
-  linkText: { color: Colors.primary, fontSize: 14, fontWeight: '600' },
+  footerText: { color: c.textSecondary, fontSize: 14 },
+  linkText: { color: c.primaryText, fontSize: 14, fontWeight: '600' },
 
   phoneField: { marginBottom: 16 },
   fieldLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: Colors.text,
+    color: c.text,
     marginBottom: 6,
   },
   phoneRow: {
@@ -406,15 +410,15 @@ const styles = StyleSheet.create({
     minWidth: 92,
     height: 48,
     borderWidth: 1.5,
-    borderColor: Colors.border,
+    borderColor: c.border,
     borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: Colors.inputBackground,
+    backgroundColor: c.inputBackground,
   },
   countryCodeText: {
     fontSize: 14,
     fontWeight: '600',
-    color: Colors.text,
+    color: c.text,
     flexShrink: 1,
   },
   phoneInputWrapper: {
@@ -422,27 +426,27 @@ const styles = StyleSheet.create({
     height: 48,
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: Colors.border,
+    borderColor: c.border,
     borderRadius: 10,
     paddingHorizontal: 14,
-    backgroundColor: Colors.inputBackground,
+    backgroundColor: c.inputBackground,
   },
   phoneInput: {
     fontSize: 15,
-    color: Colors.text,
+    color: c.text,
   },
   errorText: {
-    color: Colors.error,
+    color: c.error,
     fontSize: 12,
     marginTop: 4,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: Colors.overlay,
+    backgroundColor: c.overlay,
     justifyContent: 'flex-end',
   },
   modalSheet: {
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 16,
@@ -453,7 +457,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 17,
     fontWeight: '700',
-    color: Colors.primaryDark,
+    color: c.primaryDark,
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -464,17 +468,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    borderBottomColor: c.borderLight,
   },
   countryOptionText: {
     fontSize: 15,
-    color: Colors.text,
+    color: c.text,
     flexShrink: 1,
   },
   countryOptionCode: {
     fontSize: 14,
     fontWeight: '600',
-    color: Colors.textMuted,
+    color: c.textMuted,
     marginStart: 12,
   },
 });

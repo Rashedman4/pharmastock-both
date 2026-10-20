@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -8,7 +8,8 @@ import {
   TextStyle,
   TouchableOpacityProps,
 } from 'react-native';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 
 interface ButtonProps extends TouchableOpacityProps {
   title: string;
@@ -27,6 +28,8 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const isDisabled = disabled || isLoading;
 
   return (
@@ -37,7 +40,7 @@ export function Button({
       {...props}
     >
       {isLoading ? (
-        <ActivityIndicator color={variant === 'primary' || variant === 'danger' || variant === 'secondary' ? '#fff' : Colors.primary} size="small" />
+        <ActivityIndicator color={variant === 'primary' || variant === 'danger' || variant === 'secondary' ? '#fff' : colors.primaryText} size="small" />
       ) : (
         <Text style={[styles.text, styles[`${variant}Text`], textStyle]}>{title}</Text>
       )}
@@ -45,7 +48,8 @@ export function Button({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   base: {
     height: 50,
     borderRadius: 12,
@@ -53,20 +57,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
   },
-  primary: { backgroundColor: Colors.primary },
-  secondary: { backgroundColor: Colors.accent },
+  primary: { backgroundColor: c.primary },
+  secondary: { backgroundColor: c.accent },
   outline: {
     backgroundColor: 'transparent',
     borderWidth: 1.5,
-    borderColor: Colors.primary,
+    borderColor: c.primary,
   },
   ghost: { backgroundColor: 'transparent' },
-  danger: { backgroundColor: Colors.danger },
+  danger: { backgroundColor: c.danger },
   disabled: { opacity: 0.5 },
   text: { fontSize: 16, fontWeight: '600' },
   primaryText: { color: '#fff' },
   secondaryText: { color: '#fff' },
-  outlineText: { color: Colors.primary },
-  ghostText: { color: Colors.primary },
+  outlineText: { color: c.primaryText },
+  ghostText: { color: c.primaryText },
   dangerText: { color: '#fff' },
 });

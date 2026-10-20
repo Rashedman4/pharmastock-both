@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Modal,
@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 
 const SCREEN = Dimensions.get('window');
 
@@ -20,6 +21,8 @@ interface Props {
 }
 
 export function ImageMessage({ uri, width, height }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +41,7 @@ export function ImageMessage({ uri, width, height }: Props) {
         />
         {loading && (
           <View style={[styles.loadingOverlay, { width: thumbW, height: thumbH }]}>
-            <ActivityIndicator color={Colors.white} />
+            <ActivityIndicator color={colors.white} />
           </View>
         )}
       </TouchableOpacity>
@@ -46,7 +49,7 @@ export function ImageMessage({ uri, width, height }: Props) {
       <Modal visible={open} transparent animationType="fade">
         <View style={styles.backdrop}>
           <TouchableOpacity style={styles.closeBtn} onPress={() => setOpen(false)}>
-            <Ionicons name="close" size={28} color={Colors.white} />
+            <Ionicons name="close" size={28} color={colors.white} />
           </TouchableOpacity>
           <Image
             source={{ uri }}
@@ -60,10 +63,11 @@ export function ImageMessage({ uri, width, height }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   thumbnail: {
     borderRadius: 12,
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: c.backgroundSecondary,
   },
   loadingOverlay: {
     position: 'absolute',

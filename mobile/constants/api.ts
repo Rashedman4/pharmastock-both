@@ -31,6 +31,20 @@ export const API_ROUTES = {
   market: {
     price: (symbol: string) => `/api/mobile/v1/market/${symbol}`,
   },
+  stocks: {
+    search: '/api/mobile/v1/stocks/search',
+    detail: (symbol: string) =>
+      `/api/mobile/v1/stocks/${encodeURIComponent(symbol)}`,
+  },
+  watchlist: {
+    list: '/api/mobile/v1/watchlist',
+    item: (symbol: string) =>
+      `/api/mobile/v1/watchlist/${encodeURIComponent(symbol)}`,
+  },
+  announcements: {
+    list: '/api/mobile/v1/announcements',
+    detail: (id: number) => `/api/mobile/v1/announcements/${id}`,
+  },
   pushToken: '/api/mobile/v1/push-token',
   notifications: {
     list: '/api/mobile/v1/notifications',

@@ -1,10 +1,12 @@
+import { useMemo } from 'react';
 import { Tabs, Redirect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '@/stores/auth.store';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useUnreadCount } from '@/hooks/useNotifications';
 
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
@@ -16,25 +18,29 @@ function TabIcon({
   name: IoniconsName;
   focused: boolean;
 }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   return (
     <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
       <Ionicons
         name={name}
         size={22}
-        color={focused ? Colors.white : Colors.textMuted}
+        color={focused ? colors.white : colors.textMuted}
       />
     </View>
   );
 }
 
 function BellIcon({ focused }: { focused: boolean }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { data: count = 0 } = useUnreadCount();
   return (
     <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
       <Ionicons
         name={focused ? 'notifications' : 'notifications-outline'}
         size={22}
-        color={focused ? Colors.white : Colors.textMuted}
+        color={focused ? colors.white : colors.textMuted}
       />
       {count > 0 && (
         <View style={styles.badge}>
@@ -46,6 +52,8 @@ function BellIcon({ focused }: { focused: boolean }) {
 }
 
 export default function TabsLayout() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { isAuthenticated } = useAuthStore();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -76,8 +84,8 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.textMuted,
+        tabBarActiveTintColor: colors.primaryText,
+        tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: [
           styles.tabBar,
           {
@@ -154,15 +162,19 @@ export default function TabsLayout() {
       />
       {/* Daily update details — reachable from the News tab's nested switcher, hidden from the tab bar */}
       <Tabs.Screen name="daily-updates" options={{ href: null }} />
+      {/* Announcement details — same arrangement: opened from the News tab's
+          Announcements segment and from notification taps, never from the bar */}
+      <Tabs.Screen name="announcements" options={{ href: null }} />
     </Tabs>
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   tabBar: {
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderTopWidth: 1,
-    borderTopColor: Colors.borderLight,
+    borderTopColor: c.borderLight,
     paddingTop: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
@@ -191,13 +203,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconWrapperActive: {
-    backgroundColor: Colors.primary,
+    backgroundColor: c.primary,
   },
   badge: {
     position: 'absolute',
     top: -2,
     right: -4,
-    backgroundColor: Colors.danger,
+    backgroundColor: c.danger,
     borderRadius: 8,
     minWidth: 16,
     height: 16,
@@ -206,7 +218,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   badgeText: {
-    color: Colors.white,
+    color: c.white,
     fontSize: 9,
     fontWeight: '700',
   },

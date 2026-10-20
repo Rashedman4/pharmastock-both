@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 
 interface EmptyStateProps {
   icon?: string;
@@ -17,6 +18,8 @@ export function EmptyState({
   actionLabel,
   onAction,
 }: EmptyStateProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   return (
     <View style={styles.container}>
       {icon ? <Text style={styles.icon}>{icon}</Text> : null}
@@ -31,7 +34,8 @@ export function EmptyState({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -42,22 +46,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 17,
     fontWeight: '600',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    color: Colors.textMuted,
+    color: c.textMuted,
     textAlign: 'center',
     lineHeight: 20,
   },
   button: {
     marginTop: 20,
-    backgroundColor: Colors.primary,
+    backgroundColor: c.primary,
     paddingHorizontal: 24,
     paddingVertical: 10,
     borderRadius: 8,
   },
-  buttonText: { color: Colors.white, fontWeight: '600', fontSize: 15 },
+  buttonText: { color: c.white, fontWeight: '600', fontSize: 15 },
 });

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useRTL } from '@/lib/rtl';
 import { formatTime as formatClockTime, formatDate } from '@/lib/format';
 import type { Conversation } from '@/types/content';
@@ -25,6 +26,8 @@ interface Props {
 }
 
 export const ConversationItem = React.memo(function ConversationItem({ conversation, onPress }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const unread = conversation.userUnreadCount;
   const { isRTL } = useRTL();
 
@@ -32,7 +35,7 @@ export const ConversationItem = React.memo(function ConversationItem({ conversat
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
       {/* Avatar */}
       <View style={[styles.avatar, isRTL && styles.avatarRTL]}>
-        <Ionicons name="person-circle" size={44} color={Colors.primary} />
+        <Ionicons name="person-circle" size={44} color={colors.primaryText} />
       </View>
 
       {/* Content */}
@@ -56,15 +59,16 @@ export const ConversationItem = React.memo(function ConversationItem({ conversat
   );
 });
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    borderBottomColor: c.borderLight,
   },
   avatar: {
     marginRight: 12,
@@ -84,16 +88,16 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 15,
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
   },
   time: {
     fontSize: 12,
-    color: Colors.textMuted,
+    color: c.textMuted,
   },
   preview: {
     flex: 1,
     fontSize: 13,
-    color: Colors.textSecondary,
+    color: c.textSecondary,
     marginTop: 2,
     marginRight: 8,
   },
@@ -102,7 +106,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   badge: {
-    backgroundColor: Colors.primary,
+    backgroundColor: c.primary,
     borderRadius: 10,
     minWidth: 20,
     height: 20,
@@ -111,7 +115,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   badgeText: {
-    color: Colors.white,
+    color: c.white,
     fontSize: 11,
     fontWeight: '700',
   },

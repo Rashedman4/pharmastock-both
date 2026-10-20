@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useForm, Controller } from 'react-hook-form';
@@ -9,7 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { KeyboardAvoidingContainer } from '@/components/ui/KeyboardAvoidingContainer';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { authService } from '@/services/auth.service';
 
 const schema = z
@@ -25,6 +26,8 @@ const schema = z
 type FormData = z.infer<typeof schema>;
 
 export default function ResetPasswordScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const { token } = useLocalSearchParams<{ token: string }>();
 
@@ -96,9 +99,10 @@ export default function ResetPasswordScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   header: { marginTop: 60, marginBottom: 32 },
-  title: { fontSize: 28, fontWeight: '800', color: Colors.primaryDark, marginBottom: 8 },
-  subtitle: { fontSize: 15, color: Colors.textSecondary },
+  title: { fontSize: 28, fontWeight: '800', color: c.primaryDark, marginBottom: 8 },
+  subtitle: { fontSize: 15, color: c.textSecondary },
   submitBtn: { marginTop: 16 },
 });

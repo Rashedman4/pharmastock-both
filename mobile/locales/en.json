@@ -114,7 +114,11 @@
       "signal_close": "Idea Closed",
       "message": "New Message",
       "elite_update": "Elite Update",
-      "payout_update": "Payout Update"
+      "payout_update": "Payout Update",
+      "daily_updates": "Daily Updates",
+      "announcement": "Company Announcement",
+      "watchlist_breakthrough": "Watchlist Breakthrough",
+      "admin_message": "Announcement"
     }
   },
   "news": {
@@ -130,7 +134,13 @@
     "one_day_ago": "1 day ago",
     "days_ago": "{{count}} days ago",
     "one_month_ago": "1 month ago",
-    "months_ago": "{{count}} months ago"
+    "months_ago": "{{count}} months ago",
+    "tab_announcements": "Announcements",
+    "search_symbol_placeholder": "Search by symbol (e.g., MRNA)",
+    "search": "Search",
+    "clear_search": "Clear",
+    "results_for_symbol": "Results for symbol:",
+    "empty_for_symbol": "No news for that symbol"
   },
   "dailyUpdates": {
     "title": "Daily Updates",
@@ -234,7 +244,8 @@
     "breakthroughs": "Breakthroughs",
     "view_all": "View All",
     "explore_news": "News",
-    "explore_science": "Science"
+    "explore_science": "Science",
+    "search_placeholder": "Search stocks"
   },
   "profile": {
     "title": "Profile",
@@ -283,7 +294,13 @@
     "delete_account_success": "Your account has been deleted.",
     "delete_account_error": "Failed to delete account. Please try again.",
     "restart_required_title": "Restart Required",
-    "restart_required_message": "Your language has been saved. Please close the app completely and open it again to apply the new layout direction."
+    "restart_required_message": "Your language has been saved. Please close the app completely and open it again to apply the new layout direction.",
+    "appearance": "Appearance",
+    "appearance_title": "Appearance",
+    "appearance_system": "Use device setting",
+    "appearance_light": "Light",
+    "appearance_dark": "Dark",
+    "appearance_hint": "Dark mode applies to the whole app. Choose \"Use device setting\" to follow your phone."
   },
   "about": {
     "title": "About Us",
@@ -291,5 +308,39 @@
     "pitch": "Bio Pharma Stock is a specialized biopharmaceutical investment intelligence company focused exclusively on publicly traded biotechnology and pharmaceutical companies. Our research team continuously analyzes clinical trials, FDA regulatory events, scientific publications, corporate developments, and market catalysts to deliver timely research and exclusive insights for investors seeking opportunities in one of the world's most knowledge-intensive sectors.",
     "company_line": "ALNJAM ALAALI SOFTWARE DESIGN CO. L.L.C, UAE, Abu Dhabi",
     "contact_email": "info@biopharmastock.com"
+  },
+  "stocks": {
+    "search_title": "Search Stocks",
+    "search_placeholder": "Symbol or company name",
+    "coverage_note": "We cover US biopharma stocks only.",
+    "search_hint": "Start typing to search.",
+    "no_results": "No stocks found",
+    "ask_in_chat": "Can't find a stock? Ask us in chat",
+    "watch": "Watch",
+    "watching": "Watching",
+    "alerts_on": "Alerts on",
+    "alerts_off": "Alerts off",
+    "alerts_hint": "Alerts tell you when there is news, a daily update, a breakthrough or an announcement for this stock.",
+    "remove": "Remove",
+    "not_covered": "This stock is not covered yet.",
+    "limit_reached": "Your watchlist is full (50 stocks). Remove one to add another.",
+    "update_failed": "Could not update your watchlist. Please try again.",
+    "no_price": "No price yet",
+    "section_empty": "Nothing here yet"
+  },
+  "watchlist": {
+    "title": "My Watchlist",
+    "empty": "You are not following any stocks yet",
+    "empty_subtitle": "Search for a stock and tap the star to follow it.",
+    "search_cta": "Search stocks"
+  },
+  "announcements": {
+    "title": "Announcements",
+    "empty": "No announcements yet",
+    "translated_notice": "Translated from English",
+    "view_original": "View original (English)",
+    "view_translation": "View the Arabic translation",
+    "source": "Source",
+    "announced": "Announced"
   }
 }

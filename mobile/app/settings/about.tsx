@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 
 export default function AboutScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
 
   return (
@@ -30,46 +33,47 @@ export default function AboutScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
+  container: { flex: 1, backgroundColor: c.background },
   content: { padding: 20, paddingBottom: 48, alignItems: 'center' },
   logoWrap: { marginTop: 12, marginBottom: 16 },
   logo: { width: 88, height: 88 },
   tagline: {
     fontSize: 16,
     fontWeight: '700',
-    color: Colors.primary,
+    color: c.primaryText,
     textAlign: 'center',
     marginBottom: 20,
   },
   card: {
     width: '100%',
-    backgroundColor: Colors.backgroundTertiary,
+    backgroundColor: c.backgroundTertiary,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: c.borderLight,
     padding: 16,
   },
   pitch: {
     fontSize: 14,
     lineHeight: 22,
-    color: Colors.text,
+    color: c.text,
     textAlign: 'center',
   },
   divider: {
     width: '100%',
     height: 1,
-    backgroundColor: Colors.borderLight,
+    backgroundColor: c.borderLight,
     marginVertical: 24,
   },
   companyLine: {
     fontSize: 12,
-    color: Colors.textSecondary,
+    color: c.textSecondary,
     textAlign: 'center',
   },
   contactEmail: {
     fontSize: 12,
-    color: Colors.textSecondary,
+    color: c.textSecondary,
     textAlign: 'center',
     marginTop: 4,
   },

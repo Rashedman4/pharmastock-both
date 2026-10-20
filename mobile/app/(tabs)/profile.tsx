@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { useMutation } from '@tanstack/react-query';
@@ -6,12 +6,15 @@ import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/ui/Button';
 import { WebAppLink } from '@/components/ui/WebAppLink';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { useRTL } from '@/lib/rtl';
 
 export default function ProfileScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const { user, refreshToken, clear } = useAuthStore();
   const { isRTL } = useRTL();
@@ -63,13 +66,13 @@ export default function ProfileScreen() {
           activeOpacity={0.7}
         >
           <View style={styles.menuRowLeft}>
-            <Ionicons name="person-outline" size={22} color={Colors.primary} />
+            <Ionicons name="person-outline" size={22} color={colors.primaryText} />
             <View>
               <Text style={styles.menuRowTitle}>{t('profile.edit_profile')}</Text>
               <Text style={styles.menuRowSub}>{t('profile.edit_profile_subtitle')}</Text>
             </View>
           </View>
-          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={Colors.textMuted} />
+          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textMuted} />
         </TouchableOpacity>
       </View>
 
@@ -90,13 +93,13 @@ export default function ProfileScreen() {
           activeOpacity={0.7}
         >
           <View style={styles.menuRowLeft}>
-            <Ionicons name="settings-outline" size={22} color={Colors.primary} />
+            <Ionicons name="settings-outline" size={22} color={colors.primaryText} />
             <View>
               <Text style={styles.menuRowTitle}>{t('profile.settings')}</Text>
               <Text style={styles.menuRowSub}>{t('profile.settings_subtitle')}</Text>
             </View>
           </View>
-          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={Colors.textMuted} />
+          <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textMuted} />
         </TouchableOpacity>
       </View>
 
@@ -111,8 +114,9 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  scrollContainer: { flex: 1, backgroundColor: Colors.background },
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
+  scrollContainer: { flex: 1, backgroundColor: c.background },
   container: {
     alignItems: 'center',
     padding: 24,
@@ -125,19 +129,19 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: Colors.primary,
+    backgroundColor: c.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
   },
   avatarText: { fontSize: 28, fontWeight: '700', color: '#fff' },
-  name: { fontSize: 22, fontWeight: '700', color: Colors.primaryDark, marginBottom: 4 },
-  email: { fontSize: 14, color: Colors.textSecondary, marginBottom: 8 },
-  role: { fontSize: 12, color: Colors.primary, fontWeight: '600', letterSpacing: 1 },
+  name: { fontSize: 22, fontWeight: '700', color: c.primaryDark, marginBottom: 4 },
+  email: { fontSize: 14, color: c.textSecondary, marginBottom: 8 },
+  role: { fontSize: 12, color: c.primaryText, fontWeight: '600', letterSpacing: 1 },
   badges: { flexDirection: 'row', gap: 8, marginTop: 12 },
   badge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20 },
   partnerBadge: { backgroundColor: '#d1fae5' },
-  badgeText: { fontSize: 12, fontWeight: '600', color: Colors.text },
+  badgeText: { fontSize: 12, fontWeight: '600', color: c.text },
   section: {
     width: '100%',
     marginBottom: 20,
@@ -145,7 +149,7 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 12,
     fontWeight: '700',
-    color: Colors.textMuted,
+    color: c.textMuted,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
     marginBottom: 8,
@@ -154,14 +158,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: Colors.backgroundTertiary,
+    backgroundColor: c.backgroundTertiary,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: c.borderLight,
   },
   menuRowLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  menuRowTitle: { fontSize: 15, fontWeight: '700', color: Colors.primary },
-  menuRowSub: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
+  menuRowTitle: { fontSize: 15, fontWeight: '700', color: c.primaryText },
+  menuRowSub: { fontSize: 12, color: c.textSecondary, marginTop: 2 },
   logoutBtn: { width: '100%', marginTop: 'auto' },
 });

@@ -4,4 +4,5 @@ export const STORAGE_KEYS = {
   USER: 'mobile_user',
   LANGUAGE: 'mobile_language',
   DEVICE_ID: 'mobile_device_id',
+  THEME: 'mobile_theme',
 } as const;

@@ -2,19 +2,20 @@ import { Stack } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useRTL } from '@/lib/rtl';
 import { goBackOr } from '@/lib/navigation';
 
 export default function SettingsLayout() {
   const { t } = useTranslation();
   const { isRTL } = useRTL();
+  const { colors } = useTheme();
   return (
     <Stack
       screenOptions={{
-        headerStyle: { backgroundColor: Colors.background },
-        headerTintColor: Colors.primary,
-        headerTitleStyle: { fontWeight: '700', color: Colors.primaryDark },
+        headerStyle: { backgroundColor: colors.background },
+        headerTintColor: colors.primaryText,
+        headerTitleStyle: { fontWeight: '700', color: colors.primaryDark },
         headerBackTitle: '',
       }}
     >
@@ -34,13 +35,14 @@ export default function SettingsLayout() {
               <Ionicons
                 name={isRTL ? 'chevron-forward' : 'chevron-back'}
                 size={26}
-                color={Colors.primary}
+                color={colors.primaryText}
               />
             </TouchableOpacity>
           ),
         }}
       />
       <Stack.Screen name="language" options={{ title: t('settings.language_title') }} />
+      <Stack.Screen name="appearance" options={{ title: t('settings.appearance_title') }} />
       <Stack.Screen name="about" options={{ title: t('about.title') }} />
     </Stack>
   );

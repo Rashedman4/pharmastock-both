@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 
 interface SectionHeaderProps {
   title: string;
@@ -9,6 +10,8 @@ interface SectionHeaderProps {
 }
 
 export function SectionHeader({ title, actionLabel, onAction }: SectionHeaderProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   return (
     <View style={styles.row}>
       <Text style={styles.title}>{title}</Text>
@@ -21,7 +24,8 @@ export function SectionHeader({ title, actionLabel, onAction }: SectionHeaderPro
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -32,11 +36,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
   },
   action: {
     fontSize: 14,
     fontWeight: '600',
-    color: Colors.accent,
+    color: c.accent,
   },
 });

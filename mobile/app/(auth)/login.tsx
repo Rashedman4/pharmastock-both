@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -19,7 +19,8 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { KeyboardAvoidingContainer } from '@/components/ui/KeyboardAvoidingContainer';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { signInWithGoogle, configureGoogleSignIn } from '@/lib/googleSignIn';
@@ -37,6 +38,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function LoginScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const { setTokens, setUser } = useAuthStore();
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -183,7 +186,7 @@ export default function LoginScreen() {
           activeOpacity={0.8}
         >
           {googleLoading ? (
-            <ActivityIndicator color={Colors.textPrimary} size="small" />
+            <ActivityIndicator color={colors.textPrimary} size="small" />
           ) : (
             <>
               <Ionicons name="logo-google" size={20} color="#EA4335" />
@@ -215,13 +218,14 @@ export default function LoginScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   header: { marginTop: 48, marginBottom: 32 },
-  title: { fontSize: 28, fontWeight: '800', color: Colors.primaryDark, marginBottom: 8 },
-  subtitle: { fontSize: 15, color: Colors.textSecondary },
+  title: { fontSize: 28, fontWeight: '800', color: c.primaryDark, marginBottom: 8 },
+  subtitle: { fontSize: 15, color: c.textSecondary },
   form: { flex: 1 },
   forgotLink: { alignSelf: 'flex-end', marginBottom: 24 },
-  forgotText: { color: Colors.primary, fontSize: 14, fontWeight: '500' },
+  forgotText: { color: c.primaryText, fontSize: 14, fontWeight: '500' },
   submitBtn: { marginTop: 8 },
   dividerRow: {
     flexDirection: 'row',
@@ -232,11 +236,11 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: Colors.borderLight,
+    backgroundColor: c.borderLight,
   },
   dividerText: {
     fontSize: 13,
-    color: Colors.textMuted,
+    color: c.textMuted,
     fontWeight: '500',
   },
   googleBtn: {
@@ -245,15 +249,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
     borderWidth: 1.5,
-    borderColor: Colors.borderLight,
+    borderColor: c.borderLight,
     borderRadius: 12,
     paddingVertical: 13,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
   },
   googleBtnText: {
     fontSize: 15,
     fontWeight: '600',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
   },
   footer: {
     flexDirection: 'row',
@@ -262,6 +266,6 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     paddingTop: 16,
   },
-  footerText: { color: Colors.textSecondary, fontSize: 14 },
-  linkText: { color: Colors.primary, fontSize: 14, fontWeight: '600' },
+  footerText: { color: c.textSecondary, fontSize: 14 },
+  linkText: { color: c.primaryText, fontSize: 14, fontWeight: '600' },
 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -21,7 +21,8 @@ import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useRTL } from '@/lib/rtl';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
@@ -40,6 +41,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function EditProfileScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const { user, setUser } = useAuthStore();
   const [profileProvider, setProfileProvider] = useState<string | null>(null);
@@ -135,7 +138,7 @@ export default function EditProfileScreen() {
   if (loadingProfile) {
     return (
       <SafeAreaView style={styles.centered} edges={['top']}>
-        <ActivityIndicator size="large" color={Colors.primary} />
+        <ActivityIndicator size="large" color={colors.primaryText} />
       </SafeAreaView>
     );
   }
@@ -144,7 +147,7 @@ export default function EditProfileScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => goBackOr('/(tabs)/profile')} style={styles.backBtn}>
-          <Ionicons name={isRTL ? 'arrow-forward' : 'arrow-back'} size={24} color={Colors.primary} />
+          <Ionicons name={isRTL ? 'arrow-forward' : 'arrow-back'} size={24} color={colors.primaryText} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('profile.edit_profile')}</Text>
         <View style={styles.backBtn} />
@@ -215,7 +218,7 @@ export default function EditProfileScreen() {
                 <Ionicons
                   name="information-circle-outline"
                   size={18}
-                  color={Colors.textMuted}
+                  color={colors.textMuted}
                   style={styles.socialNoteIcon}
                 />
                 <Text style={styles.socialNoteText}>
@@ -286,14 +289,15 @@ export default function EditProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
+  container: { flex: 1, backgroundColor: c.background },
   flex: { flex: 1 },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.background,
+    backgroundColor: c.background,
   },
   header: {
     flexDirection: 'row',
@@ -301,19 +305,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    borderBottomColor: c.borderLight,
   },
   backBtn: { width: 40, height: 40, justifyContent: 'center' },
-  headerTitle: { fontSize: 18, fontWeight: '700', color: Colors.primary },
+  headerTitle: { fontSize: 18, fontWeight: '700', color: c.primaryText },
   scroll: { flex: 1 },
   scrollContent: { padding: 24, paddingBottom: 48 },
   section: { marginBottom: 28 },
   sectionLabel: {
     fontSize: 12,
     fontWeight: '700',
-    color: Colors.textMuted,
+    color: c.textMuted,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
     marginBottom: 12,
@@ -321,7 +325,7 @@ const styles = StyleSheet.create({
   socialNote: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: c.backgroundSecondary,
     borderRadius: 10,
     padding: 14,
     gap: 10,
@@ -330,7 +334,7 @@ const styles = StyleSheet.create({
   socialNoteText: {
     flex: 1,
     fontSize: 14,
-    color: Colors.textSecondary,
+    color: c.textSecondary,
     lineHeight: 20,
   },
   saveBtn: { marginTop: 8 },

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   KeyboardAvoidingView,
   ScrollView,
@@ -6,7 +6,8 @@ import {
   StyleSheet,
   ViewStyle,
 } from 'react-native';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 
 interface Props {
   children: React.ReactNode;
@@ -15,6 +16,8 @@ interface Props {
 }
 
 export function KeyboardAvoidingContainer({ children, style, contentStyle }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   return (
     <KeyboardAvoidingView
       style={[styles.flex, style]}
@@ -32,7 +35,8 @@ export function KeyboardAvoidingContainer({ children, style, contentStyle }: Pro
   );
 }
 
-const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: Colors.background },
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
+  flex: { flex: 1, backgroundColor: c.background },
   content: { flexGrow: 1, padding: 24 },
 });

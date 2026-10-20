@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import {
   View,
   StyleSheet,
@@ -13,7 +13,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { goBackOr } from '@/lib/navigation';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useRTL } from '@/lib/rtl';
 import { useMessages, useSendMessage, useSocketMessages } from '@/hooks/useChat';
 import { MessageBubble } from '@/components/chat/MessageBubble';
@@ -23,6 +24,8 @@ import { useAuthStore } from '@/stores/auth.store';
 import type { ChatMessage } from '@/types/content';
 
 export default function ChatThreadScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
@@ -80,7 +83,7 @@ export default function ChatThreadScreen() {
   if (isLoading) {
     return (
       <SafeAreaView style={styles.centered}>
-        <ActivityIndicator size="large" color={Colors.primary} />
+        <ActivityIndicator size="large" color={colors.primaryText} />
       </SafeAreaView>
     );
   }
@@ -90,7 +93,7 @@ export default function ChatThreadScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => goBackOr('/(tabs)/chat')} style={styles.backBtn}>
-          <Ionicons name={isRTL ? 'chevron-forward' : 'chevron-back'} size={26} color={Colors.primary} />
+          <Ionicons name={isRTL ? 'chevron-forward' : 'chevron-back'} size={26} color={colors.primaryText} />
         </TouchableOpacity>
         <View style={[styles.headerInfo, isRTL && styles.headerInfoRTL]}>
           <Text style={styles.headerName}>Admin</Text>
@@ -120,7 +123,7 @@ export default function ChatThreadScreen() {
           ListHeaderComponent={
             isFetchingNextPage ? (
               <ActivityIndicator
-                color={Colors.primary}
+                color={colors.primaryText}
                 size="small"
                 style={styles.loadingMore}
               />
@@ -140,16 +143,17 @@ export default function ChatThreadScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: c.backgroundSecondary,
   },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.background,
+    backgroundColor: c.background,
   },
   flex: {
     flex: 1,
@@ -159,9 +163,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 10,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    borderBottomColor: c.borderLight,
   },
   backBtn: {
     padding: 6,
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
   headerName: {
     fontSize: 17,
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
   },
   listContent: {
     paddingVertical: 12,

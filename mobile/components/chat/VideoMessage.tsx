@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Modal, TouchableOpacity, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 
 const SCREEN = Dimensions.get('window');
 
@@ -13,6 +14,8 @@ interface Props {
 }
 
 export function VideoMessage({ uri, width, height }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +41,7 @@ export function VideoMessage({ uri, width, height }: Props) {
           activeOpacity={0.8}
         >
           <View style={styles.playButton}>
-            <Ionicons name="play" size={26} color={Colors.white} />
+            <Ionicons name="play" size={26} color={colors.white} />
           </View>
         </TouchableOpacity>
       </View>
@@ -51,7 +54,7 @@ export function VideoMessage({ uri, width, height }: Props) {
       >
         <View style={styles.backdrop}>
           <TouchableOpacity style={styles.closeBtn} onPress={() => setOpen(false)}>
-            <Ionicons name="close" size={28} color={Colors.white} />
+            <Ionicons name="close" size={28} color={colors.white} />
           </TouchableOpacity>
 
           {open && (
@@ -70,7 +73,7 @@ export function VideoMessage({ uri, width, height }: Props) {
 
           {loading && (
             <View style={styles.loadingOverlay} pointerEvents="none">
-              <ActivityIndicator color={Colors.white} />
+              <ActivityIndicator color={colors.white} />
             </View>
           )}
         </View>
@@ -79,7 +82,8 @@ export function VideoMessage({ uri, width, height }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   container: {
     borderRadius: 12,
     overflow: 'hidden',

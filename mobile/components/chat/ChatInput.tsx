@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import {
   View,
   TextInput,
@@ -13,7 +13,8 @@ import { Audio } from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { uploadChatMedia } from '@/services/chat.service';
 import { getSocket } from '@/lib/socket';
 
@@ -37,6 +38,8 @@ type PendingAttachment = {
 };
 
 export function ChatInput({ conversationId, onSend, disabled }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const [text, setText] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -208,7 +211,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
     return (
       <View style={styles.previewBar}>
         <TouchableOpacity onPress={discardAttachment} style={styles.previewDiscard}>
-          <Ionicons name="close-circle" size={26} color={Colors.danger} />
+          <Ionicons name="close-circle" size={26} color={colors.danger} />
         </TouchableOpacity>
 
         <View style={styles.previewContent}>
@@ -220,7 +223,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
             />
           ) : (
             <View style={styles.previewVoice}>
-              <Ionicons name="mic" size={22} color={Colors.primary} />
+              <Ionicons name="mic" size={22} color={colors.primaryText} />
               <Text style={styles.previewVoiceText}>
                 {pendingAttachment.duration !== undefined
                   ? `${Math.floor(pendingAttachment.duration / 60)}:${String(pendingAttachment.duration % 60).padStart(2, '0')}`
@@ -236,7 +239,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
           style={styles.previewSendBtn}
           disabled={disabled}
         >
-          <Ionicons name="send" size={20} color={Colors.white} />
+          <Ionicons name="send" size={20} color={colors.white} />
         </TouchableOpacity>
       </View>
     );
@@ -247,7 +250,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
     return (
       <View style={styles.recordingBar}>
         <TouchableOpacity onPress={() => stopRecording(false)} style={styles.cancelBtn}>
-          <Ionicons name="close" size={22} color={Colors.danger} />
+          <Ionicons name="close" size={22} color={colors.danger} />
         </TouchableOpacity>
         <View style={styles.recordingInfo}>
           <View style={styles.recDot} />
@@ -256,7 +259,7 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
           </Text>
         </View>
         <TouchableOpacity onPress={() => stopRecording(true)} style={styles.sendVoiceBtn}>
-          <Ionicons name="send" size={20} color={Colors.white} />
+          <Ionicons name="send" size={20} color={colors.white} />
         </TouchableOpacity>
       </View>
     );
@@ -271,9 +274,9 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
         disabled={disabled || uploading}
       >
         {uploading ? (
-          <ActivityIndicator color={Colors.primary} size="small" />
+          <ActivityIndicator color={colors.primaryText} size="small" />
         ) : (
-          <Ionicons name="image-outline" size={24} color={Colors.textMuted} />
+          <Ionicons name="image-outline" size={24} color={colors.textMuted} />
         )}
       </TouchableOpacity>
 
@@ -282,18 +285,18 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
         value={text}
         onChangeText={handleTextChange}
         placeholder={t('chat.input_placeholder')}
-        placeholderTextColor={Colors.textMuted}
+        placeholderTextColor={colors.textMuted}
         multiline
         maxLength={2000}
         editable={!disabled && !uploading}
       />
 
       {uploading ? (
-        <ActivityIndicator color={Colors.primary} style={styles.sendBtn} />
+        <ActivityIndicator color={colors.primaryText} style={styles.sendBtn} />
       ) : text.trim() ? (
         <TouchableOpacity style={styles.sendBtn} onPress={handleSendText} disabled={disabled}>
           <View style={styles.sendIcon}>
-            <Ionicons name="send" size={18} color={Colors.white} />
+            <Ionicons name="send" size={18} color={colors.white} />
           </View>
         </TouchableOpacity>
       ) : (
@@ -303,22 +306,23 @@ export function ChatInput({ conversationId, onSend, disabled }: Props) {
           delayLongPress={200}
           disabled={disabled}
         >
-          <Ionicons name="mic-outline" size={24} color={Colors.textMuted} />
+          <Ionicons name="mic-outline" size={24} color={colors.textMuted} />
         </TouchableOpacity>
       )}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     paddingHorizontal: 10,
     paddingVertical: 8,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderTopWidth: 1,
-    borderTopColor: Colors.borderLight,
+    borderTopColor: c.borderLight,
     gap: 6,
   },
   attachBtn: {
@@ -329,12 +333,12 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 40,
     maxHeight: 120,
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: c.backgroundSecondary,
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 15,
-    color: Colors.textPrimary,
+    color: c.textPrimary,
     lineHeight: 20,
   },
   sendBtn: {
@@ -345,7 +349,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: Colors.primary,
+    backgroundColor: c.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -356,9 +360,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderTopWidth: 1,
-    borderTopColor: Colors.borderLight,
+    borderTopColor: c.borderLight,
     gap: 12,
   },
   cancelBtn: {
@@ -373,18 +377,18 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: Colors.danger,
+    backgroundColor: c.danger,
   },
   recDuration: {
     fontSize: 15,
     fontWeight: '600',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
   },
   sendVoiceBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.primary,
+    backgroundColor: c.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -395,9 +399,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 10,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderTopWidth: 1,
-    borderTopColor: Colors.borderLight,
+    borderTopColor: c.borderLight,
     gap: 10,
   },
   previewDiscard: {
@@ -420,18 +424,18 @@ const styles = StyleSheet.create({
   previewVoiceText: {
     fontSize: 15,
     fontWeight: '600',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
   },
   previewHint: {
     fontSize: 12,
-    color: Colors.textMuted,
+    color: c.textMuted,
     flexShrink: 1,
   },
   previewSendBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.primary,
+    backgroundColor: c.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },

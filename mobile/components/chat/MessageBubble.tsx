@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { ImageMessage } from './ImageMessage';
 import { VoiceMessage } from './VoiceMessage';
 import { VideoMessage } from './VideoMessage';
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export const MessageBubble = React.memo(function MessageBubble({ message, myUserId }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const isMe = message.senderType === 'user' && message.senderId === myUserId;
   const isAdmin = message.senderType === 'admin';
   const fromAdmin = isAdmin || (!isMe);
@@ -65,7 +68,8 @@ export const MessageBubble = React.memo(function MessageBubble({ message, myUser
   );
 });
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   wrapper: {
     paddingHorizontal: 12,
     marginVertical: 2,
@@ -88,21 +92,21 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   adminBubble: {
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: c.backgroundSecondary,
     borderBottomLeftRadius: 4,
   },
   userBubble: {
-    backgroundColor: Colors.primary,
+    backgroundColor: c.primary,
     borderBottomRightRadius: 4,
   },
   adminText: {
     fontSize: 15,
-    color: Colors.textPrimary,
+    color: c.textPrimary,
     lineHeight: 21,
   },
   userText: {
     fontSize: 15,
-    color: Colors.white,
+    color: c.white,
     lineHeight: 21,
   },
   time: {
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   adminTime: {
-    color: Colors.textMuted,
+    color: c.textMuted,
     textAlign: 'left',
   },
   userTime: {

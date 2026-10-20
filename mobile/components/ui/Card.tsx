@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,7 +6,8 @@ import {
   ViewStyle,
   StyleProp,
 } from 'react-native';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 
 interface CardProps {
   children: React.ReactNode;
@@ -15,6 +16,8 @@ interface CardProps {
 }
 
 export function Card({ children, style, onPress }: CardProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   if (onPress) {
     return (
       <TouchableOpacity
@@ -30,18 +33,19 @@ export function Card({ children, style, onPress }: CardProps) {
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   card: {
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    shadowColor: Colors.primary,
+    shadowColor: c.primary,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.06,
     shadowRadius: 4,
     elevation: 2,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: c.borderLight,
   },
 });

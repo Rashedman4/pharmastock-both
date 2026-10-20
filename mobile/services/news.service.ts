@@ -2,9 +2,13 @@ import { apiClient } from './api';
 import { API_ROUTES } from '@/constants/api';
 import type { PaginatedResponse, NewsItem } from '@/types/content';
 
-export async function fetchNews(page = 1, limit = 20): Promise<PaginatedResponse<NewsItem>> {
+export async function fetchNews(
+  page = 1,
+  limit = 20,
+  symbol?: string
+): Promise<PaginatedResponse<NewsItem>> {
   const { data } = await apiClient.get<PaginatedResponse<NewsItem>>(API_ROUTES.news.list, {
-    params: { page, limit },
+    params: { page, limit, ...(symbol ? { symbol } : {}) },
   });
   return data;
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,13 +10,16 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useConversations, useChatConnection } from '@/hooks/useChat';
 import { ConversationItem } from '@/components/chat/ConversationItem';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
 import type { Conversation } from '@/types/content';
 
 export default function ChatInboxScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const router = useRouter();
   const { data: conversations, isLoading, refetch, isRefetching } = useConversations();
@@ -35,7 +38,7 @@ export default function ChatInboxScreen() {
 
       {isLoading ? (
         <View style={styles.centered}>
-          <ActivityIndicator size="large" color={Colors.primary} />
+          <ActivityIndicator size="large" color={colors.primaryText} />
         </View>
       ) : (
         <FlatList
@@ -51,8 +54,8 @@ export default function ChatInboxScreen() {
             <RefreshControl
               refreshing={isRefetching}
               onRefresh={refetch}
-              tintColor={Colors.primary}
-              colors={[Colors.primary]}
+              tintColor={colors.primaryText}
+              colors={[colors.primaryText]}
             />
           }
           ListEmptyComponent={
@@ -66,10 +69,11 @@ export default function ChatInboxScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: c.background,
   },
   header: {
     flexDirection: 'row',
@@ -78,13 +82,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
-    backgroundColor: Colors.white,
+    borderBottomColor: c.borderLight,
+    backgroundColor: c.surface,
   },
   headerTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: Colors.primary,
+    color: c.primaryText,
   },
   languageToggle: { marginBottom: 0 },
   centered: {
@@ -99,7 +103,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 16,
-    color: Colors.textMuted,
+    color: c.textMuted,
     textAlign: 'center',
   },
 });

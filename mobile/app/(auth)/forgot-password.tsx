@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { goBackOr } from '@/lib/navigation';
@@ -10,7 +10,8 @@ import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { KeyboardAvoidingContainer } from '@/components/ui/KeyboardAvoidingContainer';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { authService } from '@/services/auth.service';
 
 const schema = z.object({
@@ -20,6 +21,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function ForgotPasswordScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const [sent, setSent] = useState(false);
 
@@ -87,10 +90,11 @@ export default function ForgotPasswordScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   header: { marginTop: 60, marginBottom: 32 },
-  title: { fontSize: 28, fontWeight: '800', color: Colors.primaryDark, marginBottom: 8 },
-  subtitle: { fontSize: 15, color: Colors.textSecondary },
+  title: { fontSize: 28, fontWeight: '800', color: c.primaryDark, marginBottom: 8 },
+  subtitle: { fontSize: 15, color: c.textSecondary },
   submitBtn: { marginTop: 16 },
   backBtn: { marginTop: 12 },
   centeredContainer: {
@@ -98,8 +102,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 32,
-    backgroundColor: Colors.background,
+    backgroundColor: c.background,
   },
-  sentTitle: { fontSize: 24, fontWeight: '700', color: Colors.primaryDark, marginBottom: 12, textAlign: 'center' },
-  sentSubtitle: { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', marginBottom: 32 },
+  sentTitle: { fontSize: 24, fontWeight: '700', color: c.primaryDark, marginBottom: 12, textAlign: 'center' },
+  sentSubtitle: { fontSize: 15, color: c.textSecondary, textAlign: 'center', marginBottom: 32 },
 });

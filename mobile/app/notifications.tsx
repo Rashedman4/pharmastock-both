@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,8 @@ import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useNotifications, useMarkRead, useMarkAllRead } from '@/hooks/useNotifications';
 import { NotificationItem } from '@/components/notifications/NotificationItem';
 import { handleNotificationTap } from '@/lib/notifications';
@@ -18,6 +19,8 @@ import type { InAppNotification } from '@/types/content';
 import * as Notifications from 'expo-notifications';
 
 export default function NotificationsScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const router = useRouter();
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage, refetch } =
@@ -68,7 +71,7 @@ export default function NotificationsScreen() {
 
       {isLoading ? (
         <View style={styles.centered}>
-          <ActivityIndicator size="large" color={Colors.primary} />
+          <ActivityIndicator size="large" color={colors.primaryText} />
         </View>
       ) : (
         <FlashList
@@ -83,7 +86,7 @@ export default function NotificationsScreen() {
           onEndReachedThreshold={0.3}
           ListFooterComponent={
             isFetchingNextPage ? (
-              <ActivityIndicator size="small" color={Colors.primary} style={styles.footer} />
+              <ActivityIndicator size="small" color={colors.primaryText} style={styles.footer} />
             ) : null
           }
           ListEmptyComponent={
@@ -98,10 +101,11 @@ export default function NotificationsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: c.background,
   },
   header: {
     flexDirection: 'row',
@@ -110,17 +114,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
-    backgroundColor: Colors.background,
+    borderBottomColor: c.borderLight,
+    backgroundColor: c.background,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
   },
   markAllText: {
     fontSize: 14,
-    color: Colors.accent,
+    color: c.accent,
     fontWeight: '600',
   },
   centered: {
@@ -140,13 +144,13 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
     marginBottom: 8,
     textAlign: 'center',
   },
   emptySubtitle: {
     fontSize: 14,
-    color: Colors.textMuted,
+    color: c.textMuted,
     textAlign: 'center',
     lineHeight: 20,
   },

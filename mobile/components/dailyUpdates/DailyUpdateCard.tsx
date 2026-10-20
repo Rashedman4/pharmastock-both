@@ -1,10 +1,13 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/Card';
 import { AutoText } from '@/components/ui/AutoText';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useLocalizedField } from '@/lib/i18n-content';
+import { stockHref } from '@/lib/stockLink';
 import type { DailyUpdateItem } from '@/types/content';
 
 interface DailyUpdateCardProps {
@@ -13,7 +16,10 @@ interface DailyUpdateCardProps {
 }
 
 export const DailyUpdateCard = React.memo(function DailyUpdateCard({ item, onPress }: DailyUpdateCardProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
+  const router = useRouter();
   const getField = useLocalizedField();
 
   function timeAgo(dateStr: string): string {
@@ -34,9 +40,13 @@ export const DailyUpdateCard = React.memo(function DailyUpdateCard({ item, onPre
   return (
     <Card onPress={onPress}>
       <View style={styles.header}>
-        <View style={styles.symbolPill}>
+        <TouchableOpacity
+          style={styles.symbolPill}
+          onPress={() => router.push(stockHref(item.symbol) as never)}
+          activeOpacity={0.7}
+        >
           <Text style={styles.symbolText}>{item.symbol}</Text>
-        </View>
+        </TouchableOpacity>
       </View>
 
       {subtitle ? (
@@ -54,7 +64,8 @@ export const DailyUpdateCard = React.memo(function DailyUpdateCard({ item, onPre
   );
 });
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -62,32 +73,32 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   symbolPill: {
-    backgroundColor: Colors.backgroundTertiary,
+    backgroundColor: c.backgroundTertiary,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: Colors.primary + '30',
+    borderColor: c.primary + '30',
   },
   symbolText: {
     fontSize: 12,
     fontWeight: '700',
-    color: Colors.primary,
+    color: c.primaryText,
     letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
     lineHeight: 22,
     marginBottom: 4,
   },
   description: {
     fontSize: 14,
     fontWeight: '400',
-    color: Colors.textSecondary,
+    color: c.textSecondary,
     lineHeight: 20,
     marginBottom: 8,
   },
-  date: { fontSize: 12, color: Colors.textMuted },
+  date: { fontSize: 12, color: c.textMuted },
 });

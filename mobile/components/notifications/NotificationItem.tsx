@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { AutoText } from '@/components/ui/AutoText';
 import type { InAppNotification } from '@/types/content';
 
@@ -21,6 +22,8 @@ interface Props {
 }
 
 export const NotificationItem = React.memo(function NotificationItem({ notification, onPress }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const isUnread = notification.read_at === null;
   const { t } = useTranslation();
 
@@ -48,18 +51,19 @@ export const NotificationItem = React.memo(function NotificationItem({ notificat
   );
 });
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: Colors.background,
+    backgroundColor: c.background,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    borderBottomColor: c.borderLight,
   },
   unread: {
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: c.backgroundSecondary,
   },
   dotColumn: {
     width: 20,
@@ -73,7 +77,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   dotUnread: {
-    backgroundColor: Colors.primary,
+    backgroundColor: c.primary,
   },
   dotRead: {
     backgroundColor: 'transparent',
@@ -84,21 +88,21 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    color: Colors.textSecondary,
+    color: c.textSecondary,
     marginBottom: 3,
   },
   titleUnread: {
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
   },
   body: {
     fontSize: 13,
-    color: Colors.textMuted,
+    color: c.textMuted,
     lineHeight: 18,
   },
   time: {
     fontSize: 11,
-    color: Colors.textMuted,
+    color: c.textMuted,
     marginTop: 2,
     minWidth: 28,
     textAlign: 'right',

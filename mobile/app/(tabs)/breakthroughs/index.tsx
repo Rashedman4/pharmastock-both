@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import {
   View,
   StyleSheet,
@@ -15,13 +15,16 @@ import { useBreakthroughs } from '@/hooks/useContent';
 import { BreakthroughCard } from '@/components/breakthroughs/BreakthroughCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LanguageToggle } from '@/components/ui/LanguageToggle';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import type { Breakthrough } from '@/types/content';
 
 type CategoryFilter = 'all' | 'drug' | 'therapy' | 'device';
 type StageFilter = 'all' | 'research' | 'clinical' | 'approved';
 
 export default function BreakthroughsScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const router = useRouter();
   const [category, setCategory] = useState<CategoryFilter>('all');
@@ -100,7 +103,7 @@ export default function BreakthroughsScreen() {
 
       {isLoading ? (
         <View style={styles.centered}>
-          <ActivityIndicator size="large" color={Colors.primary} />
+          <ActivityIndicator size="large" color={colors.primaryText} />
         </View>
       ) : isError ? (
         <EmptyState title={t('common.error')} actionLabel={t('common.retry')} onAction={() => refetch()} />
@@ -118,7 +121,7 @@ export default function BreakthroughsScreen() {
           ListEmptyComponent={<EmptyState title={t('breakthroughs.empty')} />}
           ListFooterComponent={
             isFetchingNextPage ? (
-              <ActivityIndicator color={Colors.primary} style={{ marginVertical: 16 }} />
+              <ActivityIndicator color={colors.primaryText} style={{ marginVertical: 16 }} />
             ) : null
           }
           onEndReached={onEndReached}
@@ -131,8 +134,9 @@ export default function BreakthroughsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.backgroundSecondary },
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
+  container: { flex: 1, backgroundColor: c.backgroundSecondary },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: {
     flexDirection: 'row',
@@ -140,18 +144,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    borderBottomColor: c.borderLight,
   },
-  headerTitle: { fontSize: 20, fontWeight: '800', color: Colors.primary, flex: 1, textAlign: 'center' },
+  headerTitle: { fontSize: 20, fontWeight: '800', color: c.primaryText, flex: 1, textAlign: 'center' },
   languageToggle: { marginBottom: 0 },
   filters: {
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    borderBottomColor: c.borderLight,
   },
   filterScroll: {},
   chip: {
@@ -159,16 +163,16 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 100,
     borderWidth: 1.5,
-    borderColor: Colors.border,
+    borderColor: c.border,
     marginEnd: 8,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
   },
   chipActive: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
+    backgroundColor: c.primary,
+    borderColor: c.primary,
   },
-  chipText: { fontSize: 13, fontWeight: '600', color: Colors.textSecondary },
-  chipTextActive: { color: Colors.white },
+  chipText: { fontSize: 13, fontWeight: '600', color: c.textSecondary },
+  chipTextActive: { color: c.white },
   listContent: { padding: 16 },
   emptyContent: { flex: 1, padding: 16 },
 });

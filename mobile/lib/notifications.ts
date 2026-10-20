@@ -84,18 +84,51 @@ export async function registerForPushNotifications(): Promise<string | null> {
   return token;
 }
 
+/**
+ * Where a notification should take the reader, from its `data` payload.
+ *
+ * Shared by push taps (foreground, background and cold start) and by taps on a
+ * row in the Notifications tab, so the two can never disagree.
+ *
+ * The `default` branch is load-bearing: the backend still pushes
+ * "New Idea" / "Idea Closed" notifications even though the app has no ideas
+ * screen, and the Notifications tab is where they are readable (see
+ * PROJECT_CONTEXT §6). Anything unrecognized goes there rather than
+ * dead-ending on a route that does not exist.
+ */
+export function routeForNotification(data: Record<string, unknown> | undefined): string {
+  const screen = data?.screen as string | undefined;
+  const id = data?.id;
+  const symbol = data?.symbol;
+
+  switch (screen) {
+    case 'chat':
+      return '/chat';
+    case 'daily-updates': {
+      // Built by hand rather than with URLSearchParams: React Native's
+      // polyfill for it is incomplete across platforms.
+      const date = typeof data?.date === 'string' ? data.date : undefined;
+      return date
+        ? `/(tabs)/news?tab=daily-updates&date=${encodeURIComponent(date)}`
+        : '/(tabs)/news?tab=daily-updates';
+    }
+    case 'announcement':
+      return id ? `/(tabs)/announcements/${id}` : '/(tabs)/news?tab=announcements';
+    case 'breakthrough':
+      return id ? `/(tabs)/breakthroughs/${id}` : '/(tabs)/breakthroughs';
+    case 'stock':
+      return typeof symbol === 'string' && symbol
+        ? `/stock/${encodeURIComponent(symbol.toUpperCase())}`
+        : '/notifications';
+    default:
+      return '/notifications';
+  }
+}
+
 export function handleNotificationTap(
   notification: Notifications.Notification,
   router: { push: (path: string) => void }
 ): void {
   const data = notification.request.content.data as Record<string, unknown>;
-  const screen = data?.screen as string | undefined;
-
-  switch (screen) {
-    case 'chat':
-      router.push('/chat');
-      break;
-    default:
-      router.push('/notifications');
-  }
+  router.push(routeForNotification(data));
 }

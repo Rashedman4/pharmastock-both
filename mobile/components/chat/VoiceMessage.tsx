@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useRTL } from '@/lib/rtl';
 
 interface Props {
@@ -18,6 +19,8 @@ function formatDuration(secs: number): string {
 }
 
 export function VoiceMessage({ uri, duration, isAdmin }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [playing, setPlaying] = useState(false);
   const [position, setPosition] = useState(0);
@@ -74,7 +77,7 @@ export function VoiceMessage({ uri, duration, isAdmin }: Props) {
         <Ionicons
           name={playing ? 'pause' : 'play'}
           size={22}
-          color={isAdmin ? Colors.textPrimary : Colors.white}
+          color={isAdmin ? colors.textPrimary : colors.white}
         />
       </TouchableOpacity>
 
@@ -92,7 +95,8 @@ export function VoiceMessage({ uri, duration, isAdmin }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -126,7 +130,7 @@ const styles = StyleSheet.create({
   userBar: { backgroundColor: 'rgba(255,255,255,0.3)' },
   progress: {
     height: 4,
-    backgroundColor: Colors.accent,
+    backgroundColor: c.accent,
     borderRadius: 2,
   },
   duration: {
@@ -135,6 +139,6 @@ const styles = StyleSheet.create({
     minWidth: 36,
     textAlign: 'right',
   },
-  adminText: { color: Colors.textMuted },
+  adminText: { color: c.textMuted },
   userText: { color: 'rgba(255,255,255,0.8)' },
 });

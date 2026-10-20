@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,8 @@ import {
 import * as WebBrowser from 'expo-web-browser';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useRTL } from '@/lib/rtl';
 
 export const WEB_APP_URL = 'https://biopharmastock.com';
@@ -42,13 +43,15 @@ export function WebAppLink({
   subtitleStyle,
   showSubtitle = true,
 }: WebAppLinkProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const { isRTL } = useRTL();
 
   return (
     <TouchableOpacity style={[styles.row, style]} onPress={openWebApp} activeOpacity={0.7}>
       <View style={[styles.rowLeft, rowLeftStyle]}>
-        <Ionicons name="globe-outline" size={22} color={Colors.primary} />
+        <Ionicons name="globe-outline" size={22} color={colors.primaryText} />
         <View>
           <Text style={[styles.title, titleStyle]}>{t('common.visit_website')}</Text>
           {showSubtitle && (
@@ -58,23 +61,24 @@ export function WebAppLink({
           )}
         </View>
       </View>
-      <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={Colors.textMuted} />
+      <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textMuted} />
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: Colors.backgroundTertiary,
+    backgroundColor: c.backgroundTertiary,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: c.borderLight,
   },
   rowLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  title: { fontSize: 15, fontWeight: '700', color: Colors.primary },
-  subtitle: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
+  title: { fontSize: 15, fontWeight: '700', color: c.primaryText },
+  subtitle: { fontSize: 12, color: c.textSecondary, marginTop: 2 },
 });

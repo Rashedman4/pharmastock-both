@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,14 +12,18 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { goBackOr } from '@/lib/navigation';
 import { useTranslation } from 'react-i18next';
 import { useDailyUpdateItem } from '@/hooks/useContent';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useLocalizedField } from '@/lib/i18n-content';
 import { useRTL } from '@/lib/rtl';
+import { stockHref } from '@/lib/stockLink';
 import { formatDate } from '@/lib/format';
 import { AutoText } from '@/components/ui/AutoText';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function DailyUpdateDetailScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { t } = useTranslation();
@@ -30,7 +34,7 @@ export default function DailyUpdateDetailScreen() {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={Colors.primary} />
+        <ActivityIndicator size="large" color={colors.primaryText} />
       </View>
     );
   }
@@ -55,7 +59,7 @@ export default function DailyUpdateDetailScreen() {
           <Ionicons
             name={isRTL ? 'chevron-forward' : 'chevron-back'}
             size={26}
-            color={Colors.primary}
+            color={colors.primaryText}
           />
         </TouchableOpacity>
         <Text style={styles.headerTitle} numberOfLines={1}>
@@ -66,9 +70,13 @@ export default function DailyUpdateDetailScreen() {
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.symbolRow}>
-          <View style={styles.symbolPill}>
+          <TouchableOpacity
+            style={styles.symbolPill}
+            onPress={() => router.push(stockHref(item.symbol) as never)}
+            activeOpacity={0.7}
+          >
             <Text style={styles.symbolText}>{item.symbol}</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {subtitle ? <AutoText style={styles.title}>{subtitle}</AutoText> : null}
@@ -81,8 +89,9 @@ export default function DailyUpdateDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.backgroundSecondary },
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
+  container: { flex: 1, backgroundColor: c.backgroundSecondary },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: {
     flexDirection: 'row',
@@ -90,12 +99,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    borderBottomColor: c.borderLight,
   },
   backBtn: { width: 40, justifyContent: 'center' },
-  headerTitle: { fontSize: 16, fontWeight: '700', color: Colors.primary, flex: 1, textAlign: 'center' },
+  headerTitle: { fontSize: 16, fontWeight: '700', color: c.primaryText, flex: 1, textAlign: 'center' },
   content: { padding: 16 },
   symbolRow: {
     flexDirection: 'row',
@@ -104,29 +113,29 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   symbolPill: {
-    backgroundColor: Colors.backgroundTertiary,
+    backgroundColor: c.backgroundTertiary,
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: Colors.primary + '30',
+    borderColor: c.primary + '30',
   },
-  symbolText: { fontSize: 13, fontWeight: '700', color: Colors.primary },
+  symbolText: { fontSize: 13, fontWeight: '700', color: c.primaryText },
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: Colors.textPrimary,
+    color: c.textPrimary,
     lineHeight: 28,
     marginBottom: 12,
   },
   description: {
     fontSize: 16,
     fontWeight: '400',
-    color: Colors.textSecondary,
+    color: c.textSecondary,
     lineHeight: 24,
     marginBottom: 16,
   },
-  date: { fontSize: 13, color: Colors.textMuted },
-  errorText: { fontSize: 16, color: Colors.danger, marginBottom: 12 },
-  backLink: { color: Colors.accent, fontWeight: '600' },
+  date: { fontSize: 13, color: c.textMuted },
+  errorText: { fontSize: 16, color: c.danger, marginBottom: 12 },
+  backLink: { color: c.accent, fontWeight: '600' },
 });

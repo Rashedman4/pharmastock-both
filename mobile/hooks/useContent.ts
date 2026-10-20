@@ -14,14 +14,21 @@ import {
   type BreakthroughFilters,
 } from '@/services/breakthroughs.service';
 
-export function useNews() {
+/**
+ * The news feed, optionally filtered by symbol — same partial, case-insensitive
+ * match the web news page uses. The symbol is part of the query key so each
+ * search caches on its own.
+ */
+export function useNews(symbol?: string) {
+  const trimmed = symbol?.trim() || undefined;
   return useInfiniteQuery({
-    queryKey: ['news'],
-    queryFn: ({ pageParam = 1 }) => fetchNews(pageParam as number),
+    queryKey: trimmed ? ['news', { symbol: trimmed }] : ['news'],
+    queryFn: ({ pageParam = 1 }) => fetchNews(pageParam as number, 20, trimmed),
     getNextPageParam: (lastPage) =>
       lastPage.pagination.hasNext ? lastPage.pagination.page + 1 : undefined,
     initialPageParam: 1,
     staleTime: 120_000,
+    placeholderData: keepPreviousData,
   });
 }
 

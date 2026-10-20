@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { KeyboardAvoidingContainer } from '@/components/ui/KeyboardAvoidingContainer';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
 import type { AuthUser } from '@/types/user';
@@ -29,6 +30,8 @@ type FormData = z.infer<typeof schema>;
 const RESEND_SECONDS = 60;
 
 export default function VerifyScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const { email } = useLocalSearchParams<{ email: string }>();
   const { setTokens, setUser } = useAuthStore();
@@ -116,12 +119,13 @@ export default function VerifyScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   header: { marginTop: 60, marginBottom: 32 },
-  title: { fontSize: 28, fontWeight: '800', color: Colors.primaryDark, marginBottom: 8 },
-  subtitle: { fontSize: 15, color: Colors.textSecondary },
+  title: { fontSize: 28, fontWeight: '800', color: c.primaryDark, marginBottom: 8 },
+  subtitle: { fontSize: 15, color: c.textSecondary },
   submitBtn: { marginTop: 16 },
   resendBtn: { alignSelf: 'center', marginTop: 20 },
-  resendText: { color: Colors.primary, fontSize: 14, fontWeight: '500' },
-  resendDisabled: { color: Colors.textMuted },
+  resendText: { color: c.primaryText, fontSize: 14, fontWeight: '500' },
+  resendDisabled: { color: c.textMuted },
 });

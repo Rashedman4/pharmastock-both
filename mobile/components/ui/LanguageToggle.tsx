@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { TouchableOpacity, Text, StyleSheet, Modal, View, StyleProp, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { changeLanguage } from '@/i18n';
 import { useUiStore } from '@/stores/ui.store';
 import { apiClient } from '@/services/api';
@@ -14,6 +15,8 @@ interface LanguageToggleProps {
 }
 
 export function LanguageToggle({ style }: LanguageToggleProps = {}) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t, i18n } = useTranslation();
   const { setLanguage } = useUiStore();
   const [switching, setSwitching] = useState(false);
@@ -41,7 +44,7 @@ export function LanguageToggle({ style }: LanguageToggleProps = {}) {
   return (
     <View style={[styles.row, style]}>
       <TouchableOpacity style={styles.btn} onPress={handleToggle} disabled={switching}>
-        <Ionicons name="language-outline" size={15} color={Colors.primary} />
+        <Ionicons name="language-outline" size={15} color={colors.primaryText} />
         <Text style={styles.label}>{label}</Text>
       </TouchableOpacity>
 
@@ -54,7 +57,8 @@ export function LanguageToggle({ style }: LanguageToggleProps = {}) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   row: {
     alignSelf: 'flex-end',
     marginBottom: 12,
@@ -63,7 +67,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: Colors.primary + '15',
+    backgroundColor: c.primary + '15',
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 20,
@@ -71,6 +75,6 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '700',
-    color: Colors.primary,
+    color: c.primaryText,
   },
 });

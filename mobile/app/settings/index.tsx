@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Linking } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useRTL } from '@/lib/rtl';
 import Constants from 'expo-constants';
 import { authService } from '@/services/auth.service';
@@ -31,8 +32,10 @@ interface SettingsRowProps {
 }
 
 function SettingsRow({ icon, label, subtitle, value, onPress, danger }: SettingsRowProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { isRTL } = useRTL();
-  const tint = danger ? Colors.danger : Colors.primary;
+  const tint = danger ? colors.danger : colors.primaryText;
   return (
     <TouchableOpacity
       style={styles.row}
@@ -40,26 +43,35 @@ function SettingsRow({ icon, label, subtitle, value, onPress, danger }: Settings
       activeOpacity={0.7}
     >
       <View style={styles.rowLeft}>
-        <View style={[styles.iconBox, danger && { backgroundColor: Colors.danger + '15' }]}>
+        <View style={[styles.iconBox, danger && { backgroundColor: colors.danger + '15' }]}>
           <Ionicons name={icon} size={20} color={tint} />
         </View>
         <View>
-          <Text style={[styles.rowLabel, danger && { color: Colors.danger }]}>{label}</Text>
+          <Text style={[styles.rowLabel, danger && { color: colors.danger }]}>{label}</Text>
           {subtitle ? <Text style={styles.rowSubtitle}>{subtitle}</Text> : null}
         </View>
       </View>
       <View style={styles.rowRight}>
         {value ? <Text style={styles.rowValue}>{value}</Text> : null}
-        <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={Colors.textMuted} />
+        <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textMuted} />
       </View>
     </TouchableOpacity>
   );
 }
 
 export default function SettingsScreen() {
+  const { colors, mode } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t, i18n } = useTranslation();
   const { clear } = useAuthStore();
   const currentLang = i18n.language === 'ar' ? t('settings.arabic') : t('settings.english');
+  const appearanceLabel = t(
+    mode === 'light'
+      ? 'settings.appearance_light'
+      : mode === 'dark'
+        ? 'settings.appearance_dark'
+        : 'settings.appearance_system'
+  );
   const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
   const deleteMutation = useMutation({
@@ -107,6 +119,12 @@ export default function SettingsScreen() {
             label={t('settings.language')}
             value={currentLang}
             onPress={() => router.push('/settings/language')}
+          />
+          <SettingsRow
+            icon="contrast-outline"
+            label={t('settings.appearance')}
+            value={appearanceLabel}
+            onPress={() => router.push('/settings/appearance')}
           />
         </View>
       </View>
@@ -164,24 +182,25 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
+  container: { flex: 1, backgroundColor: c.background },
   content: { padding: 20, paddingBottom: 48 },
   section: { marginBottom: 28 },
   sectionTitle: {
     fontSize: 12,
     fontWeight: '700',
-    color: Colors.textMuted,
+    color: c.textMuted,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     marginBottom: 8,
   },
   card: {
-    backgroundColor: Colors.backgroundTertiary,
+    backgroundColor: c.backgroundTertiary,
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: c.borderLight,
   },
   row: {
     flexDirection: 'row',
@@ -195,26 +214,26 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 8,
-    backgroundColor: Colors.primary + '15',
+    backgroundColor: c.primary + '15',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  rowLabel: { fontSize: 15, fontWeight: '500', color: Colors.text },
-  rowSubtitle: { fontSize: 12, color: Colors.textMuted, marginTop: 2 },
+  rowLabel: { fontSize: 15, fontWeight: '500', color: c.text },
+  rowSubtitle: { fontSize: 12, color: c.textMuted, marginTop: 2 },
   rowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  rowValue: { fontSize: 14, color: Colors.textSecondary },
-  divider: { height: 1, backgroundColor: Colors.borderLight, marginHorizontal: 16 },
+  rowValue: { fontSize: 14, color: c.textSecondary },
+  divider: { height: 1, backgroundColor: c.borderLight, marginHorizontal: 16 },
   versionCard: {
-    backgroundColor: Colors.backgroundTertiary,
+    backgroundColor: c.backgroundTertiary,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: c.borderLight,
     paddingHorizontal: 16,
     paddingVertical: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  versionLabel: { fontSize: 15, color: Colors.text, fontWeight: '500' },
-  versionValue: { fontSize: 14, color: Colors.textSecondary },
+  versionLabel: { fontSize: 15, color: c.text, fontWeight: '500' },
+  versionValue: { fontSize: 14, color: c.textSecondary },
 });

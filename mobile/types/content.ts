@@ -50,6 +50,69 @@ export interface MarketPrice {
   fetched_at: string;
 }
 
+/** A stock in the covered universe (US biopharma only). */
+export interface StockSummary {
+  symbol: string;
+  name_en: string;
+  name_ar: string | null;
+}
+
+/** Cached price for a symbol. Null everywhere when the symbol has no cache row. */
+export interface CachedPrice {
+  current_price: string | null;
+  previous_close_price: string | null;
+  change_amount: string | null;
+  change_percent: string | null;
+  currency: string | null;
+  market_status: string | null;
+  fetched_at: string | null;
+}
+
+export interface AnnouncementSummary {
+  id: number;
+  symbol: string;
+  title_en: string;
+  title_ar: string;
+  source_url: string | null;
+  announced_at: string | null;
+  published_date: string;
+}
+
+export interface AnnouncementDetail extends AnnouncementSummary {
+  /** Markdown. `_en` is the verbatim original, `_ar` the translation. */
+  content_en: string;
+  content_ar: string;
+  stock_name_en: string | null;
+  stock_name_ar: string | null;
+}
+
+/** The stock page payload: one round trip for everything on screen. */
+export interface StockDetail extends StockSummary {
+  is_active: boolean;
+  price: CachedPrice | null;
+  is_watched: boolean;
+  alerts_enabled: boolean;
+  announcements: AnnouncementSummary[];
+  daily_updates: Pick<
+    DailyUpdateItem,
+    'id' | 'symbol' | 'subtitle_en' | 'subtitle_ar' | 'published_date'
+  >[];
+  breakthroughs: Pick<
+    Breakthrough,
+    'id' | 'symbol' | 'title_en' | 'title_ar' | 'category' | 'stage' | 'created_at'
+  >[];
+  news: Pick<
+    NewsItem,
+    'id' | 'symbol' | 'title_en' | 'title_ar' | 'price' | 'published_date'
+  >[];
+}
+
+export interface WatchlistEntry extends StockSummary {
+  alerts_enabled: boolean;
+  created_at: string;
+  price: CachedPrice | null;
+}
+
 export interface InAppNotification {
   id: string;
   type: string;

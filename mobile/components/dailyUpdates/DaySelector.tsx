@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/colors';
+import type { AppColors } from '@/constants/colors';
+import { useTheme } from '@/lib/theme';
 import { useRTL } from '@/lib/rtl';
 import {
   DAY_STRIP_LENGTH,
@@ -61,6 +62,8 @@ function useDayLabel() {
  * hand.
  */
 export function DaySelector({ value, onChange, availableDates }: DaySelectorProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const { isRTL } = useRTL();
   const labelFor = useDayLabel();
@@ -109,7 +112,7 @@ export function DaySelector({ value, onChange, availableDates }: DaySelectorProp
         onPress={() => setCalendarOpen(true)}
         accessibilityLabel={t('dailyUpdates.pick_date')}
       >
-        <Ionicons name="calendar-outline" size={20} color={Colors.primary} />
+        <Ionicons name="calendar-outline" size={20} color={colors.primaryText} />
       </TouchableOpacity>
 
       <CalendarModal
@@ -150,6 +153,8 @@ function CalendarModal({
   onClose,
   onSelect,
 }: CalendarModalProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { t } = useTranslation();
   const selectedParts = parseKey(value);
   const [cursor, setCursor] = useState({
@@ -189,7 +194,7 @@ function CalendarModal({
         <TouchableOpacity style={styles.sheet} activeOpacity={1}>
           <View style={styles.sheetHeader}>
             <TouchableOpacity onPress={() => step(-1)} style={styles.navBtn}>
-              <Ionicons name={prevIcon} size={22} color={Colors.primary} />
+              <Ionicons name={prevIcon} size={22} color={colors.primaryText} />
             </TouchableOpacity>
             <Text style={styles.sheetTitle}>
               {t('dailyUpdates.month_year', {
@@ -198,7 +203,7 @@ function CalendarModal({
               })}
             </Text>
             <TouchableOpacity onPress={() => step(1)} style={styles.navBtn}>
-              <Ionicons name={nextIcon} size={22} color={Colors.primary} />
+              <Ionicons name={nextIcon} size={22} color={colors.primaryText} />
             </TouchableOpacity>
           </View>
 
@@ -247,15 +252,16 @@ function CalendarModal({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: AppColors) =>
+  StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     paddingHorizontal: 16,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    borderBottomColor: c.borderLight,
   },
   strip: { alignItems: 'center', paddingVertical: 2 },
   // Mirrors the filter chips in app/(tabs)/breakthroughs/index.tsx.
@@ -264,14 +270,14 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 100,
     borderWidth: 1.5,
-    borderColor: Colors.border,
+    borderColor: c.border,
     marginEnd: 8,
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
   },
-  chipActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  chipText: { fontSize: 13, fontWeight: '600', color: Colors.textSecondary },
-  chipTextActive: { color: Colors.white },
-  chipTextEmpty: { color: Colors.textMuted },
+  chipActive: { backgroundColor: c.primary, borderColor: c.primary },
+  chipText: { fontSize: 13, fontWeight: '600', color: c.textSecondary },
+  chipTextActive: { color: c.white },
+  chipTextEmpty: { color: c.textMuted },
   calendarBtn: {
     width: 36,
     height: 36,
@@ -279,7 +285,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginStart: 4,
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: c.backgroundSecondary,
   },
 
   backdrop: {
@@ -289,7 +295,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   sheet: {
-    backgroundColor: Colors.white,
+    backgroundColor: c.surface,
     borderRadius: 16,
     padding: 16,
   },
@@ -299,7 +305,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 12,
   },
-  sheetTitle: { fontSize: 16, fontWeight: '700', color: Colors.primary },
+  sheetTitle: { fontSize: 16, fontWeight: '700', color: c.primaryText },
   navBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
   weekRow: { flexDirection: 'row', marginBottom: 6 },
   weekLabel: {
@@ -307,7 +313,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 11,
     fontWeight: '600',
-    color: Colors.textMuted,
+    color: c.textMuted,
   },
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
   cell: {
@@ -316,11 +322,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cellSelected: { backgroundColor: Colors.primary, borderRadius: 100 },
-  cellText: { fontSize: 14, color: Colors.textPrimary },
-  cellTextSelected: { color: Colors.white, fontWeight: '700' },
-  cellTextDisabled: { color: Colors.borderLight },
-  cellTextEmpty: { color: Colors.textMuted },
+  cellSelected: { backgroundColor: c.primary, borderRadius: 100 },
+  cellText: { fontSize: 14, color: c.textPrimary },
+  cellTextSelected: { color: c.white, fontWeight: '700' },
+  cellTextDisabled: { color: c.borderLight },
+  cellTextEmpty: { color: c.textMuted },
   closeBtn: { marginTop: 12, paddingVertical: 10, alignItems: 'center' },
-  closeText: { fontSize: 14, fontWeight: '600', color: Colors.textSecondary },
+  closeText: { fontSize: 14, fontWeight: '600', color: c.textSecondary },
 });
