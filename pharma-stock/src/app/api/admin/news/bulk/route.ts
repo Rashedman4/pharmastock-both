@@ -1,5 +1,6 @@
 import pool from "@/lib/db";
 import { requireAdmin } from "@/modules/program/route-helpers";
+import { ensureStocks } from "@/modules/stocks/stocks.service";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -19,6 +20,11 @@ export async function POST(req: NextRequest) {
 
     try {
       await client.query("BEGIN");
+
+      await ensureStocks(
+        client,
+        newsItems.map((item) => ({ symbol: item.symbol }))
+      );
 
       const insertQuery = `
   INSERT INTO news (title_en, title_ar, symbol, price, published_date)

@@ -48,11 +48,18 @@ export async function createNotification(input: CreateNotificationInput): Promis
   });
 }
 
-export async function createNotificationForAll(
+/**
+ * Writes the in-app notification row for every user and returns how many were
+ * written.
+ *
+ * Split out of `createNotificationForAll` so a caller that wants to answer the
+ * request before the pushes go out (the admin "send notification" tool) can
+ * await the rows and fire the push separately.
+ */
+export async function insertNotificationForAllUsers(
   input: BilingualNotificationInput
-): Promise<void> {
-  // Insert in-app notification for every user (store both languages)
-  await pool.query(
+): Promise<number> {
+  const result = await pool.query(
     `INSERT INTO in_app_notifications
        (user_id, type, title, body, title_en, title_ar, body_en, body_ar, data)
      SELECT id, $1, $2, $3, $4, $5, $6, $7, $8
@@ -68,6 +75,14 @@ export async function createNotificationForAll(
       JSON.stringify(input.data ?? {}),
     ]
   );
+
+  return result.rowCount ?? 0;
+}
+
+export async function createNotificationForAll(
+  input: BilingualNotificationInput
+): Promise<void> {
+  await insertNotificationForAllUsers(input);
 
   // Send push per language group
   await sendBilingualPushToAllUsers({

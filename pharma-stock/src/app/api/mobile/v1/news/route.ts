@@ -15,14 +15,25 @@ export async function GET(req: NextRequest) {
   try {
     const { page, limit, offset } = parsePaginationParams(req);
 
+    // Optional symbol filter, matching the web news page's behaviour: a
+    // partial, case-insensitive match so "MR" finds MRNA.
+    const rawSymbol = (new URL(req.url).searchParams.get('symbol') ?? '').trim();
+    // The wildcards are escaped so a typed "%" searches for a literal "%".
+    const symbol = rawSymbol
+      ? `%${rawSymbol.replace(/[\\%_]/g, (char) => `\\${char}`)}%`
+      : null;
+    const where = symbol ? `WHERE symbol ILIKE $1 ESCAPE '\\'` : '';
+    const params: (string | number)[] = symbol ? [symbol] : [];
+
     const [countResult, dataResult] = await Promise.all([
-      pool.query('SELECT COUNT(*)::int AS total FROM news'),
+      pool.query(`SELECT COUNT(*)::int AS total FROM news ${where}`, params),
       pool.query(
         `SELECT id, title_en, title_ar, price, symbol, published_date
          FROM news
+         ${where}
          ORDER BY published_date DESC
-         LIMIT $1 OFFSET $2`,
-        [limit, offset]
+         LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        [...params, limit, offset]
       ),
     ]);
 

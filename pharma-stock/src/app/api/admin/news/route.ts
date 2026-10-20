@@ -2,6 +2,7 @@ import pool from "@/lib/db";
 import { NextResponse, NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { parsePaginationParams, buildPaginationMeta } from "@/lib/mobile/paginate";
+import { ensureStocks } from "@/modules/stocks/stocks.service";
 
 export async function POST(req: NextRequest) {
   const token = await getToken({ req });
@@ -21,6 +22,7 @@ export async function POST(req: NextRequest) {
     const { title, symbol, price } = body;
 
     const client = await pool.connect();
+    await ensureStocks(client, [{ symbol }]);
     const query = `
       INSERT INTO news (title_en, title_ar, symbol, price)
       VALUES ($1, $2, $3, $4)

@@ -17,6 +17,9 @@ const links = [
   { href: "/admin/history", label: "History" },
   { href: "/admin/messages", label: "Messages" },
   { href: "/admin/breakthroughs", label: "Breakthroughs" },
+  { href: "/admin/announcements", label: "Announcements" },
+  { href: "/admin/stocks", label: "Stocks" },
+  { href: "/admin/notifications", label: "Send Notification" },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

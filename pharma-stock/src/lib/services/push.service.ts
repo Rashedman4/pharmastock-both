@@ -95,6 +95,46 @@ export async function sendBilingualPushToAllUsers(payload: BilingualPushPayload)
   console.log(`[Push] sendBilingualPushToAllUsers: sent to ${totalSent} token(s)`);
 }
 
+/**
+ * Bilingual push to a specific set of users, each in their own language.
+ *
+ * One query collects every token with its owner's `preferred_language`, so a
+ * watchlist fan-out to N users costs one round trip rather than N calls to
+ * sendPushToUser.
+ */
+export async function sendBilingualPushToUsers(
+  userIds: number[],
+  payload: BilingualPushPayload
+): Promise<void> {
+  if (!userIds.length) return;
+
+  const result = await pool.query(
+    `SELECT t.expo_token, COALESCE(u.preferred_language, 'en') AS lang
+     FROM user_push_tokens t
+     JOIN users u ON u.id = t.user_id
+     WHERE t.user_id = ANY($1::int[])`,
+    [userIds]
+  );
+
+  const messages: ExpoPushMessage[] = result.rows
+    .filter((r: { expo_token: string }) => Expo.isExpoPushToken(r.expo_token))
+    .map((r: { expo_token: string; lang: string }) => {
+      const p = r.lang === 'ar' ? payload.ar : payload.en;
+      return {
+        to: r.expo_token,
+        title: p.title,
+        body: p.body,
+        data: payload.data ?? {},
+        sound: 'default' as const,
+      };
+    });
+
+  await _sendChunked(messages);
+  console.log(
+    `[Push] sendBilingualPushToUsers: ${userIds.length} user(s), ${messages.length} token(s)`
+  );
+}
+
 async function _sendToTokens(tokens: string[], payload: PushPayload): Promise<void> {
   const valid = tokens.filter((t) => Expo.isExpoPushToken(t));
   if (!valid.length) return;

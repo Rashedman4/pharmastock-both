@@ -1,5 +1,11 @@
 import pool from "@/lib/db";
 import { requireAdmin } from "@/modules/program/route-helpers";
+import { ensureStocks } from "@/modules/stocks/stocks.service";
+import {
+  logAlertFailure,
+  notifyAllDailyUpdates,
+} from "@/lib/services/content-alert.service";
+import { todayInAppTimezone } from "@/lib/mobile/day-window";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -19,6 +25,11 @@ export async function POST(req: NextRequest) {
 
     try {
       await client.query("BEGIN");
+
+      await ensureStocks(
+        client,
+        updateItems.map((item) => ({ symbol: item.symbol }))
+      );
 
       const insertQuery = `
   INSERT INTO daily_updates (symbol, subtitle_en, subtitle_ar, description_en, description_ar, created_by, published_date)
@@ -42,6 +53,14 @@ export async function POST(req: NextRequest) {
       }
 
       await client.query("COMMIT");
+
+      // Exactly ONE notification per user for the whole batch — never one per
+      // row — fired after COMMIT and fire-and-forget. See PROJECT_CONTEXT §7.
+      void notifyAllDailyUpdates({
+        date: todayInAppTimezone(),
+        symbols: results.map((row) => row.symbol),
+      }).catch(logAlertFailure("daily-updates bulk (" + results.length + " rows)"));
+
       return NextResponse.json(results, { status: 201 });
     } catch (error) {
       await client.query("ROLLBACK");

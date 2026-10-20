@@ -1,6 +1,12 @@
 import pool from "@/lib/db";
 import { NextResponse, NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { ensureStocks } from "@/modules/stocks/stocks.service";
+import {
+  logAlertFailure,
+  notifyAllDailyUpdates,
+} from "@/lib/services/content-alert.service";
+import { todayInAppTimezone } from "@/lib/mobile/day-window";
 
 export async function POST(req: NextRequest) {
   const token = await getToken({ req });
@@ -19,6 +25,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { symbol, subtitle, description } = body;
 
+    await ensureStocks(pool, [{ symbol }]);
+
     const query = `
       INSERT INTO daily_updates (symbol, subtitle_en, subtitle_ar, description_en, description_ar, created_by)
       VALUES ($1, $2, $3, $4, $5, $6)
@@ -32,6 +40,14 @@ export async function POST(req: NextRequest) {
       description.ar,
       token.sub ? Number(token.sub) : null,
     ]);
+
+    // Daily updates go to every user (not just watchers), once per request and
+    // fire-and-forget after the write: a push failure must never fail the
+    // publish. See PROJECT_CONTEXT §7.
+    void notifyAllDailyUpdates({
+      date: todayInAppTimezone(),
+      symbols: [symbol],
+    }).catch(logAlertFailure("daily update " + result.rows[0].id));
 
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (error) {

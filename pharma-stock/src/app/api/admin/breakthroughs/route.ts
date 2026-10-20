@@ -1,6 +1,11 @@
 import pool from "@/lib/db";
 import { NextResponse, NextRequest } from "next/server";
 import { requireAdmin } from "@/modules/program/route-helpers";
+import { ensureStocks, normalizeSymbol } from "@/modules/stocks/stocks.service";
+import {
+  logAlertFailure,
+  notifyWatchers,
+} from "@/lib/services/content-alert.service";
 
 export async function POST(req: NextRequest) {
   const auth = await requireAdmin(req);
@@ -20,6 +25,8 @@ export async function POST(req: NextRequest) {
       category,
       stage,
     } = body;
+
+    await ensureStocks(pool, [{ symbol, name: company }]);
 
     const query = `
       INSERT INTO breakthroughs (
@@ -44,7 +51,21 @@ export async function POST(req: NextRequest) {
       stage,
     ]);
 
-    return NextResponse.json(result.rows[0], { status: 201 });
+    // Watchlist alert, after the write and fire-and-forget: only users
+    // watching this symbol with alerts on, one notification each.
+    const created = result.rows[0];
+    void notifyWatchers({
+      symbols: [normalizeSymbol(symbol)],
+      type: "watchlist_breakthrough",
+      title: { en: "New breakthrough", ar: "ابتكار جديد" },
+      body: (symbols) => ({
+        en: symbols[0] + ": " + title_en,
+        ar: symbols[0] + ": " + title_ar,
+      }),
+      data: { screen: "breakthrough", id: created.id },
+    }).catch(logAlertFailure("breakthrough " + created.id));
+
+    return NextResponse.json(created, { status: 201 });
   } catch (error) {
     return NextResponse.json(
       { error: "Error adding breakthrough. error: " + error },
